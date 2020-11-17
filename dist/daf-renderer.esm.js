@@ -1,8 +1,8 @@
 const defaultOptions = {
   contentWidth: "500px",
   padding: {
-    vertical: "0px",
-    horizontal: "0px",
+    vertical: "10px",
+    horizontal: "16px",
   },
   halfway: "50%",
   fontFamily: {
