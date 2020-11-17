@@ -7,8 +7,8 @@
   const defaultOptions = {
     contentWidth: "500px",
     padding: {
-      vertical: "10px",
-      horizontal: "16px",
+      vertical: "0px",
+      horizontal: "10px",
     },
     halfway: "50%",
     fontFamily: {
@@ -26,8 +26,7 @@
       modifier: .69
     },
     mainMargin: {
-      start: "22.75%",
-      content: "21%"
+      start: "50%",
     },
   };
 
@@ -67,8 +66,11 @@
       inner: amudB ? "right" : "left",
       outer: amudB ? "left" : "right"
     };
-    const halfwayMid = parseInt(options.mainMargin.start) + parseInt(options.halfway) + "%";
-    const sideWidth = parseInt(options.halfway) - parseInt(options.mainMargin.start) + "%";
+
+
+    const sidePercentVal = ((100 - parseInt(options.mainMargin.start))/2);
+    const sidePercent = sidePercentVal + "%"; // This is the percentage of the width for one commentary
+    const remainderPercent = 100 - sidePercentVal + "%"; // This is the remainder of percentage of the width, side and remainder should add up to 100
 
     const addHorizMargins = style => Object.assign(style,horizPaddingMargins(parseInt(options.padding.horizontal)));
     const addMarginTop = style => Object.assign(style, {marginTop: options.padding.vertical});
@@ -76,14 +78,14 @@
 
     const sideSpacers = side => ({
       start: addHorizMargins(spacer(options.halfway, floats[side], spacerHeights.start)),
-      mid: addMarginTop(addMarginBottom(spacer(halfwayMid, floats[side], spacerHeights[side]))),
+      mid: addMarginTop(addMarginBottom(spacer(remainderPercent, floats[side], spacerHeights[side]))),
       end: addHorizMargins(spacer(options.halfway, floats[side], spacerHeights.end))
     });
 
     const mainSpacers = {
       start: addHorizMargins(mainSpacerStart(options.contentWidth, spacerHeights.start)),
-      inner: addMarginBottom(addHorizMargins(spacer(sideWidth, floats.outer, spacerHeights.inner))),
-      outer: addMarginBottom(addHorizMargins(spacer(sideWidth, floats.inner, spacerHeights.outer))),
+      inner: addMarginBottom(addHorizMargins(spacer(sidePercent, floats.outer, spacerHeights.inner))),
+      outer: addMarginBottom(addHorizMargins(spacer(sidePercent, floats.inner, spacerHeights.outer))),
     };
     return {
       container: container(options.contentWidth),
@@ -114,6 +116,7 @@
     testDiv.style.width = String(width) + "px";
     testDiv.style.lineHeight = String(lh) + "px";
     testDiv.innerHTML = text;
+    // testDiv.style.textAlign = "justify";
     dummy.append(testDiv);
     let test_area = Number(testDiv.offsetHeight * testDiv.offsetWidth);
     testDiv.remove();
@@ -144,11 +147,17 @@
       }
     };
 
-    const midWidth = Number(2*parsedOptions.width * parsedOptions.mainMargin.start); //main middle strip
+    const midWidth = Number(parsedOptions.width * parsedOptions.mainMargin.start); //main middle strip
     const topWidth = Number(parsedOptions.width * parsedOptions.halfway); //each commentary top
     const sideWidth = Number((parsedOptions.width - midWidth)/2); //each commentary widths
 
-    const adjustCommentaryArea = (area, lineHeight) => area - (4 * lineHeight * topWidth); //remove area of top 4 lines
+    const paddingAreas = {
+      name: "paddingAreas",
+      horizontalSide: sideWidth * parsedOptions.padding.vertical,
+      verticalTop: 4 * parsedOptions.lineHeight.side * parsedOptions.padding.horizontal, //NOT IMPORTANT
+    };
+
+    const adjustCommentaryArea = (area, lineHeight) => area - (4 * lineHeight * topWidth) - paddingAreas.horizontalSide; //remove area of top 4 lines
     const main = {
       name: "main",
       width: midWidth,
@@ -182,13 +191,15 @@
       length: null,
       height: null,
     };
+
     const texts = [main, outer, inner];
-    texts.forEach (text => text.length = text.area / text.lineHeight);
     texts.forEach (text => text.height = text.area / text.width);
+    texts.forEach (text => text.length = text.height / text.lineHeight);
 
-    const perLength = texts.sort( (a,b) => a.length - b.length);
-    const perArea = texts.sort ( (a,b) => a.area - b.area );
 
+    const perLength = Array.from(texts).sort( (a,b) => a.length - b.length);
+    const perArea = Array.from(texts).sort ( (a,b) => a.area - b.area );
+   
     //There are Three Main Types of Case:
     //Double-wrap: The main text being the smallest and commentaries wrapping around it
     //Stairs: The main text wrapping around one, but the other wrapping around it
@@ -196,7 +207,7 @@
 
     //Main Text is Smallest: Double-Wrap
     //Main Text being Middle: Stairs
-    //Main Text Being Largest: Double-Extendk
+    //Main Text Being Largest: Double-Extend
 
     //First we need to check we have enough commentary to fill the first four lines
     if (inner.length <= 0 && outer.length <= 0){
@@ -212,16 +223,17 @@
 
     //If Double=Wrap
     if (perLength[0].name === "main"){
-      console.log("Double-Wrap");
-      spacerHeights.inner = roundLine(main.height + main.lineHeight, main.lineHeight)
-        + parsedOptions.padding.vertical; //We cheated a bit here by adding an extra line as a buffer, dont know why its needed...
+      console.log("Double-Wrap"); 
+      spacerHeights.inner = main.area/midWidth;
       spacerHeights.outer = spacerHeights.inner;
       const ghostHeight = perLength[1].height;
-      const bottomGhostHeight = (ghostHeight - spacerHeights.inner);
-      const bottomChunk = bottomGhostHeight * sideWidth; //area
+
+      const sideArea = spacerHeights.inner * sideWidth + paddingAreas.horizontalSide;
+
+
+      const bottomChunk = perArea[1] - sideArea;
       const bottomHeight = bottomChunk / topWidth; //also the footer width in this case!
-      spacerHeights.end = roundLine(bottomHeight, inner.lineHeight, parsedOptions.lineHeight.modifier) +
-        parsedOptions.padding.vertical;  //push the main text up a bit more for the space where the next page's first word would go
+      spacerHeights.end = bottomHeight;  //push the main text up a bit more for the space where the next page's first word would go
       return spacerHeights;
     }
     //If Stairs, there's one text at the bottom. We will call it THE stair. The remaining two texts form a "block" that we must compare with that bottom text.

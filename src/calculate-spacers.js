@@ -10,6 +10,7 @@ function getAreaOfText(text, font, fs, width, lh, dummy) {
   testDiv.style.width = String(width) + "px";
   testDiv.style.lineHeight = String(lh) + "px";
   testDiv.innerHTML = text;
+  // testDiv.style.textAlign = "justify";
   dummy.append(testDiv);
   let test_area = Number(testDiv.offsetHeight * testDiv.offsetWidth);
   testDiv.remove();
@@ -40,11 +41,17 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
     }
   }
 
-  const midWidth = Number(2*parsedOptions.width * parsedOptions.mainMargin.start); //main middle strip
+  const midWidth = Number(parsedOptions.width * parsedOptions.mainMargin.start); //main middle strip
   const topWidth = Number(parsedOptions.width * parsedOptions.halfway); //each commentary top
   const sideWidth = Number((parsedOptions.width - midWidth)/2) //each commentary widths
 
-  const adjustCommentaryArea = (area, lineHeight) => area - (4 * lineHeight * topWidth); //remove area of top 4 lines
+  const paddingAreas = {
+    name: "paddingAreas",
+    horizontalSide: sideWidth * parsedOptions.padding.vertical,
+    verticalTop: 4 * parsedOptions.lineHeight.side * parsedOptions.padding.horizontal, //NOT IMPORTANT
+  }
+
+  const adjustCommentaryArea = (area, lineHeight) => area - (4 * lineHeight * topWidth) - paddingAreas.horizontalSide; //remove area of top 4 lines
   const main = {
     name: "main",
     width: midWidth,
@@ -78,13 +85,15 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
     length: null,
     height: null,
   }
+
   const texts = [main, outer, inner];
-  texts.forEach (text => text.length = text.area / text.lineHeight);
   texts.forEach (text => text.height = text.area / text.width);
+  texts.forEach (text => text.length = text.height / text.lineHeight);
 
-  const perLength = texts.sort( (a,b) => a.length - b.length);
-  const perArea = texts.sort ( (a,b) => a.area - b.area );
 
+  const perLength = Array.from(texts).sort( (a,b) => a.length - b.length);
+  const perArea = Array.from(texts).sort ( (a,b) => a.area - b.area );
+ 
   //There are Three Main Types of Case:
   //Double-wrap: The main text being the smallest and commentaries wrapping around it
   //Stairs: The main text wrapping around one, but the other wrapping around it
@@ -92,7 +101,7 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
 
   //Main Text is Smallest: Double-Wrap
   //Main Text being Middle: Stairs
-  //Main Text Being Largest: Double-Extendk
+  //Main Text Being Largest: Double-Extend
 
   //First we need to check we have enough commentary to fill the first four lines
   if (inner.length <= 0 && outer.length <= 0){
@@ -109,16 +118,18 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
 
   //If Double=Wrap
   if (perLength[0].name === "main"){
-    console.log("Double-Wrap");
-    spacerHeights.inner = roundLine(main.height + main.lineHeight, main.lineHeight)
-      + parsedOptions.padding.vertical; //We cheated a bit here by adding an extra line as a buffer, dont know why its needed...
+    console.log("Double-Wrap"); 
+    spacerHeights.inner = main.area/midWidth;
     spacerHeights.outer = spacerHeights.inner;
     const ghostHeight = perLength[1].height;
     const bottomGhostHeight = (ghostHeight - spacerHeights.inner);
-    const bottomChunk = bottomGhostHeight * sideWidth; //area
+
+    const sideArea = spacerHeights.inner * sideWidth + paddingAreas.horizontalSide;
+
+
+    const bottomChunk = perArea[1] - sideArea;
     const bottomHeight = bottomChunk / topWidth; //also the footer width in this case!
-    spacerHeights.end = roundLine(bottomHeight, inner.lineHeight, parsedOptions.lineHeight.modifier) +
-      parsedOptions.padding.vertical;  //push the main text up a bit more for the space where the next page's first word would go
+    spacerHeights.end = bottomHeight;  //push the main text up a bit more for the space where the next page's first word would go
     return spacerHeights;
   }
   //If Stairs, there's one text at the bottom. We will call it THE stair. The remaining two texts form a "block" that we must compare with that bottom text.

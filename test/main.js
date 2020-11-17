@@ -7,7 +7,7 @@ const spanPrefixes = { main: 'word-main', rashi: 'word-rashi', tosafot: 'word-to
 
 let tractate = 'Eruvin';
 let daf = 30; //Set What daf you want
-let amud = 'b'; // Set what amud you want, a or b
+let amud = 'b'; // Set what amud you want, a or bd
 let hebrewRef = '';
 let next = []; //tractate, daf, amud; e.g., ['Eruvin', '13', a']
 let prev = []; //tractate, daf, amud

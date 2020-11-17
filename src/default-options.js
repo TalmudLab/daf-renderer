@@ -1,8 +1,8 @@
 const defaultOptions = {
   contentWidth: "500px",
   padding: {
-    vertical: "10px",
-    horizontal: "16px",
+    vertical: "0px",
+    horizontal: "10px",
   },
   halfway: "50%",
   fontFamily: {
@@ -20,8 +20,7 @@ const defaultOptions = {
     modifier: .69
   },
   mainMargin: {
-    start: "22.75%",
-    content: "21%"
+    start: "50%",
   },
 }
 export default defaultOptions;
