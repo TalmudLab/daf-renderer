@@ -26,9 +26,8 @@ const text = (fontSize, fontFamily, lineHeight) => ({
   fontSize,
   lineHeight,
   direction: "rtl",
-  textAlign: "justify"
+  textAlign: "justify",
 });
-
 function calculateStyles (options, spacerHeights, amudB = true) {
   const floats = {
     inner: amudB ? "right" : "left",

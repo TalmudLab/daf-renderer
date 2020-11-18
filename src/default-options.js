@@ -2,7 +2,7 @@ const defaultOptions = {
   contentWidth: "500px",
   padding: {
     vertical: "0px",
-    horizontal: "10px",
+    horizontal: "0px",
   },
   halfway: "50%",
   fontFamily: {
@@ -17,7 +17,6 @@ const defaultOptions = {
   lineHeight: {
     main: "17px",
     side: "14px",
-    modifier: .69
   },
   mainMargin: {
     start: "50%",
