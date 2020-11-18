@@ -7,7 +7,7 @@
   const defaultOptions = {
     contentWidth: "500px",
     padding: {
-      vertical: "0px",
+      vertical: "10px",
       horizontal: "0px",
     },
     halfway: "50%",
@@ -239,7 +239,7 @@
     const stairHeight = stair.area / stair.width;
 
     if (blockHeight < stairHeight) {
-      console.log(`Stairs, ${stair} is the stair`);
+      console.log(`Stairs, ${stair.name} is the stair`);
       // This function gets rid of extra space that is introduced by padding
       const lilArea = (height1, height2, horizPadding) => (horizPadding) * (height1 - height2); //TODO: draw a picture
       const smallest = perHeight[0];
