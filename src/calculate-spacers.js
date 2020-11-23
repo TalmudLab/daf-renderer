@@ -41,7 +41,7 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
 
   const midWidth = Number(parsedOptions.width * parsedOptions.mainMargin.start) - 2*parsedOptions.padding.horizontal; //main middle strip
   const topWidth = Number(parsedOptions.width * parsedOptions.halfway) - parsedOptions.padding.horizontal; //each commentary top
-  const sideWidth = Number((parsedOptions.width - midWidth)/2) //each commentary widths, dont include padding
+  const sideWidth = Number((parsedOptions.width - midWidth - 2 * parsedOptions.padding.horizontal)/2) //each commentary widths, dont include padding, so need to keep it constant
 
   const sideModifier = 1.13 //These are experimentally derived numbers based on the error of calculate Area
   const mainModifier = 0.95 //These are experimentally derived numbers based on the error of calculate Area
@@ -92,7 +92,8 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
 
   const perHeight = Array.from(texts).sort( (a,b) => a.height - b.height);
   const perArea = Array.from(texts).sort ( (a,b) => a.area - b.area );
- 
+  console.log(perHeight[0])
+
   //There are Three Main Types of Case:
   //Double-wrap: The main text being the smallest and commentaries wrapping around it
   //Stairs: The main text wrapping around one, but the other wrapping around it
@@ -140,9 +141,8 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
     // This function gets rid of extra space that is introduced by padding
     const lilArea = (height1, height2, horizPadding) => (horizPadding) * (height1 - height2); //TODO: draw a picture
     const smallest = perHeight[0];
-
+    console.log(smallest.height)
     spacerHeights[smallest.name] = smallest.height;
-    // This is just a temporary (??) fix for the spacing issue and well make it better later
     spacerHeights[stair.name] = (blockArea - lilArea(blockHeight, spacerHeights[smallest.name], parsedOptions.padding.horizontal)) / blockWidth;
     return spacerHeights
   }
