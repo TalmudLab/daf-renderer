@@ -7,8 +7,8 @@
   const defaultOptions = {
     contentWidth: "500px",
     padding: {
-      vertical: "10px",
-      horizontal: "16px",
+      vertical: "0px",
+      horizontal: "40px",
     },
     halfway: "50%",
     fontFamily: {
@@ -23,11 +23,9 @@
     lineHeight: {
       main: "17px",
       side: "14px",
-      modifier: .69
     },
     mainMargin: {
-      start: "22.75%",
-      content: "21%"
+      start: "50%",
     },
   };
 
@@ -59,16 +57,18 @@
     fontSize,
     lineHeight,
     direction: "rtl",
-    textAlign: "justify"
+    textAlign: "justify",
   });
-
   function calculateStyles (options, spacerHeights, amudB = true) {
     const floats = {
       inner: amudB ? "right" : "left",
       outer: amudB ? "left" : "right"
     };
-    const halfwayMid = parseInt(options.mainMargin.start) + parseInt(options.halfway) + "%";
-    const sideWidth = parseInt(options.halfway) - parseInt(options.mainMargin.start) + "%";
+
+
+    const sidePercentVal = ((100 - parseInt(options.mainMargin.start))/2);
+    const sidePercent = sidePercentVal + "%"; // This is the percentage of the width for one commentary
+    const remainderPercent = 100 - sidePercentVal + "%"; // This is the remainder of percentage of the width, side and remainder should add up to 100
 
     const addHorizMargins = style => Object.assign(style,horizPaddingMargins(parseInt(options.padding.horizontal)));
     const addMarginTop = style => Object.assign(style, {marginTop: options.padding.vertical});
@@ -76,14 +76,14 @@
 
     const sideSpacers = side => ({
       start: addHorizMargins(spacer(options.halfway, floats[side], spacerHeights.start)),
-      mid: addMarginTop(addMarginBottom(spacer(halfwayMid, floats[side], spacerHeights[side]))),
+      mid: addMarginTop(addMarginBottom(spacer(remainderPercent, floats[side], spacerHeights[side]))),
       end: addHorizMargins(spacer(options.halfway, floats[side], spacerHeights.end))
     });
 
     const mainSpacers = {
       start: addHorizMargins(mainSpacerStart(options.contentWidth, spacerHeights.start)),
-      inner: addMarginBottom(addHorizMargins(spacer(sideWidth, floats.outer, spacerHeights.inner))),
-      outer: addMarginBottom(addHorizMargins(spacer(sideWidth, floats.inner, spacerHeights.outer))),
+      inner: addMarginBottom(addHorizMargins(spacer(sidePercent, floats.outer, spacerHeights.inner))),
+      outer: addMarginBottom(addHorizMargins(spacer(sidePercent, floats.inner, spacerHeights.outer))),
     };
     return {
       container: container(options.contentWidth),
@@ -102,22 +102,22 @@
     }
   }
 
-  function roundLine(height, lineHeight, modifier){
-    const actualLineHeight = modifier * lineHeight;
-    const numLines = Math.ceil(height/(actualLineHeight));
-    return numLines * (actualLineHeight);
-  }
-
   function getAreaOfText(text, font, fs, width, lh, dummy) {
     let testDiv = document.createElement("div");
     testDiv.style.font = String(fs) + "px " + String(font);
     testDiv.style.width = String(width) + "px";
+    // testDiv.style.height = "100%"
     testDiv.style.lineHeight = String(lh) + "px";
     testDiv.innerHTML = text;
+    // testDiv.style.textAlign = "justify";
     dummy.append(testDiv);
-    let test_area = Number(testDiv.offsetHeight * testDiv.offsetWidth);
+    // console.log("Hello");
+    // console.log(testDiv.clientHeight, testDiv.clientWidth)
+
+    let test_area = Number(testDiv.clientHeight * testDiv.clientWidth);
     testDiv.remove();
     return test_area;
+
   }
 
   function calculateSpacers(mainText, innerText, outerText, options, dummy) {
@@ -136,7 +136,6 @@
       lineHeight: {
         main: parseFloat(options.lineHeight.main),
         side: parseFloat(options.lineHeight.side),
-        modifier: options.lineHeight.modifier,
       },
       mainMargin: {
         start: 0.01 * parseFloat(options.mainMargin.start),
@@ -144,17 +143,26 @@
       }
     };
 
-    const midWidth = Number(2*parsedOptions.width * parsedOptions.mainMargin.start); //main middle strip
-    const topWidth = Number(parsedOptions.width * parsedOptions.halfway); //each commentary top
-    const sideWidth = Number((parsedOptions.width - midWidth)/2); //each commentary widths
+    const midWidth = Number(parsedOptions.width * parsedOptions.mainMargin.start) - 2*parsedOptions.padding.horizontal; //main middle strip
+    const topWidth = Number(parsedOptions.width * parsedOptions.halfway) - parsedOptions.padding.horizontal; //each commentary top
+    const sideWidth = Number((parsedOptions.width - midWidth - 2 * parsedOptions.padding.horizontal)/2); //each commentary widths, dont include padding, so need to keep it constant
 
+    const sideModifier = 1.13; //These are experimentally derived numbers based on the error of calculate Area
+    const mainModifier = 0.95; //These are experimentally derived numbers based on the error of calculate Area
+
+    const paddingAreas = {
+      name: "paddingAreas",
+      horizontalSide: sideWidth * parsedOptions.padding.vertical,
+    };
+
+    console.log(topWidth);
     const adjustCommentaryArea = (area, lineHeight) => area - (4 * lineHeight * topWidth); //remove area of top 4 lines
     const main = {
       name: "main",
       width: midWidth,
       text: mainText,
       lineHeight: parsedOptions.lineHeight.main,
-      area: getAreaOfText(mainText, parsedOptions.fontFamily.main, parsedOptions.fontSize.main, midWidth, parsedOptions.lineHeight.main, dummy),
+      area: getAreaOfText(mainText, parsedOptions.fontFamily.main, parsedOptions.fontSize.main, midWidth, parsedOptions.lineHeight.main, dummy) * mainModifier,
       length: null,
       height: null,
     };
@@ -164,9 +172,9 @@
       text: outerText,
       lineHeight: parsedOptions.lineHeight.side,
       area: adjustCommentaryArea(
-        getAreaOfText(outerText, parsedOptions.fontFamily.outer, parsedOptions.fontSize.side, sideWidth, parsedOptions.lineHeight.side, dummy),
+        getAreaOfText(outerText, parsedOptions.fontFamily.outer, parsedOptions.fontSize.side, sideWidth, parsedOptions.lineHeight.side, dummy) * sideModifier,
         parsedOptions.lineHeight.side
-      ),
+      ) - paddingAreas.horizontalSide,
       length: null,
       height: null,
     };
@@ -176,18 +184,19 @@
       text: innerText,
       lineHeight: parsedOptions.lineHeight.side,
       area: adjustCommentaryArea(
-        getAreaOfText(innerText, parsedOptions.fontFamily.inner, parsedOptions.fontSize.side, sideWidth, parsedOptions.lineHeight.side, dummy),
+        getAreaOfText(innerText, parsedOptions.fontFamily.inner, parsedOptions.fontSize.side, sideWidth, parsedOptions.lineHeight.side, dummy) *sideModifier,
         parsedOptions.lineHeight.side
-      ),
+      ) - paddingAreas.horizontalSide,
       length: null,
       height: null,
     };
+
     const texts = [main, outer, inner];
-    texts.forEach (text => text.length = text.area / text.lineHeight);
     texts.forEach (text => text.height = text.area / text.width);
 
-    const perLength = texts.sort( (a,b) => a.length - b.length);
-    const perArea = texts.sort ( (a,b) => a.area - b.area );
+    const perHeight = Array.from(texts).sort( (a,b) => a.height - b.height);
+    const perArea = Array.from(texts).sort ( (a,b) => a.area - b.area );
+    console.log(perHeight[0]);
 
     //There are Three Main Types of Case:
     //Double-wrap: The main text being the smallest and commentaries wrapping around it
@@ -196,10 +205,10 @@
 
     //Main Text is Smallest: Double-Wrap
     //Main Text being Middle: Stairs
-    //Main Text Being Largest: Double-Extendk
+    //Main Text Being Largest: Double-Extend
 
     //First we need to check we have enough commentary to fill the first four lines
-    if (inner.length <= 0 && outer.length <= 0){
+    if (inner.height <= 0 && outer.height <= 0){
       console.error("Not Enough Commentary");
       return Error("Not enough commentary");
     }
@@ -211,43 +220,39 @@
     };
 
     //If Double=Wrap
-    if (perLength[0].name === "main"){
-      console.log("Double-Wrap");
-      spacerHeights.inner = roundLine(main.height + main.lineHeight, main.lineHeight)
-        + parsedOptions.padding.vertical; //We cheated a bit here by adding an extra line as a buffer, dont know why its needed...
+    if (perHeight[0].name === "main"){
+      console.log("Double-Wrap"); 
+      spacerHeights.inner = main.area/midWidth;
       spacerHeights.outer = spacerHeights.inner;
-      const ghostHeight = perLength[1].height;
-      const bottomGhostHeight = (ghostHeight - spacerHeights.inner);
-      const bottomChunk = bottomGhostHeight * sideWidth; //area
-      const bottomHeight = bottomChunk / topWidth; //also the footer width in this case!
-      spacerHeights.end = roundLine(bottomHeight, inner.lineHeight, parsedOptions.lineHeight.modifier) +
-        parsedOptions.padding.vertical;  //push the main text up a bit more for the space where the next page's first word would go
+      
+      const sideArea = spacerHeights.inner * sideWidth + paddingAreas.horizontalSide;
+      const bottomChunk = perHeight[1].area - sideArea;
+      const bottomHeight = bottomChunk / topWidth; 
+      spacerHeights.end = bottomHeight;
       return spacerHeights;
     }
     //If Stairs, there's one text at the bottom. We will call it THE stair. The remaining two texts form a "block" that we must compare with that bottom text.
-    const blockArea = (main.area + perLength[0].area);
+    const blockArea = (main.area + perHeight[0].area);
     const blockWidth = midWidth + sideWidth;
     const blockHeight = blockArea / blockWidth;
 
-    const stair = (perLength[1].name == "main") ? perLength[2] : perLength[1];
+    const stair = (perHeight[1].name == "main") ? perHeight[2] : perHeight[1];
     const stairHeight = stair.area / stair.width;
 
     if (blockHeight < stairHeight) {
-      console.log(`Stairs, ${stair} is the stair`);
+      console.log(`Stairs, ${stair.name} is the stair`);
       // This function gets rid of extra space that is introduced by padding
-      const lilArea = (height1, height2, horizPadding) => (horizPadding / 2) * (height1 - height2); //TODO: draw a picture
-      const smallest = perLength[0];
-
-      spacerHeights[smallest.name] = roundLine(smallest.height, smallest.lineHeight, parsedOptions.lineHeight.modifier);
-      const temp = roundLine(blockHeight, main.lineHeight, parsedOptions.lineHeight.modifier) - 100*parsedOptions.padding.vertical; //it's subtracting height. TODO: make this make sense
-      // This is just a temporary (??) fix for the spacing issue and well make it better later
-      spacerHeights[stair.name] = (blockArea - lilArea(temp, spacerHeights[smallest.name], parsedOptions.padding.horizontal)) / blockWidth;
+      const lilArea = (height1, height2, horizPadding) => (horizPadding) * (height1 - height2); //TODO: draw a picture
+      const smallest = perHeight[0];
+      console.log(smallest.height);
+      spacerHeights[smallest.name] = smallest.height;
+      spacerHeights[stair.name] = (blockArea - lilArea(blockHeight, spacerHeights[smallest.name], parsedOptions.padding.horizontal)) / blockWidth;
       return spacerHeights
     }
     //If Double Extend
     console.log("Double-Extend");
-    spacerHeights.inner = roundLine(inner.height, inner.lineHeight, parsedOptions.lineHeight.modifier);
-    spacerHeights.outer = roundLine(outer.height, outer.lineHeight, parsedOptions.lineHeight.modifier);
+    spacerHeights.inner = inner.height;
+    spacerHeights.outer = outer.height;
 
     return spacerHeights
   }

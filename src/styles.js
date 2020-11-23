@@ -26,16 +26,18 @@ const text = (fontSize, fontFamily, lineHeight) => ({
   fontSize,
   lineHeight,
   direction: "rtl",
-  textAlign: "justify"
+  textAlign: "justify",
 });
-
 function calculateStyles (options, spacerHeights, amudB = true) {
   const floats = {
     inner: amudB ? "right" : "left",
     outer: amudB ? "left" : "right"
   }
-  const halfwayMid = parseInt(options.mainMargin.start) + parseInt(options.halfway) + "%";
-  const sideWidth = parseInt(options.halfway) - parseInt(options.mainMargin.start) + "%";
+
+
+  const sidePercentVal = ((100 - parseInt(options.mainMargin.start))/2);
+  const sidePercent = sidePercentVal + "%"; // This is the percentage of the width for one commentary
+  const remainderPercent = 100 - sidePercentVal + "%"; // This is the remainder of percentage of the width, side and remainder should add up to 100
 
   const addHorizMargins = style => Object.assign(style,horizPaddingMargins(parseInt(options.padding.horizontal)));
   const addMarginTop = style => Object.assign(style, {marginTop: options.padding.vertical});
@@ -43,14 +45,14 @@ function calculateStyles (options, spacerHeights, amudB = true) {
 
   const sideSpacers = side => ({
     start: addHorizMargins(spacer(options.halfway, floats[side], spacerHeights.start)),
-    mid: addMarginTop(addMarginBottom(spacer(halfwayMid, floats[side], spacerHeights[side]))),
+    mid: addMarginTop(addMarginBottom(spacer(remainderPercent, floats[side], spacerHeights[side]))),
     end: addHorizMargins(spacer(options.halfway, floats[side], spacerHeights.end))
   });
 
   const mainSpacers = {
     start: addHorizMargins(mainSpacerStart(options.contentWidth, spacerHeights.start)),
-    inner: addMarginBottom(addHorizMargins(spacer(sideWidth, floats.outer, spacerHeights.inner))),
-    outer: addMarginBottom(addHorizMargins(spacer(sideWidth, floats.inner, spacerHeights.outer))),
+    inner: addMarginBottom(addHorizMargins(spacer(sidePercent, floats.outer, spacerHeights.inner))),
+    outer: addMarginBottom(addHorizMargins(spacer(sidePercent, floats.inner, spacerHeights.outer))),
   }
   return {
     container: container(options.contentWidth),
