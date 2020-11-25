@@ -5,10 +5,10 @@
 }(this, (function () { 'use strict';
 
   const defaultOptions = {
-    contentWidth: "500px",
+    contentWidth: "600px",
     padding: {
-      vertical: "0px",
-      horizontal: "40px",
+      vertical: "16px",
+      horizontal: "16px",
     },
     halfway: "50%",
     fontFamily: {
