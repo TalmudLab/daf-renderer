@@ -1,19 +1,14 @@
 function getAreaOfText(text, font, fs, width, lh, dummy) {
   let testDiv = document.createElement("div");
   testDiv.style.font = String(fs) + "px " + String(font);
-  testDiv.style.width = String(width) + "px";
-  // testDiv.style.height = "100%"
+  testDiv.style.width = String(width) + "px"; //You can remove this, but it may introduce unforseen problems
   testDiv.style.lineHeight = String(lh) + "px";
   testDiv.innerHTML = text;
-  // testDiv.style.textAlign = "justify";
   dummy.append(testDiv);
-  // console.log("Hello");
   // console.log(testDiv.clientHeight, testDiv.clientWidth)
-
   let test_area = Number(testDiv.clientHeight * testDiv.clientWidth);
   testDiv.remove();
   return test_area;
-
 }
 
 function calculateSpacers(mainText, innerText, outerText, options, dummy) {
@@ -41,24 +36,29 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
 
   const midWidth = Number(parsedOptions.width * parsedOptions.mainMargin.start) - 2*parsedOptions.padding.horizontal; //main middle strip
   const topWidth = Number(parsedOptions.width * parsedOptions.halfway) - parsedOptions.padding.horizontal; //each commentary top
-  const sideWidth = Number((parsedOptions.width - midWidth - 2 * parsedOptions.padding.horizontal)/2) //each commentary widths, dont include padding, so need to keep it constant
+  const sideWidth = Number(parsedOptions.width * (1 - parsedOptions.mainMargin.start)/2) //each commentary widths, dont include padding, sokeep it constant
 
-  const sideModifier = 1.13 //These are experimentally derived numbers based on the error of calculate Area
-  const mainModifier = 0.95 //These are experimentally derived numbers based on the error of calculate Area
+  // These values are unique to the font you are using: 
+  // If you change fonts, you will have to modify these numbers, but the value should always be close to 1.
+  const innerModifier = 1.13 // Rashi font causes a percentage difference error 113% when it comes to browser rendering
+  const outerModifier = 1.13
+  const mainModifier = 0.95 // Vilna font causes a percentage difference error of 95% when it comes to browser rendering
 
+  // We could probably put this somewhere else, it was meant to be a place for all the padding corrections,
+  // but there turned out to only be one
   const paddingAreas = {
     name: "paddingAreas",
     horizontalSide: sideWidth * parsedOptions.padding.vertical,
   }
 
-  console.log(topWidth);
-  const adjustCommentaryArea = (area, lineHeight) => area - (4 * lineHeight * topWidth); //remove area of top 4 lines
+  const adjustCommentaryArea = (area, lineHeight) => area - (4 * lineHeight * topWidth); //remove area of the top 4 lines
   const main = {
     name: "main",
     width: midWidth,
     text: mainText,
     lineHeight: parsedOptions.lineHeight.main,
-    area: getAreaOfText(mainText, parsedOptions.fontFamily.main, parsedOptions.fontSize.main, midWidth, parsedOptions.lineHeight.main, dummy) * mainModifier,
+    area: getAreaOfText(mainText, parsedOptions.fontFamily.main, parsedOptions.fontSize.main, midWidth, parsedOptions.lineHeight.main, dummy) 
+    * mainModifier,
     length: null,
     height: null,
   }
@@ -68,7 +68,8 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
     text: outerText,
     lineHeight: parsedOptions.lineHeight.side,
     area: adjustCommentaryArea(
-      getAreaOfText(outerText, parsedOptions.fontFamily.outer, parsedOptions.fontSize.side, sideWidth, parsedOptions.lineHeight.side, dummy) * sideModifier,
+      getAreaOfText(outerText, parsedOptions.fontFamily.outer, parsedOptions.fontSize.side, sideWidth, parsedOptions.lineHeight.side, dummy) 
+      * outerModifier,
       parsedOptions.lineHeight.side
     ) - paddingAreas.horizontalSide,
     length: null,
@@ -80,7 +81,8 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
     text: innerText,
     lineHeight: parsedOptions.lineHeight.side,
     area: adjustCommentaryArea(
-      getAreaOfText(innerText, parsedOptions.fontFamily.inner, parsedOptions.fontSize.side, sideWidth, parsedOptions.lineHeight.side, dummy) *sideModifier,
+      getAreaOfText(innerText, parsedOptions.fontFamily.inner, parsedOptions.fontSize.side, sideWidth, parsedOptions.lineHeight.side, dummy) 
+      * innerModifier,
       parsedOptions.lineHeight.side
     ) - paddingAreas.horizontalSide,
     length: null,
@@ -91,13 +93,11 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
   texts.forEach (text => text.height = text.area / text.width);
 
   const perHeight = Array.from(texts).sort( (a,b) => a.height - b.height);
-  const perArea = Array.from(texts).sort ( (a,b) => a.area - b.area );
-  console.log(perHeight[0])
 
   //There are Three Main Types of Case:
-  //Double-wrap: The main text being the smallest and commentaries wrapping around it
+  //Double-Wrap: The main text being the smallest and commentaries wrapping around it
   //Stairs: The main text wrapping around one, but the other wrapping around it
-  //Doublle-Extend: The main text wrapping around both commentaries
+  //Double-Extend: The main text wrapping around both commentaries
 
   //Main Text is Smallest: Double-Wrap
   //Main Text being Middle: Stairs
@@ -110,7 +110,7 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
   };
 
   const spacerHeights = {
-    start: 4 * parsedOptions.lineHeight.side,
+    start: 4 * parsedOptions.lineHeight.side, // For Tzurat Hadaf this will always be the same
     inner: null,
     outer: null,
     end: 0,
@@ -118,7 +118,7 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
 
   //If Double=Wrap
   if (perHeight[0].name === "main"){
-    console.log("Double-Wrap"); 
+    // console.log("Double-Wrap"); 
     spacerHeights.inner = main.area/midWidth;
     spacerHeights.outer = spacerHeights.inner;
     
@@ -128,7 +128,8 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
     spacerHeights.end = bottomHeight;
     return spacerHeights;
   }
-  //If Stairs, there's one text at the bottom. We will call it THE stair. The remaining two texts form a "block" that we must compare with that bottom text.
+  // If Stairs, there's one text at the bottom. We will call it THE stair. 
+  // The remaining two texts form a "block" that we must compare with that bottom text.
   const blockArea = (main.area + perHeight[0].area);
   const blockWidth = midWidth + sideWidth;
   const blockHeight = blockArea / blockWidth;
@@ -138,8 +139,8 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
 
   if (blockHeight < stairHeight) {
     console.log(`Stairs, ${stair.name} is the stair`);
-    // This function gets rid of extra space that is introduced by padding
-    const lilArea = (height1, height2, horizPadding) => (horizPadding) * (height1 - height2); //TODO: draw a picture
+    // This function accounts for extra space that is introduced by padding
+    const lilArea = (height1, height2, horizPadding) => (horizPadding) * (height1 - height2);
     const smallest = perHeight[0];
     console.log(smallest.height)
     spacerHeights[smallest.name] = smallest.height;
