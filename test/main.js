@@ -6,8 +6,8 @@ const charIndexToSpan = { main: [], rashi: [], tosafot: []} // set when getSpanB
 const spanPrefixes = { main: 'word-main', rashi: 'word-rashi', tosafot: 'word-tosafot', sentence: 'sentence-main' };
 
 let tractate = 'Brachot';
-let daf = 46; //Set What daf you want
-let amud = 'a'; // Set what amud you want, a or bd
+let daf = 42; //Set What daf you want
+let amud = 'b'; // Set what amud you want, a or bd
 let hebrewRef = '';
 let next = []; //tractate, daf, amud; e.g., ['Eruvin', '13', a']
 let prev = []; //tractate, daf, amud

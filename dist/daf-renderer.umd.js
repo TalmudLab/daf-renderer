@@ -258,10 +258,20 @@
     return spacerHeights
   }
 
-  function div (parent) {
-    const newEl = document.createElement("div");
+  function el (tag, parent) {
+    const newEl = document.createElement(tag);
     if (parent) parent.append(newEl);
     return newEl;
+  }
+
+  function div (parent) {
+    return el("div", parent);
+  }
+
+  function textSpan (parent) {
+    const span = el("span", parent);
+    applyStyles(span, {"pointer-events": "auto"});
+    return span;
   }
 
   function applyStyles(el, styleObj) {
@@ -310,6 +320,12 @@
       }
     };
 
+    const textSpans = {
+      main: textSpan(containers.main.text),
+      inner: textSpan(containers.inner.text),
+      outer: textSpan(containers.outer.text)
+    };
+
     return {
       containers,
       options: JSON.parse(JSON.stringify(options)), //TODO: faster clone
@@ -322,27 +338,27 @@
       innerRight: true,
       render (mainText, innerText, outerText, amud = "a") {
         this.innerRight = amud == "b";
-        this.spacerHeights = calculateSpacers(mainText, innerText, outerText, options, this.containers.dummy);
+        this.spacerHeights = calculateSpacers(mainText, innerText, outerText, options, containers.dummy);
         this.updateStyles();
-        this.containers.main.text.innerHTML = mainText;
-        this.containers.inner.text.innerHTML = innerText;
-        this.containers.outer.text.innerHTML = outerText;
+        textSpans.main.innerHTML = mainText;
+        textSpans.inner.innerHTML = innerText;
+        textSpans.outer.innerHTML = outerText;
       },
       updateStyles () {
         const styles = calculateStyles(this.options, this.spacerHeights, this.innerRight);
-        [this.containers.el, this.containers.outer.el, this.containers.inner.el,
-          this.containers.main.el].forEach(el =>
+        [containers.el, containers.outer.el, containers.inner.el,
+          containers.main.el].forEach(el =>
           applyStyles(el, styles.container)
         );
         ["start", "mid", "end"].forEach(key => {
-          applyStyles(this.containers.outer.spacers[key], styles.outer.spacers[key]);
-          applyStyles(this.containers.inner.spacers[key], styles.inner.spacers[key]);
+          applyStyles(containers.outer.spacers[key], styles.outer.spacers[key]);
+          applyStyles(containers.inner.spacers[key], styles.inner.spacers[key]);
         });
         ["start", "inner", "outer"].forEach(key =>
-          applyStyles(this.containers.main.spacers[key], styles.main.spacers[key])
+          applyStyles(containers.main.spacers[key], styles.main.spacers[key])
         );
         ["outer", "inner", "main"].forEach(container => {
-          applyStyles(this.containers[container].text, styles[container].text);
+          applyStyles(containers[container].text, styles[container].text);
         });
       },
     }
