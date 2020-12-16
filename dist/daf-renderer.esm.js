@@ -1,7 +1,7 @@
 const defaultOptions = {
   contentWidth: "600px",
   padding: {
-    vertical: "16px",
+    vertical: "10px",
     horizontal: "16px",
   },
   halfway: "50%",
@@ -22,79 +22,6 @@ const defaultOptions = {
     start: "50%",
   },
 };
-
-const container = width => ({
-  position: "absolute",
-  width: width,
-  pointerEvents: "none",
-  boxSizing: "content-box"
-});
-
-const horizPaddingMargins = horizPadding => ({
-    marginLeft: `${horizPadding * 0.5}px`,
-    marginRight: `${horizPadding * 0.5}px`,
-});
-
-const spacer = (halfway, float, spacerHeight) => ({
-  width: halfway,
-  float: float,
-  height: `${spacerHeight}px`
-});
-
-const mainSpacerStart = (width, spacerHeight) => ({
-  width: width,
-  height: `${spacerHeight}px`
-});
-
-const text = (fontSize, fontFamily, lineHeight) => ({
-  fontFamily,
-  fontSize,
-  lineHeight,
-  direction: "rtl",
-  textAlign: "justify",
-});
-function calculateStyles (options, spacerHeights, amudB = true) {
-  const floats = {
-    inner: amudB ? "right" : "left",
-    outer: amudB ? "left" : "right"
-  };
-
-
-  const sidePercentVal = ((100 - parseInt(options.mainMargin.start))/2);
-  const sidePercent = sidePercentVal + "%"; // This is the percentage of the width for one commentary
-  const remainderPercent = 100 - sidePercentVal + "%"; // This is the remainder of percentage of the width, side and remainder should add up to 100
-
-  const addHorizMargins = style => Object.assign(style,horizPaddingMargins(parseInt(options.padding.horizontal)));
-  const addMarginTop = style => Object.assign(style, {marginTop: options.padding.vertical});
-  const addMarginBottom = style => Object.assign(style, {marginBottom: `calc(2 * ${options.padding.vertical})`});
-
-  const sideSpacers = side => ({
-    start: addHorizMargins(spacer(options.halfway, floats[side], spacerHeights.start)),
-    mid: addMarginTop(addMarginBottom(spacer(remainderPercent, floats[side], spacerHeights[side]))),
-    end: addHorizMargins(spacer(options.halfway, floats[side], spacerHeights.end))
-  });
-
-  const mainSpacers = {
-    start: addHorizMargins(mainSpacerStart(options.contentWidth, spacerHeights.start)),
-    inner: addMarginBottom(addHorizMargins(spacer(sidePercent, floats.outer, spacerHeights.inner))),
-    outer: addMarginBottom(addHorizMargins(spacer(sidePercent, floats.inner, spacerHeights.outer))),
-  };
-  return {
-    container: container(options.contentWidth),
-    outer: {
-      spacers: sideSpacers("outer"),
-      text: text(options.fontSize.side, options.fontFamily.outer, options.lineHeight.side)
-    },
-    inner: {
-      spacers: sideSpacers("inner"),
-      text: text(options.fontSize.side, options.fontFamily.inner, options.lineHeight.side)
-    },
-    main: {
-      spacers: mainSpacers,
-      text: addMarginTop(text(options.fontSize.main, options.fontFamily.main, options.lineHeight.main))
-    }
-  }
-}
 
 function getAreaOfText(text, font, fs, width, lh, dummy) {
   let testDiv = document.createElement("div");
@@ -138,9 +65,9 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
 
   // These values are unique to the font you are using: 
   // If you change fonts, you will have to modify these numbers, but the value should always be close to 1.
-  const innerModifier = 1.13; // Rashi font causes a percentage difference error 113% when it comes to browser rendering
-  const outerModifier = 1.13;
-  const mainModifier = 0.95; // Vilna font causes a percentage difference error of 95% when it comes to browser rendering
+  const innerModifier = 1; // Rashi font causes a percentage difference error 113% when it comes to browser rendering
+  const outerModifier = 1;
+  const mainModifier = 1; // Vilna font causes a percentage difference error of 95% when it comes to browser rendering
 
   // We could probably put this somewhere else, it was meant to be a place for all the padding corrections,
   // but there turned out to only be one
@@ -252,6 +179,87 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
   return spacerHeights
 }
 
+function styleInject(css, ref) {
+  if ( ref === void 0 ) ref = {};
+  var insertAt = ref.insertAt;
+
+  if (!css || typeof document === 'undefined') { return; }
+
+  var head = document.head || document.getElementsByTagName('head')[0];
+  var style = document.createElement('style');
+  style.type = 'text/css';
+
+  if (insertAt === 'top') {
+    if (head.firstChild) {
+      head.insertBefore(style, head.firstChild);
+    } else {
+      head.appendChild(style);
+    }
+  } else {
+    head.appendChild(style);
+  }
+
+  if (style.styleSheet) {
+    style.styleSheet.cssText = css;
+  } else {
+    style.appendChild(document.createTextNode(css));
+  }
+}
+
+var css_248z = "/*Keep this as the first rule in the file*/\n.styles_dafRoot__1QUlM {\n  --contentWidth: 0px;\n  --padding-horizontal: 0px;\n  --padding-vertical: 0px;\n  --halfway: 50%;\n\n  --fontFamily-inner: \"Rashi\";\n  --fontFamily-outer: \"Tosafot\";\n  --fontFamily-main: \"Vilna\";\n\n  --fontSize-main: 0px;\n  --fontSize-side: 0px;\n\n  --lineHeight-main: 0px;\n  --lineHeight-side: 0px;\n\n  --mainMargin-start: 50%;\n  --sidePercent: calc(calc(100% - var(--mainMargin-start))/2);\n  --remainderPercent: calc(100% - var(--sidePercent));\n\n  --innerFloat: left;\n  --outerFloat: right;\n\n  --spacerHeights-start: 0px;\n  --spacerHeights-outer: 0px;\n  --spacerHeights-inner: 0px;\n  --spacerHeights-end: 0px;\n\n}\n\n/*Containers*/\n.styles_dafRoot__1QUlM, .styles_outer__abXQX, .styles_inner__x-amJ, .styles_main__BHTRd {\n  position: absolute;\n  width: var(--contentWidth);\n  pointer-events: none;\n  box-sizing: content-box;\n}\n\n/*Float changes with amud*/\n.styles_inner__x-amJ .styles_spacer__2T7TS, .styles_main__BHTRd .styles_spacer__2T7TS.styles_outerMid__2WtcY{\n  float: var(--innerFloat);\n}\n\n.styles_outer__abXQX .styles_spacer__2T7TS, .styles_main__BHTRd .styles_spacer__2T7TS.styles_innerMid__27MCi{\n  float: var(--outerFloat);\n}\n\n\n/*Spacer widths determined by options*/\n.styles_inner__x-amJ .styles_spacer__2T7TS, .styles_outer__abXQX .styles_spacer__2T7TS {\n  width: var(--halfway);\n}\n.styles_spacer__2T7TS.styles_mid__dcgUr {\n  width: var(--remainderPercent);\n}\n\n.styles_main__BHTRd .styles_spacer__2T7TS.styles_start__AwkfY {\n  width: var(--contentWidth);\n}\n.styles_main__BHTRd .styles_spacer__2T7TS.styles_innerMid__27MCi, .styles_main__BHTRd .styles_spacer__2T7TS.styles_outerMid__2WtcY {\n  width: var(--sidePercent);\n}\n\n/*Spacer heights determined by algorithm*/\n.styles_spacer__2T7TS.styles_start__AwkfY {\n  height: var(--spacerHeights-start);\n}\n\n.styles_spacer__2T7TS.styles_end__2wr6A {\n  height: var(--spacerHeights-end);\n}\n\n.styles_inner__x-amJ .styles_spacer__2T7TS.styles_mid__dcgUr, .styles_main__BHTRd .styles_spacer__2T7TS.styles_innerMid__27MCi {\n  height: var(--spacerHeights-inner);\n}\n.styles_outer__abXQX .styles_spacer__2T7TS.styles_mid__dcgUr, .styles_main__BHTRd .styles_spacer__2T7TS.styles_outerMid__2WtcY {\n  height: var(--spacerHeights-outer);\n}\n\n/*Margins!*/\n.styles_spacer__2T7TS.styles_start__AwkfY, .styles_spacer__2T7TS.styles_end__2wr6A, .styles_main__BHTRd .styles_spacer__2T7TS.styles_innerMid__27MCi, .styles_main__BHTRd .styles_spacer__2T7TS.styles_outerMid__2WtcY {\n  margin-left: calc(0.5 * var(--padding-horizontal));\n  margin-right: calc(0.5 * var(--padding-horizontal));\n}\n\n.styles_spacer__2T7TS.styles_mid__dcgUr, .styles_main__BHTRd .styles_text__1_7-z {\n  margin-top: var(--padding-vertical);\n}\n\n.styles_spacer__2T7TS.styles_mid__dcgUr, .styles_main__BHTRd .styles_spacer__2T7TS.styles_innerMid__27MCi, .styles_main__BHTRd .styles_spacer__2T7TS.styles_outerMid__2WtcY {\n  margin-bottom: calc(2 * var(--padding-vertical));\n}\n\n\n/*Text*/\n.styles_text__1_7-z {\n  direction: rtl;\n  text-align: justify;\n}\n\n.styles_text__1_7-z span {\n  pointer-events: auto;\n}\n\n.styles_main__BHTRd .styles_text__1_7-z {\n  font-family: var(--fontFamily-main);\n  font-size: var(--fontSize-main);\n  line-height: var(--lineHeight-main);\n}\n\n.styles_inner__x-amJ .styles_text__1_7-z, .styles_outer__abXQX .styles_text__1_7-z {\n  font-size: var(--fontSize-side);\n  line-height: var(--lineHeight-side);\n}\n\n.styles_inner__x-amJ .styles_text__1_7-z {\n  font-family: var(--fontFamily-inner);\n}\n\n.styles_outer__abXQX .styles_text__1_7-z {\n  font-family: var(--fontFamily-outer);\n}\n";
+var classes = {"dafRoot":"styles_dafRoot__1QUlM","outer":"styles_outer__abXQX","inner":"styles_inner__x-amJ","main":"styles_main__BHTRd","spacer":"styles_spacer__2T7TS","outerMid":"styles_outerMid__2WtcY","innerMid":"styles_innerMid__27MCi","mid":"styles_mid__dcgUr","start":"styles_start__AwkfY","end":"styles_end__2wr6A","text":"styles_text__1_7-z"};
+styleInject(css_248z);
+
+function setVars(object, prefix = "") {
+  const varsRule = Array.prototype.find.call
+  (document.styleSheets, sheet => sheet.rules[0].selectorText == `.${classes.dafRoot}`)
+    .rules[0];
+
+  Object.entries(object).forEach(([key, value]) => {
+    if (typeof value == "string") {
+      varsRule.style.setProperty(`--${prefix}${key}`, value);
+    } else if (typeof value == "object") {
+      setVars(value, `${key}-`);
+    }
+  });
+}
+
+
+var styleManager = {
+  applyClasses(containers) {
+    const add = (className, ...elements) => elements.forEach(el => el.classList.add(className));
+    //containers
+    add(classes.dafRoot, containers.el);
+    ["main", "inner", "outer"].forEach(containerName => add(classes[containerName], containers[containerName].el));
+    //spacers
+    const allThree = [containers.outer, containers.inner, containers.main];
+    add(classes.spacer, ...allThree.flatMap(c => Object.values(c.spacers)));
+    add(classes.start, ...allThree.map(c => c.spacers.start));
+    ["end", "mid"].forEach(spacer => add(classes[spacer], containers.outer.spacers[spacer], containers.inner.spacers[spacer]));
+    add(classes.innerMid, containers.main.spacers.inner);
+    add(classes.outerMid, containers.main.spacers.outer);
+    //text containers
+    add(classes.text, ...allThree.map(c => c.text));
+  },
+  updateOptionsVars(options) {
+    setVars(options);
+  },
+  updateSpacersVars(spacerHeights) {
+    setVars(
+      Object.fromEntries(
+        Object.entries(spacerHeights).map(([key, value]) => ([key, String(value) + 'px']))
+      ),
+      "spacerHeights-"
+    );
+  },
+  updateIsAmudB(amudB) {
+    setVars({
+      innerFloat: amudB ? "right" : "left",
+      outerFloat: amudB ? "left" : "right"
+    });
+  }
+};
+
 function el (tag, parent) {
   const newEl = document.createElement(tag);
   if (parent) parent.append(newEl);
@@ -262,14 +270,8 @@ function div (parent) {
   return el("div", parent);
 }
 
-function textSpan (parent) {
-  const span = el("span", parent);
-  applyStyles(span, {"pointer-events": "auto"});
-  return span;
-}
-
-function applyStyles(el, styleObj) {
-  Object.assign(el.style, styleObj);
+function span (parent) {
+  return el("span", parent);
 }
 
 function renderer (el, options = defaultOptions) {
@@ -315,45 +317,36 @@ function renderer (el, options = defaultOptions) {
   };
 
   const textSpans = {
-    main: textSpan(containers.main.text),
-    inner: textSpan(containers.inner.text),
-    outer: textSpan(containers.outer.text)
+    main:  span(containers.main.text),
+    inner:  span(containers.inner.text),
+    outer:  span(containers.outer.text)
   };
+
+  const clonedOptions = JSON.parse(JSON.stringify(options)); //TODO: faster clone?
+
+  styleManager.applyClasses(containers);
+  styleManager.updateOptionsVars(clonedOptions);
 
   return {
     containers,
-    options: JSON.parse(JSON.stringify(options)), //TODO: faster clone
     spacerHeights: {
       start: 0,
       inner: 0,
       outer: 0,
       end: 0
     },
-    innerRight: true,
-    render (mainText, innerText, outerText, amud = "a") {
-      this.innerRight = amud == "b";
-      this.spacerHeights = calculateSpacers(mainText, innerText, outerText, options, containers.dummy);
-      this.updateStyles();
-      textSpans.main.innerHTML = mainText;
-      textSpans.inner.innerHTML = innerText;
-      textSpans.outer.innerHTML = outerText;
-    },
-    updateStyles () {
-      const styles = calculateStyles(this.options, this.spacerHeights, this.innerRight);
-      [containers.el, containers.outer.el, containers.inner.el,
-        containers.main.el].forEach(el =>
-        applyStyles(el, styles.container)
-      );
-      ["start", "mid", "end"].forEach(key => {
-        applyStyles(containers.outer.spacers[key], styles.outer.spacers[key]);
-        applyStyles(containers.inner.spacers[key], styles.inner.spacers[key]);
-      });
-      ["start", "inner", "outer"].forEach(key =>
-        applyStyles(containers.main.spacers[key], styles.main.spacers[key])
-      );
-      ["outer", "inner", "main"].forEach(container => {
-        applyStyles(containers[container].text, styles[container].text);
-      });
+    amud: "a",
+    render (main, inner, outer, amud = "a") {
+      if (this.amud != amud) {
+        this.amud = amud;
+        styleManager.updateIsAmudB(amud == "b");
+      }
+      this.spacerHeights = calculateSpacers(main, inner, outer, options, containers.dummy);
+      console.dir(this.spacerHeights);
+      styleManager.updateSpacersVars(this.spacerHeights);
+      textSpans.main.innerHTML = main;
+      textSpans.inner.innerHTML = inner;
+      textSpans.outer.innerHTML = outer;
     },
   }
 }
