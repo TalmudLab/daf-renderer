@@ -1,4 +1,5 @@
 # daf-render-lib
+## *IN PROGRESS!*
 A DOM render library for creating Talmud pages on the web.
 
 ## Installation
