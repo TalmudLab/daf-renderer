@@ -24,7 +24,7 @@ function getTexts(tractate, daf, amud) {
         uri2 = 'https://www.sefaria.org/api/texts/' + commentary +'_on_' + tractate + '.' + daf + amud + '.1-100' + '?',
         uri3 = 'https://www.sefaria.org/api/texts/Tosafot_on_' + tractate + '.' + daf + amud + '.1-100' + '?';
 
-    const renderer = dafRenderer("#daf");
+    const renderer = dafRenderer("#daf", { padding: { vertical: "10px"}});
 
     Promise.all([jsonp(uri1), jsonp(uri2), jsonp(uri3)]).then(values => {
 

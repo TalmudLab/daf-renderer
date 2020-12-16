@@ -38,7 +38,8 @@ export default {
   updateSpacersVars(spacerHeights) {
     setVars(
       Object.fromEntries(
-        Object.entries(spacerHeights).map(([key, value]) => ([key, String(value) + 'px']))
+        Object.entries(spacerHeights).map(
+          ([key, value]) => ([key, String(value) + 'px']))
       ),
       "spacerHeights-"
     );
