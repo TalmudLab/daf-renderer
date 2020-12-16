@@ -2,6 +2,7 @@
   "name": "daf-renderer",
   "version": "1.0.0",
   "description": "A browser library that renders text in the format of the Vilna Talmud.",
+  "main": "dist/daf-renderer.umd.js",
   "module": "dist/daf-renderer.esm.js",
   "browser": "dist/daf-renderer.umd.js",
   "scripts": {
