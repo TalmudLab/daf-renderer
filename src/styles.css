@@ -1,0 +1,111 @@
+/*Keep this as the first rule in the file*/
+.dafRoot {
+  --test-variable: 2px;
+  --contentWidth: 0px;
+  --padding-horizontal: 0px;
+  --padding-vertical: 0px;
+  --halfway: 50%;
+
+  --fontFamily-inner: "Rashi";
+  --fontFamily-outer: "Tosafot";
+  --fontFamily-main: "Vilna";
+
+  --fontSize-main: 0px;
+  --fontSize-side: 0px;
+
+  --lineHeight-main: 0px;
+  --lineHeight-side: 0px;
+
+  --innerFloat: left;
+  --outerFloat: right;
+
+  --spacerHeights-start: 0px;
+  --spacerHeights-outer: 0px;
+  --spacerHeights-inner: 0px;
+  --spacerHeights-end: 0px;
+
+  border-bottom: 1px solid black;
+  border-bottom-width: var(--test-variable);
+}
+
+/*Containers*/
+.outer, .inner, .main {
+  position: absolute;
+  width: var(--contentWidth);
+  pointerEvents: none;
+  box-sizing: content-box;
+}
+
+/*Float changes with amud*/
+.inner .spacer {
+  float: var(--innerFloat);
+}
+
+.outer .spacer {
+  float: var(--outerFloat);
+}
+
+/*Spacer widths determined by options*/
+.inner .spacer, .outer .spacer {
+  width: var(--halfway);
+}
+
+.main .spacer.start {
+  width: var(--contentWidth);
+}
+
+/*Spacer heights determined by algorithm*/
+.spacer.start {
+  height: var(--spacerHeights-start);
+}
+
+.spacer.end {
+  height: var(--spacerHeights-end);
+}
+
+.inner .spacer.mid, .main .spacer.inner {
+  height: var(--spacerHeights-inner);
+}
+.outer .spacer.mid .main .spacer.outer {
+  height: var(--spacerHeights-outer)
+}
+
+/*Margins!*/
+.spacer.start, .spacer.end, .main .spacer.inner, .main .spacer.outer {
+  margin-left: calc(0.5 * var(--padding-horizontal));
+  margin-right: calc(0.5 * var(--padding-horizontal));
+}
+
+.spacer.mid {
+  margin-top: var(--padding-vertical);
+}
+
+.spacer.mid, .main .spacer.inner, .main .spacer.outer {
+  margin-bottom: calc(2 * var(--padding-vertical));
+  margin-bottom: calc(2 * var(--padding-vertical));
+}
+
+/*Text*/
+.text {
+  direction: rtl;
+  text-align: justify;
+}
+
+.main .text {
+  font-family: var(--fontFamily-main);
+  font-size: var(--fontSize-main);
+  line-height: var(--lineHeight-main);
+}
+
+.inner .text, .outer .text {
+  font-size: var(--fontSize-side);
+  line-height: var(--lineHeight-side);
+}
+
+.inner .text {
+  font-family: var(--fontFamily-inner);
+}
+
+.inner .text {
+  font-family: var(--fontFamily-outer);
+}
