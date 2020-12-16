@@ -1,7 +1,7 @@
 const defaultOptions = {
   contentWidth: "600px",
   padding: {
-    vertical: "16px",
+    vertical: "10px",
     horizontal: "16px",
   },
   halfway: "50%",
