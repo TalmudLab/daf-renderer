@@ -1,4 +1,4 @@
-import defaultOptions from "./default-options";
+import { defaultOptions, mergeAndClone } from "./options";
 import calculateSpacers from "./calculate-spacers";
 import styleManager from "./style-manager";
 
@@ -16,6 +16,7 @@ function div (parent) {
 function span (parent) {
   return el("span", parent);
 }
+
 
 export default function (el, options = defaultOptions) {
   const root = (typeof el === "string") ? document.querySelector(el) : el;
@@ -65,7 +66,7 @@ export default function (el, options = defaultOptions) {
     outer:  span(containers.outer.text)
   }
 
-  const clonedOptions = JSON.parse(JSON.stringify(options)); //TODO: faster clone?
+  const clonedOptions = mergeAndClone(options, defaultOptions);
 
   styleManager.applyClasses(containers);
   styleManager.updateOptionsVars(clonedOptions);
@@ -84,7 +85,7 @@ export default function (el, options = defaultOptions) {
         this.amud = amud;
         styleManager.updateIsAmudB(amud == "b");
       }
-      this.spacerHeights = calculateSpacers(main, inner, outer, options, containers.dummy);
+      this.spacerHeights = calculateSpacers(main, inner, outer, clonedOptions, containers.dummy);
       console.dir(this.spacerHeights);
       styleManager.updateSpacersVars(this.spacerHeights);
       textSpans.main.innerHTML = main;
