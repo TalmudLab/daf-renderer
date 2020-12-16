@@ -9,5 +9,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Dan Jutan",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "rollup-plugin-postcss": "^4.0.0"
+  },
+  "dependencies": {
+    "postcss": "^8.2.1"
+  }
 }

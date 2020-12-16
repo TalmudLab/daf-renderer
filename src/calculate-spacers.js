@@ -40,9 +40,9 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
 
   // These values are unique to the font you are using: 
   // If you change fonts, you will have to modify these numbers, but the value should always be close to 1.
-  const innerModifier = 1.13 // Rashi font causes a percentage difference error 113% when it comes to browser rendering
-  const outerModifier = 1.13
-  const mainModifier = 0.95 // Vilna font causes a percentage difference error of 95% when it comes to browser rendering
+  const innerModifier = 1 // Rashi font causes a percentage difference error 113% when it comes to browser rendering
+  const outerModifier = 1
+  const mainModifier = 1 // Vilna font causes a percentage difference error of 95% when it comes to browser rendering
 
   // We could probably put this somewhere else, it was meant to be a place for all the padding corrections,
   // but there turned out to only be one
