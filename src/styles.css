@@ -1,6 +1,5 @@
 /*Keep this as the first rule in the file*/
 .dafRoot {
-  --test-variable: 2px;
   --contentWidth: 0px;
   --padding-horizontal: 0px;
   --padding-vertical: 0px;
@@ -16,6 +15,10 @@
   --lineHeight-main: 0px;
   --lineHeight-side: 0px;
 
+  --mainMargin-start: 50%;
+  --sidePercent: calc(calc(100% - var(--mainMargin-start))/2);
+  --remainderPercent: calc(100% - var(--sidePercent));
+
   --innerFloat: left;
   --outerFloat: right;
 
@@ -24,34 +27,39 @@
   --spacerHeights-inner: 0px;
   --spacerHeights-end: 0px;
 
-  border-bottom: 1px solid black;
-  border-bottom-width: var(--test-variable);
 }
 
 /*Containers*/
-.outer, .inner, .main {
+.dafRoot, .outer, .inner, .main {
   position: absolute;
   width: var(--contentWidth);
-  pointerEvents: none;
+  pointer-events: none;
   box-sizing: content-box;
 }
 
 /*Float changes with amud*/
-.inner .spacer {
+.inner .spacer, .main .spacer.outerMid{
   float: var(--innerFloat);
 }
 
-.outer .spacer {
+.outer .spacer, .main .spacer.innerMid{
   float: var(--outerFloat);
 }
+
 
 /*Spacer widths determined by options*/
 .inner .spacer, .outer .spacer {
   width: var(--halfway);
 }
+.spacer.mid {
+  width: var(--remainderPercent);
+}
 
 .main .spacer.start {
   width: var(--contentWidth);
+}
+.main .spacer.innerMid, .main .spacer.outerMid {
+  width: var(--sidePercent);
 }
 
 /*Spacer heights determined by algorithm*/
@@ -63,32 +71,36 @@
   height: var(--spacerHeights-end);
 }
 
-.inner .spacer.mid, .main .spacer.inner {
+.inner .spacer.mid, .main .spacer.innerMid {
   height: var(--spacerHeights-inner);
 }
-.outer .spacer.mid .main .spacer.outer {
-  height: var(--spacerHeights-outer)
+.outer .spacer.mid, .main .spacer.outerMid {
+  height: var(--spacerHeights-outer);
 }
 
 /*Margins!*/
-.spacer.start, .spacer.end, .main .spacer.inner, .main .spacer.outer {
+.spacer.start, .spacer.end, .main .spacer.innerMid, .main .spacer.outerMid {
   margin-left: calc(0.5 * var(--padding-horizontal));
   margin-right: calc(0.5 * var(--padding-horizontal));
 }
 
-.spacer.mid {
+.spacer.mid, .main .text {
   margin-top: var(--padding-vertical);
 }
 
-.spacer.mid, .main .spacer.inner, .main .spacer.outer {
-  margin-bottom: calc(2 * var(--padding-vertical));
+.spacer.mid, .main .spacer.innerMid, .main .spacer.outerMid {
   margin-bottom: calc(2 * var(--padding-vertical));
 }
+
 
 /*Text*/
 .text {
   direction: rtl;
   text-align: justify;
+}
+
+.text span {
+  pointer-events: auto;
 }
 
 .main .text {
@@ -106,6 +118,6 @@
   font-family: var(--fontFamily-inner);
 }
 
-.inner .text {
+.outer .text {
   font-family: var(--fontFamily-outer);
 }
