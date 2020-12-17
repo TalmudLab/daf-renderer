@@ -54,7 +54,7 @@ renderer.render(mainHTML, innerHTML, outerHTML, "b");
 ## How it Works
 
 ### Spacers and the DOM
-The layout of the Talmud is not easily replicated with the box-model of the web. This is because there is no such thing as 'float middle', or any other kind of ability to allow multiple bodies of text to wrap around one another. This limitation was overcome with a new paradigm we call "spacers". Spacers take advantage of the wrap-around principles of 'flow'. When a 'right floated' body of text encounters a 'left floated' element, it will wrap around that element instead of overlapping. Thus, we can make complex shapes out of the text by using multiple 'spacers' to force the text into the shape we want:
+The layout of the Talmud is not easily replicated with the box-model of the web. This is because there is no such thing as *middle* for the CSS [float](https://developer.mozilla.org/en-US/docs/Web/CSS/float) property, or any other kind of ability to allow multiple bodies of text to wrap around one another. This limitation was overcome with a new paradigm we call *spacers*. Spacers take advantage of the wrap-around principles of [flow](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Normal_Flow). When a *right-floated* body of text encounters a *left-floated* element, it will wrap around that element instead of overlapping. Thus, we can make complex shapes out of the text by using multiple spacers to force the text into the shape we want:
 
 ![A picture showing three boxes with text wrapping around them](https://github.com/Jutanium/daf-render-lib/blob/master/Documentation%20Pictures/Spacers.PNG)
 
