@@ -55,9 +55,11 @@ renderer.render(mainHTML, innerHTML, outerHTML, "b");
 
 ### Spacers and the DOM
 The layout of the Talmud is not easily replicated with the box-model of the web. This is because there is no such thing as 'float middle', or any other kind of ability to allow multiple bodies of text to wrap around one another. This limitation was overcome with a new paradigm we call "spacers". Spacers take advantage of the wrap-around principles of 'flow'. When a 'right floated' body of text encounters a 'left floated' element, it will wrap around that element instead of overlapping. Thus, we can make complex shapes out of the text by using multiple 'spacers' to force the text into the shape we want:
+
 ![A picture showing three boxes with text wrapping around them](https://github.com/Jutanium/daf-render-lib/blob/master/Documentation%20Pictures/Spacers.PNG)
 
 If we use three layers stacked on top of each other, we can then recreate the page in its entirety:
+
 ![A picture sketching the spacer over the daf](https://github.com/Jutanium/daf-render-lib/blob/master/Documentation%20Pictures/Spacers%20Together.PNG)
 
 Once we have this structure, where there are three layers each with their own spacers, the only thing left is to calculate the dimensions of these spacers. Specifically, it is important to know their heights (you can actually set thier widths to zero, and rely on floating them left or right). 
