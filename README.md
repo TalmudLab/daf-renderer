@@ -64,9 +64,9 @@ If we use three layers stacked on top of each other, we can then recreate the pa
 ![A picture sketching the spacer over the daf](https://github.com/Jutanium/daf-render-lib/blob/master/Documentation%20Pictures/Spacers%20Together.PNG)
 
 We can see above that there are many spacers, but we only need to worry about three of them. We will define them as such:
-1. Inner Spacer
-2. Outer Spacer
-3. Bottom Spaver
+- Inner Spacer
+- Outer Spacer
+- Bottom Spaver
 
 Once we have this structure, where there are three layers each with their own spacers, the only thing left is to calculate the dimensions of the spacers listed above. Specifically, it is important to know their heights (you can actually set thier widths to zero, and rely on floating them left or right). 
 
@@ -76,9 +76,9 @@ The algorithim has two stages.
 
 In order to understand both stages, we must understand that there are three possible layouts that are possible:
 
-1. Double-Wrap
-2. Stairs
-3. Double-Extend
+- Double-Wrap
+- Stairs
+- Double-Extend
 
 ![A picture depicting all three cases](https://github.com/Jutanium/daf-render-lib/blob/master/Documentation%20Pictures/Three%20Cases.PNG)
 
@@ -86,17 +86,17 @@ In order to understand both stages, we must understand that there are three poss
 
 The first stage of the algorithim determines which layout the current page is. In order to do this there are three-five steps:
 
-- First we calculate the area that each body of text occupies (in terms of px^2).
-- Second we divide the calculated area by each text's respective width to get an expected height.
-- Third we compare these expected heights. If the main text has the smallest height then we know that we are dealing with the case of Double-Wrap.
-  - If the main text is not smallest we then add the areas of the two smallest texts and divide that by their added widths to get a new height.
-  - We then compare the new height to the largest expected height. If the new height is smaller than the largest expected height then we are dealing with the case of Stairs. If not, we are dealing with the case of Double-Extend.
+1. First we calculate the area that each body of text occupies (in terms of px^2).
+2. Second we divide the calculated area by each text's respective width to get an expected height.
+3. Third we compare these expected heights. If the main text has the smallest height then we know that we are dealing with the case of Double-Wrap.
+4. If the main text is not smallest we then add the areas of the two smallest texts and divide that by their added widths to get a new height.
+5. We then compare the new height to the largest expected height. If the new height is smaller than the largest expected height then we are dealing with the case of Stairs. If not, we are dealing with the case of Double-Extend.
 
 The second stage of the algorithim calculates the spacer heights based on the type of layout the page is.
 This stage requires only three things:
-1. The type of layout
-2. The calculated area values from before
-3. The padding values that we can optionally apply
+- The type of layout
+- The calculated area values from before
+- The padding values that we can optionally apply
 
 We will divide the respective calculations into three parts corresponding to the three kinds of layouts:
 
