@@ -67,7 +67,28 @@ Once we have this structure, where there are three layers each with their own sp
 
 
 ### Algorithm
-The alogrithim focuses on calculating the heights of the spacers.
+The algorithim has two stages. 
+
+In order to understand both stages, we must understand that there are three possible layouts that are possible:
+
+1. Double-Wrap
+2. Stairs
+3. Double-Extend
+
+The first stage of the algorithim determines which layout the current page is. In order to do this there are three-five steps:
+
+1. First we calculate the area that each body of text occupies (in terms of px^2).
+2. Second we divide the calculated area by each text's respective width to get an expected height.
+3. Third we compare these expected heights. If the main text has the smallest height then we know that we are dealing with the case of Double-Wrap.
+
+4. If the main text is not smallest we then add the areas of the two smallest texts and divide that by their added widths to get a new height.
+
+5. We then compare the new height to the largest expected height. If the new height is smaller than the largest expected height then we are dealing with the case of Stairs. If not, we are dealing with the case of Double-Extend.
+
+The second stage of the algorithim
+Now that we know which layout we are dealing with we can calculate the spacer heights using only the calculated area values from before and the padding values that we can optionally apply. We will divide the second 
+
+
 
 ## License
   
