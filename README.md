@@ -63,7 +63,12 @@ If we use three layers stacked on top of each other, we can then recreate the pa
 
 ![A picture sketching the spacer over the daf](https://github.com/Jutanium/daf-render-lib/blob/master/Documentation%20Pictures/Spacers%20Together.PNG)
 
-Once we have this structure, where there are three layers each with their own spacers, the only thing left is to calculate the dimensions of these spacers. Specifically, it is important to know their heights (you can actually set thier widths to zero, and rely on floating them left or right). 
+We can see above that there are many spacers, but we only need to worry about three of them. We will define them as such:
+2. Inner Spacer
+3. Outer Spacer
+4. Bottom Spaver
+
+Once we have this structure, where there are three layers each with their own spacers, the only thing left is to calculate the dimensions of the spacers listed above. Specifically, it is important to know their heights (you can actually set thier widths to zero, and rely on floating them left or right). 
 
 
 ### Algorithm
@@ -85,8 +90,31 @@ The first stage of the algorithim determines which layout the current page is. I
 
 5. We then compare the new height to the largest expected height. If the new height is smaller than the largest expected height then we are dealing with the case of Stairs. If not, we are dealing with the case of Double-Extend.
 
-The second stage of the algorithim
-Now that we know which layout we are dealing with we can calculate the spacer heights using only the calculated area values from before and the padding values that we can optionally apply. We will divide the second 
+The second stage of the algorithim calculates the spacer heights based on the type of layout the page is.
+This stage requires only three things:
+1. The type of layout
+2. The calculated area values from before
+3. The padding values that we can optionally apply
+
+We will divide the respective calculations into three parts corresponding to the three kinds of layouts:
+
+
+For the case of Double-Wrap:
+Inner Spacer = Main Area / Main Width
+Outer Spacer = Main Area / Main Width
+End Spacer = (Inner or Outer Area - (Main Area / Main Width) * Side Width) / Top Width
+
+For the case of Stairs:
+Inner or Outer Spacer = Stair Area / Side Width
+Outer or Inner Spacer = (Main Area + Stair Area - Little Area) / Block Width
+Little Area = (Block Height - Stair Height) * Horizontal Padding
+End Spacer = 0
+
+For the case of Double Extend:
+Inner Spacer = Inner Area / Side Width
+Outer Spacer = Outer Area / Side Width
+End Spacer = 0
+
 
 
 
