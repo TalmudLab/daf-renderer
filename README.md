@@ -90,9 +90,9 @@ The first stage of the algorithim determines which layout the current page is. I
 2. Second we divide the calculated area by each text's respective width to get an expected height.
 3. Third we compare these expected heights. If the main text has the smallest height then we know that we are dealing with the case of Double-Wrap.
 
-&nbsp;&nbsp; 4. If the main text is not smallest we then add the areas of the two smallest texts and divide that by their added widths to get a new height.
+4. If the main text is not smallest we then add the areas of the two smallest texts and divide that by their added widths to get a new height.
 
-&nbsp;&nbsp; 5. We then compare the new height to the largest expected height. If the new height is smaller than the largest expected height then we are dealing with the case of Stairs. If not, we are dealing with the case of Double-Extend.
+5. We then compare the new height to the largest expected height. If the new height is smaller than the largest expected height then we are dealing with the case of Stairs. If not, we are dealing with the case of Double-Extend.
 
 The second stage of the algorithim calculates the spacer heights based on the type of layout the page is.
 This stage requires only three things:
@@ -104,19 +104,31 @@ We will divide the respective calculations into three parts corresponding to the
 
 
 For the case of Double-Wrap:
+
 Inner Spacer = Main Area / Main Width
+
 Outer Spacer = Main Area / Main Width
+
 End Spacer = (Inner or Outer Area - (Main Area / Main Width) * Side Width) / Top Width
 
+
 For the case of Stairs:
+
 Inner or Outer Spacer = Stair Area / Side Width
+
 Outer or Inner Spacer = (Main Area + Stair Area - Little Area) / Block Width
+
 Little Area = (Block Height - Stair Height) * Horizontal Padding
+
 End Spacer = 0
 
+
 For the case of Double Extend:
+
 Inner Spacer = Inner Area / Side Width
+
 Outer Spacer = Outer Area / Side Width
+
 End Spacer = 0
 
 
