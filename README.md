@@ -64,9 +64,9 @@ If we use three layers stacked on top of each other, we can then recreate the pa
 ![A picture sketching the spacer over the daf](https://github.com/Jutanium/daf-render-lib/blob/master/Documentation%20Pictures/Spacers%20Together.PNG)
 
 We can see above that there are many spacers, but we only need to worry about three of them. We will define them as such:
-2. Inner Spacer
-3. Outer Spacer
-4. Bottom Spaver
+1. Inner Spacer
+2. Outer Spacer
+3. Bottom Spaver
 
 Once we have this structure, where there are three layers each with their own spacers, the only thing left is to calculate the dimensions of the spacers listed above. Specifically, it is important to know their heights (you can actually set thier widths to zero, and rely on floating them left or right). 
 
@@ -89,10 +89,8 @@ The first stage of the algorithim determines which layout the current page is. I
 1. First we calculate the area that each body of text occupies (in terms of px^2).
 2. Second we divide the calculated area by each text's respective width to get an expected height.
 3. Third we compare these expected heights. If the main text has the smallest height then we know that we are dealing with the case of Double-Wrap.
-
-4. If the main text is not smallest we then add the areas of the two smallest texts and divide that by their added widths to get a new height.
-
-5. We then compare the new height to the largest expected height. If the new height is smaller than the largest expected height then we are dealing with the case of Stairs. If not, we are dealing with the case of Double-Extend.
+  4. If the main text is not smallest we then add the areas of the two smallest texts and divide that by their added widths to get a new height.
+  5. We then compare the new height to the largest expected height. If the new height is smaller than the largest expected height then we are dealing with the case of Stairs. If not, we are dealing with the case of Double-Extend.
 
 The second stage of the algorithim calculates the spacer heights based on the type of layout the page is.
 This stage requires only three things:
@@ -104,32 +102,22 @@ We will divide the respective calculations into three parts corresponding to the
 
 
 For the case of Double-Wrap:
-
-Inner Spacer = Main Area / Main Width
-
-Outer Spacer = Main Area / Main Width
-
-End Spacer = (Inner or Outer Area - (Main Area / Main Width) * Side Width) / Top Width
+- Inner Spacer = Main Area / Main Width
+- Outer Spacer = Main Area / Main Width
+- End Spacer = (Inner or Outer Area - (Main Area / Main Width) * Side Width) / Top Width
 
 
 For the case of Stairs:
-
-Inner or Outer Spacer = Stair Area / Side Width
-
-Outer or Inner Spacer = (Main Area + Stair Area - Little Area) / Block Width
-
-Little Area = (Block Height - Stair Height) * Horizontal Padding
-
-End Spacer = 0
+- Inner or Outer Spacer = Stair Area / Side Width
+- Outer or Inner Spacer = (Main Area + Stair Area - Little Area) / Block Width
+  - Little Area = (Block Height - Stair Height) * Horizontal Padding
+- End Spacer = 0
 
 
 For the case of Double Extend:
-
-Inner Spacer = Inner Area / Side Width
-
-Outer Spacer = Outer Area / Side Width
-
-End Spacer = 0
+- Inner Spacer = Inner Area / Side Width
+- Outer Spacer = Outer Area / Side Width
+- End Spacer = 0
 
 
 
