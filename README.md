@@ -88,9 +88,9 @@ The first stage of the algorithim determines which layout the current page is. I
 
 1. First we calculate the area that each body of text occupies (in terms of px^2).
 2. Second we divide the calculated area by each text's respective width to get an expected height.
-3. Third we compare these expected heights. If the main text has the smallest height then we know that we are dealing with the case of Double-Wrap.
+3. Third we compare these expected heights. If the main text has the smallest height then we know that we are dealing with the case of **Double-Wrap**.
 4. If the main text is not smallest we then add the areas of the two smallest texts and divide that by their added widths to get a new height.
-5. We then compare the new height to the largest expected height. If the new height is smaller than the largest expected height then we are dealing with the case of Stairs. If not, we are dealing with the case of Double-Extend.
+5. We then compare the new height to the largest expected height. If the new height is smaller than the largest expected height then we are dealing with the case of **Stairs**. If not, we are dealing with the case of **Double-Extend**.
 
 The second stage of the algorithim calculates the spacer heights based on the type of layout the page is.
 This stage requires only three things:
