@@ -80,6 +80,10 @@ In order to understand both stages, we must understand that there are three poss
 2. Stairs
 3. Double-Extend
 
+![A picture depicting all three cases](https://github.com/Jutanium/daf-render-lib/blob/master/Documentation%20Pictures/Three%20Cases.PNG)
+
+
+
 The first stage of the algorithim determines which layout the current page is. In order to do this there are three-five steps:
 
 1. First we calculate the area that each body of text occupies (in terms of px^2).
