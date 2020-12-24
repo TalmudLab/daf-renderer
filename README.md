@@ -112,8 +112,8 @@ For the case of Double-Wrap:
 
 For the case of Stairs:
 - Inner or Outer Spacer = Stair Area / Side Width
-- Outer or Inner Spacer = (Main Area + Stair Area - Little Area) / Block Width
-  - Little Area = (Block Height - Stair Height) * Horizontal Padding
+- Outer or Inner Spacer = (Main Area + Stair Area - Padding Area) / Combined Width
+  - Padding Area = (Combined Height - Stair Height) * Horizontal Padding
 - End Spacer = 0
 
 
