@@ -1,5 +1,40 @@
 import classes from './styles.css';
 
+const sideSpacersClasses = {
+  start: [classes.spacer, classes.start],
+  mid: [classes.spacer, classes.mid],
+  end: [classes.spacer, classes.end]
+}
+
+const containerClasses = {
+  el: classes.dafRoot,
+  outer: {
+    el: classes.outer,
+    spacers: sideSpacersClasses,
+    text: classes.text,
+  },
+  inner: {
+    el: classes.inner,
+    spacers: sideSpacersClasses,
+    text: classes.text,
+  },
+  main: {
+    el: classes.main,
+    spacers: {
+      start: sideSpacersClasses.start,
+      inner: [classes.spacer, classes.innerMid],
+      outer: [classes.spacer, classes.outerMid]
+    },
+    text: classes.text
+  }
+}
+
+function addClasses (element, classNames) {
+  if (Array.isArray(classNames))
+    element.classList.add(...classNames)
+  else
+    element.classList.add(classNames)
+}
 
 function setVars(object, prefix = "") {
   const varsRule = Array.prototype.find.call
@@ -16,21 +51,19 @@ function setVars(object, prefix = "") {
 }
 
 
+
 export default {
-  applyClasses(containers) {
-    const add = (className, ...elements) => elements.forEach(el => el.classList.add(className));
-    //containers
-    add(classes.dafRoot, containers.el);
-    ["main", "inner", "outer"].forEach(containerName => add(classes[containerName], containers[containerName].el));
-    //spacers
-    const allThree = [containers.outer, containers.inner, containers.main];
-    add(classes.spacer, ...allThree.flatMap(c => Object.values(c.spacers)));
-    add(classes.start, ...allThree.map(c => c.spacers.start));
-    ["end", "mid"].forEach(spacer => add(classes[spacer], containers.outer.spacers[spacer], containers.inner.spacers[spacer]));
-    add(classes.innerMid, containers.main.spacers.inner);
-    add(classes.outerMid, containers.main.spacers.outer);
-    //text containers
-    add(classes.text, ...allThree.map(c => c.text));
+  applyClasses(containers, classesMap = containerClasses) {
+    for (const key in containers) {
+      if (key in classesMap) {
+        const value = classesMap[key];
+        if (typeof value === "object" && !Array.isArray(value)) {
+          this.applyClasses(containers[key], value);
+        } else {
+          addClasses(containers[key], value);
+        }
+      }
+    }
   },
   updateOptionsVars(options) {
     setVars(options)
