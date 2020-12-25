@@ -5,7 +5,7 @@ const outertext = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maec
 
 const renderer = dafRenderer("#daf", 
 { padding: { vertical: "10px"}, 
-fontFamily: {inner: "Arial", outer: "Arial", main: "Vilna"}
+fontFamily: {inner: "Arial", outer: "Arial", main: "Arial"}
 });
 
 renderer.render(maintext, innertext, outertext, "b");
