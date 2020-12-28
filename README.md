@@ -25,7 +25,7 @@ There are six options you can change:
 3. Font-Family: This option controls the fonts that the renderer uses. You can use any of the standard web fonts, or Rashi and Vilna (which are included). If you would like to use other fonts, simply make sure to include them in your file strucutre and refer to them here. 
 4. Font-Size: This controls the font size of the different bodies of text. 
 5. Line-Height: This option controls the vertical spacing between lines within a single body of text. Be careful with making this value too small as it may introduce rendering problems.
-6. Main-Margin: This option controls what percentage of the *Content-Width* does the main body of text take up. For example, if you set start to be 50%, then the main body will take up .5 x *Content Width*, leaving 25% of the width to each of the other bodies of text.
+6. Main-Margin: This option controls the percentage of the *Content-Width* which the main body of text takes up. For example, if you set start to be 50%, then the main body will take up .5 x *Content Width*, leaving 25% of the width to each of the other bodies of text.
 
 ```javascript
 {
