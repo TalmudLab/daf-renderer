@@ -18,6 +18,14 @@ renderer.render(mainHTML, innerHTML, outerHTML, "b");
 ```
 
 ### Options
+The renderer can take into account a number of customizable options. If these options are not included, then it will default to what you find below. If you want to change anything, you simply need to pass in an object to the dafRenderer as outlined below with your desired changes.
+There are six options you can change:
+1. Content Width: This option controls how wide the page should be. Everything else will be automatically adapted to fit the content within the designated width.
+2. Padding: This determines the padding within the rendered object, not outside of it, specifically the padding between the three different bodies of text. Anywhere where two bodies of text are next to one another, this option will control how far apart the two texts are. If there is vertical space, the vertical padding will control how large that space is, and if there is horinzontal space, the horizontal padding will control how large that space is. 
+3. Font-Family: This option controls the fonts that the renderer uses. You can use any of the standard web fonts, or Rashi and Vilna (which are included). If you would like to use other fonts, simply make sure to include them in your file strucutre and refer to them here. 
+4. Font-Size: This controls the font size of the different bodies of text. 
+5. Line-Height: This option controls the vertical spacing between lines within a single body of text. Be careful with making this value too small as it may introduce rendering problems.
+6. Main-Margin: This option control what percentage of the *Content-Width* does the main body of text take up. For example, if you set start to be 50%, then the main body will take up .5 x *Content Width*, leaving 25% of the width to each of the other bodies of text.
 
 ```javascript
 {
@@ -26,7 +34,6 @@ renderer.render(mainHTML, innerHTML, outerHTML, "b");
     vertical: "10px",
     horizontal: "16px",
   },
-  halfway: "50%",
   fontFamily: {
     inner: "Rashi",
     outer: "Rashi",
