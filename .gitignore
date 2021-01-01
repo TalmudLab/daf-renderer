@@ -1,5 +1,4 @@
 experimental
 node_modules
-dist
 .idea
 *.code-workspace
