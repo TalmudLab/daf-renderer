@@ -28,15 +28,12 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
       main: parseFloat(options.lineHeight.main),
       side: parseFloat(options.lineHeight.side),
     },
-    mainMargin: {
-      start: 0.01 * parseFloat(options.mainMargin.start),
-      content: 0.01 * parseFloat(options.mainMargin.content)
-    }
+    mainWidth: 0.01 * parseFloat(options.mainWidth)
   }
 
-  const midWidth = Number(parsedOptions.width * parsedOptions.mainMargin.start) - 2*parsedOptions.padding.horizontal; //main middle strip
+  const midWidth = Number(parsedOptions.width * parsedOptions.mainWidth) - 2*parsedOptions.padding.horizontal; //main middle strip
   const topWidth = Number(parsedOptions.width * parsedOptions.halfway) - parsedOptions.padding.horizontal; //each commentary top
-  const sideWidth = Number(parsedOptions.width * (1 - parsedOptions.mainMargin.start)/2) //each commentary widths, dont include padding, sokeep it constant
+  const sideWidth = Number(parsedOptions.width * (1 - parsedOptions.mainWidth)/2) //each commentary widths, dont include padding, sokeep it constant
 
   // These values are unique to the font you are using: 
   // If you change fonts, you will have to modify these numbers, but the value should always be close to 1.
