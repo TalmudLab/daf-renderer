@@ -63,11 +63,11 @@ There are six options you can change:
 ### Spacers and the DOM
 The layout of the Talmud is not easily replicated with the box-model of the web. This is because there is no such thing as *middle* for the CSS [float](https://developer.mozilla.org/en-US/docs/Web/CSS/float) property, or any other kind of ability to allow multiple bodies of text to wrap around one another. This limitation was overcome with a new paradigm we call *spacers*. Spacers take advantage of the wrap-around principles of [flow](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Normal_Flow). When a *right-floated* body of text encounters a *left-floated* element, it will wrap around that element instead of overlapping. Thus, we can make complex shapes out of the text by using multiple spacers to force the text into the shape we want:
 
-![A picture showing three boxes with text wrapping around them](https://github.com/Jutanium/daf-render-lib/blob/master/Documentation%20Pictures/Spacers.PNG)
+![A picture showing three boxes with text wrapping around them](https://github.com/Jutanium/daf-render-lib/blob/master/doc-pictures/Spacers.PNG)
 
 If we use three layers stacked on top of each other, we can then recreate the page in its entirety:
 
-![A picture sketching the spacer over the daf](https://github.com/Jutanium/daf-render-lib/blob/master/Documentation%20Pictures/Spacers%20Together.PNG)
+![A picture sketching the spacer over the daf](https://github.com/Jutanium/daf-render-lib/blob/master/doc-pictures/Spacers%20Together.PNG)
 
 We can see above that there are many spacers, but we only need to worry about three of them. We will define them as such:
 - Inner Spacer
@@ -86,7 +86,7 @@ In order to understand both stages, we must understand that there are three poss
 - Stairs
 - Double-Extend
 
-![A picture depicting all three cases](https://github.com/Jutanium/daf-render-lib/blob/master/Documentation%20Pictures/Three%20Cases.PNG)
+![A picture depicting all three cases](https://github.com/Jutanium/daf-render-lib/blob/master/doc-pictures/Three%20Cases.PNG)
 
 
 
@@ -95,15 +95,15 @@ The first stage of the algorithim determines which layout the current page is. I
 1. First we calculate the area that each body of text occupies (in terms of px^2).
 2. Second we divide the calculated area by each text's respective width to get an expected height.
 
-![A picture depicting Area](https://github.com/Jutanium/daf-render-lib/blob/master/Documentation%20Pictures/Area%20Labels.PNG)
+![A picture depicting Area](https://github.com/Jutanium/daf-render-lib/blob/master/doc-pictures/Area%20Labels.PNG)
 
 3. Third we compare these expected heights. If the main text has the smallest height then we know that we are dealing with the case of **Double-Wrap**.
 
-![A picture depicting a comparison](https://github.com/Jutanium/daf-render-lib/blob/master/Documentation%20Pictures/Comparing%20Areas.PNG)
+![A picture depicting a comparison](https://github.com/Jutanium/daf-render-lib/blob/master/doc-pictures/Comparing%20Areas.PNG)
 
 4. If the main text is not smallest we then add the areas of the two smallest texts and divide that by their added widths to get a new height.
 
-![A picture depicting a comparison](https://github.com/Jutanium/daf-render-lib/blob/master/Documentation%20Pictures/Adding%20Areas.PNG)
+![A picture depicting a comparison](https://github.com/Jutanium/daf-render-lib/blob/master/doc-pictures/Adding%20Areas.PNG)
 
 5. We then compare the new height to the largest expected height. If the new height is smaller than the largest expected height then we are dealing with the case of **Stairs**. If not, we are dealing with the case of **Double-Extend**.
 
