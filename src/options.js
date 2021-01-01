@@ -1,5 +1,6 @@
 const defaultOptions = {
   contentWidth: "600px",
+  mainWidth: "50%",
   padding: {
     vertical: "10px",
     horizontal: "16px",
@@ -17,9 +18,6 @@ const defaultOptions = {
   lineHeight: {
     main: "17px",
     side: "14px",
-  },
-  mainMargin: {
-    start: "50%",
   },
 }
 
