@@ -70,7 +70,7 @@ If we use three layers stacked on top of each other, we can then recreate the pa
 We can see above that there are many spacers, but we only need to worry about three of them. We will define them as such:
 - Inner Spacer
 - Outer Spacer
-- Bottom Spaver
+- Bottom Spacer
 
 Once we have this structure, where there are three layers each with their own spacers, the only thing left is to calculate the dimensions of the spacers listed above. Specifically, it is important to know their heights (you can actually set thier widths to zero, and rely on floating them left or right). 
 
