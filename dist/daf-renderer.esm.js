@@ -46,9 +46,8 @@ function getAreaOfText(text, font, fs, width, lh, dummy) {
   testDiv.style.font = String(fs) + "px " + String(font);
   testDiv.style.width = String(width) + "px"; //You can remove this, but it may introduce unforseen problems
   testDiv.style.lineHeight = String(lh) + "px";
-  testDiv.innerHTML = text.replace(/\s+/g, "    ");
+  testDiv.innerHTML = text;
   dummy.append(testDiv);
-  // console.log(testDiv.clientHeight, testDiv.clientWidth)
   let test_area = Number(testDiv.clientHeight * testDiv.clientWidth);
   testDiv.remove();
   return test_area;
@@ -157,7 +156,7 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
 
   //If Double=Wrap
   if (perHeight[0].name === "main"){
-    // console.log("Double-Wrap"); 
+    console.log("Double-Wrap"); 
     spacerHeights.inner = main.area/midWidth;
     spacerHeights.outer = spacerHeights.inner;
     
@@ -181,7 +180,6 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
     // This function accounts for extra space that is introduced by padding
     const lilArea = (height1, height2, horizPadding) => (horizPadding) * (height1 - height2);
     const smallest = perHeight[0];
-    console.log(smallest.height);
     spacerHeights[smallest.name] = smallest.height;
     spacerHeights[stair.name] = (blockArea - lilArea(blockHeight, spacerHeights[smallest.name], parsedOptions.padding.horizontal)) / blockWidth;
     return spacerHeights
