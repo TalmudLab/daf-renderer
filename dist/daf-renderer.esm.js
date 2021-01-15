@@ -46,7 +46,7 @@ function getAreaOfText(text, font, fs, width, lh, dummy) {
   testDiv.style.font = String(fs) + "px " + String(font);
   testDiv.style.width = String(width) + "px"; //You can remove this, but it may introduce unforseen problems
   testDiv.style.lineHeight = String(lh) + "px";
-  testDiv.innerHTML = text;
+  testDiv.innerHTML = text.replace(/\s+/g, "    ");
   dummy.append(testDiv);
   // console.log(testDiv.clientHeight, testDiv.clientWidth)
   let test_area = Number(testDiv.clientHeight * testDiv.clientWidth);

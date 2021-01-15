@@ -1,3 +1,9 @@
+/*-------------------------------------------------------*/
+// THIS FILE IS NOT MEANT TO BE INCLUDED IN THE FINAL PACKAGE
+// IT IS A REMEMNANT OF EARLIER DEVELOPMENT
+// DO NOT PAY IT ANY ATTENTION
+/*-------------------------------------------------------*/
+
 
 const texts = { main: [], rashi: [], tosafot: [], sefariaTranslations: []};
 const spans = { main: [], rashi: [], tosafot: []};
@@ -114,6 +120,11 @@ function getTexts(tractate, daf, amud) {
         const mainHTML = sentenceSpans.main.map(sentenceToHTML).join(' ');
         const rashiHTML = spans.rashi.map(wordToHTML).join(' ')
         const tosafotHTML = spans.tosafot.map(wordToHTML).join(' ')
+
+        console.log("Main:", mainHTML)
+        console.log("Rashi:", rashiHTML)
+        console.log("Tosafot:", tosafotHTML)
+        console.log("Amud:", amud)
        
 
         // document.getElementById('maintxtcntr').innerHTML =  "<u class=maintxtcontent>" + mainHTML + "</u>";
