@@ -2,6 +2,8 @@
 
 A DOM render library for creating Talmud pages on the web - *the library works, but documentation and testing are in progress!*
 
+The goal of this library is to quickly and easily create an HTML object that contains a fully functioning and native Talmud Page. It can also work for any other purposes that require a similar layout. You only need two lines of code to implement it into your own project.
+
 ## Installation
 
 ### Release File
