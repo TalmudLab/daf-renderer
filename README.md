@@ -18,7 +18,7 @@ const renderer = dafRenderer("#dafGoesHere", options);
 renderer.render(mainHTML, innerHTML, outerHTML, "b");
 ```
 
-Note: If you are providing particularily complex inputs (mainHTML, innerHTML, outerHTML) to the renderer straight from the HTML file, you may need to place the renderer in a 10 ms timeout to give the browser time to parse the HTML. Refer to test.html for an example of this.
+Note: If you are providing particularily complex inputs (mainHTML, innerHTML, outerHTML) to the renderer straight from the HTML file, you may need to place the renderer in a 10 ms timeout to give the browser time to parse the HTML. Refer to example1.html for an example of this.
 
 ### Options
 The renderer can take into account a number of customizable options. If these options are not included, then it will default to what you find below. If you want to change anything, you simply need to pass in an object to the dafRenderer as outlined below with your desired changes.

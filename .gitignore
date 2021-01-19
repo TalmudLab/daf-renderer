@@ -1,4 +1,9 @@
 experimental
+
 node_modules
+
 .idea
+
 *.code-workspace
+
+/dist
