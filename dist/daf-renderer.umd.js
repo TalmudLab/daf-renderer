@@ -84,10 +84,10 @@
     const sideWidth = Number(parsedOptions.width * (1 - parsedOptions.mainWidth)/2); //each commentary widths, dont include padding, sokeep it constant
 
     // These values are unique to the font you are using: 
-    // If you change fonts, you will have to modify these numbers, but the value should always be close to 1.
-    const innerModifier = 1; // Rashi font causes a percentage difference error 113% when it comes to browser rendering
+    // If you change fonts, you may have to modify these numbers, but the value should always be close to 1.
+    const innerModifier = 1; // Rashi font sometimes causes a percentage difference error 113% when it comes to browser rendering
     const outerModifier = 1;
-    const mainModifier = 1; // Vilna font causes a percentage difference error of 95% when it comes to browser rendering
+    const mainModifier = 1; // Vilna font sometimes causes a percentage difference error of 95% when it comes to browser rendering
 
     // We could probably put this somewhere else, it was meant to be a place for all the padding corrections,
     // but there turned out to only be one
