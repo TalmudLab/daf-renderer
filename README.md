@@ -18,7 +18,7 @@ If you're using a module bundler for your front-end project, you can install via
 
 Then in your code
 
-`import dafRenderer from "daf-renderer`
+`import dafRenderer from "daf-renderer"`
 
 ## Usage
 
