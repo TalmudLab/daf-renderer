@@ -8,7 +8,7 @@ The goal of this library is to quickly and easily create an HTML object that con
 
 ### Release File
 
-Download our [release](https://github.com/GT-Jewish-DH/daf-renderer/releases/tag/v0.1) and include it in your project.
+Download our [release](https://github.com/GT-Jewish-DH/daf-renderer/releases/tag/v0.1) and include the single .js file in your project.
 
 ### NPM
 
