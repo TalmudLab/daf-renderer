@@ -13,8 +13,11 @@ Download our [release](https://github.com/GT-Jewish-DH/daf-renderer/releases/tag
 ### NPM
 
 If you're using a module bundler for your front-end project, you can install via npm:
-`npm install daf-renderer'`
+
+`npm install daf-renderer`
+
 Then in your code
+
 `import dafRenderer from "daf-renderer`
 
 ## Usage
