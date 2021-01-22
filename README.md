@@ -8,7 +8,14 @@ The goal of this library is to quickly and easily create an HTML object that con
 
 ### Release File
 
+Download our [release](https://github.com/GT-Jewish-DH/daf-renderer/releases/tag/v0.1) and include it in your project.
+
 ### NPM
+
+If you're using a module bundler for your front-end project, you can install via npm:
+`npm install daf-renderer'`
+Then in your code
+`import dafRenderer from "daf-renderer`
 
 ## Usage
 
