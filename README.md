@@ -1,4 +1,4 @@
-# The daf-renderer library
+# daf-renderer
 
 A DOM render library for creating Talmud pages on the web - *the library works, but documentation and testing are in progress!*
 
