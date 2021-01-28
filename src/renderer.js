@@ -74,7 +74,9 @@ export default function (el, options = defaultOptions) {
   return {
     containers,
     spacerHeights: {
-      start: 0,
+      startInner: 0,
+      startOuter: 0,
+      startMain: 0,
       inner: 0,
       outer: 0,
       end: 0

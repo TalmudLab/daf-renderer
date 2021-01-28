@@ -101,17 +101,32 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
 
   //First we need to check we have enough commentary to fill the first four lines
   if (inner.height <= 0 && outer.height <= 0){
-    console.error("Not Enough Commentary");
-    return Error("Not enough commentary");
+    console.error("No Commentary");
+    return Error("No Commentary");
   };
 
   const spacerHeights = {
-    start: 4 * parsedOptions.lineHeight.side, // For Tzurat Hadaf this will always be the same
+    startInner: 4 * parsedOptions.lineHeight.side, // For Tzurat Hadaf, the default is four lines
+    startOuter: 4 * parsedOptions.lineHeight.side,
+    startMain: 4 * parsedOptions.lineHeight.side, 
     inner: null,
     outer: null,
     end: 0,
   };
 
+  // This is a case that we have to decice what to do with, when there is not enough commentary on both sides to fill the lines. 
+  if (inner.height <= spacerHeights.start && outer.height <= spacerHeights.start) {
+    console.error("Not Enough Commentary to Fill Four Lines");
+    return Error("Not Enough Commentary");
+  };
+
+  // We are going to deal with our first edge case when there is either only one commentary
+  // Or where there is enough of one commentary, but not four lines of the other.
+  if (inner.height <= spacerHeights.start || outer.height <= spacerHeights.start) {
+    if (inner.height <= spacerHeights.start) {
+      spacerHeights.heights
+    }
+  };
   //If Double=Wrap
   if (perHeight[0].name === "main"){
     console.log("Double-Wrap"); 
