@@ -32,13 +32,14 @@ Note: If you are providing particularily complex inputs (mainHTML, innerHTML, ou
 
 ### Options
 The renderer can take into account a number of customizable options. If these options are not included, then it will default to what you find below. If you want to change anything, you simply need to pass in an object to the dafRenderer as outlined below with your desired changes.
-There are six options you can change:
+There are seven options you can change:
 1. *contentWidth*: This option controls how wide the page should be. Everything else will be automatically adapted to fit the content within the designated width.
 2. *mainWidth*: This option controls the percentage of the *contentWidth* which the main body of text takes up. For example, if you set this to 50%, then the main body will take up .5 x *contentWidth*, leaving 25% of the width to each of the side bodies of text.
 3. *padding*: This determines the padding within the rendered object, not outside of it, specifically the padding between the three different bodies of text. Anywhere where two bodies of text are next to one another, this option will control how far apart the two texts are. If there is vertical space, the vertical padding will control how large that space is, and if there is horinzontal space, the horizontal padding will control how large that space is. 
 4. *fontFamily*: This option controls the fonts that the renderer uses. You can use any of the standard web fonts, or Rashi and Vilna (which are included). If you would like to use other fonts, simply make sure to include them in your file strucutre and refer to them here. 
-5. *fontSize*: This controls the font size of the different bodies of text. For now, you cannot set the inner and outer font sizes or line heights independently; both the inner and outer side texts use the size specified under `side`.
-6. *lineHeight*: This option controls the vertical spacing between lines within a single body of text. Be careful with making this value too small as it may introduce rendering problems.
+5. *direction*: This controls the direction of the text. For English use "ltr", otherwise it will default to "rtl".
+6. *fontSize*: This controls the font size of the different bodies of text. For now, you cannot set the inner and outer font sizes or line heights independently; both the inner and outer side texts use the size specified under `side`.
+7. *lineHeight*: This option controls the vertical spacing between lines within a single body of text. Be careful with making this value too small as it may introduce rendering problems.
 
 ```javascript
 {
@@ -53,6 +54,7 @@ There are six options you can change:
     outer: "Rashi",
     main: "Vilna"
   },
+  direction: rtl,
   fontSize: {
     main: "15px",
     side: "10.5px"
