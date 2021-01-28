@@ -74,9 +74,7 @@ export default function (el, options = defaultOptions) {
   return {
     containers,
     spacerHeights: {
-      startInner: 0,
-      startOuter: 0,
-      startMain: 0,
+      start: 0,
       inner: 0,
       outer: 0,
       end: 0
@@ -88,8 +86,9 @@ export default function (el, options = defaultOptions) {
         styleManager.updateIsAmudB(amud == "b");
       }
       this.spacerHeights = calculateSpacers(main, inner, outer, clonedOptions, containers.dummy);
-      console.dir(this.spacerHeights);
       styleManager.updateSpacersVars(this.spacerHeights);
+      styleManager.manageExceptions(this.spacerHeights);
+      console.log(this.spacerHeights)
       textSpans.main.innerHTML = main;
       textSpans.inner.innerHTML = inner;
       textSpans.outer.innerHTML = outer;

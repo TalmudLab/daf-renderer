@@ -82,5 +82,26 @@ export default {
       innerFloat: amudB ? "right" : "left",
       outerFloat: amudB ? "left" : "right"
     })
+  },
+  manageExceptions(spacerHeights) { 
+    if (spacerHeights.inner < spacerHeights.start) {
+      setVars({
+        exception1: "1",
+        innerStart: "100%",
+        outerStart: "0%",
+        innerPadding: "0px",
+        outerPadding: "0px",
+    })
+    }
+    if (spacerHeights.outer < spacerHeights.start) {
+      setVars({
+        exception2: "1",
+        outerStart: "0%",
+        innerStart: "100%",
+        innerPadding: "0px",
+        outerPadding: "0px"
+        
+    })
+    }
   }
 }
