@@ -11,12 +11,15 @@
       vertical: "10px",
       horizontal: "16px",
     },
+    innerPadding: "4px",
+    outerPadding: "4px",
     halfway: "50%",
     fontFamily: {
       inner: "Rashi",
       outer: "Rashi",
       main: "Vilna"
     },
+    direction: "rtl",
     fontSize: {
       main: "15px",
       side: "10.5px"
@@ -83,12 +86,6 @@
     const topWidth = Number(parsedOptions.width * parsedOptions.halfway) - parsedOptions.padding.horizontal; //each commentary top
     const sideWidth = Number(parsedOptions.width * (1 - parsedOptions.mainWidth)/2); //each commentary widths, dont include padding, sokeep it constant
 
-    // These values are unique to the font you are using: 
-    // If you change fonts, you may have to modify these numbers, but the value should always be close to 1.
-    const innerModifier = 1; // Rashi font sometimes causes a percentage difference error 113% when it comes to browser rendering
-    const outerModifier = 1;
-    const mainModifier = 1; // Vilna font sometimes causes a percentage difference error of 95% when it comes to browser rendering
-
     // We could probably put this somewhere else, it was meant to be a place for all the padding corrections,
     // but there turned out to only be one
     const paddingAreas = {
@@ -96,14 +93,16 @@
       horizontalSide: sideWidth * parsedOptions.padding.vertical,
     };
 
-    const adjustCommentaryArea = (area, lineHeight) => area - (4 * lineHeight * topWidth); //remove area of the top 4 lines
+
+    const topArea = (lineHeight) => ((4 * lineHeight * topWidth) + - paddingAreas.horizontalSide); //remove area of the top 4 lines
+    
+
     const main = {
       name: "main",
       width: midWidth,
       text: mainText,
       lineHeight: parsedOptions.lineHeight.main,
-      area: getAreaOfText(mainText, parsedOptions.fontFamily.main, parsedOptions.fontSize.main, midWidth, parsedOptions.lineHeight.main, dummy) 
-      * mainModifier,
+      area: getAreaOfText(mainText, parsedOptions.fontFamily.main, parsedOptions.fontSize.main, midWidth, parsedOptions.lineHeight.main, dummy),
       length: null,
       height: null,
     };
@@ -112,11 +111,8 @@
       width: sideWidth,
       text: outerText,
       lineHeight: parsedOptions.lineHeight.side,
-      area: adjustCommentaryArea(
-        getAreaOfText(outerText, parsedOptions.fontFamily.outer, parsedOptions.fontSize.side, sideWidth, parsedOptions.lineHeight.side, dummy) 
-        * outerModifier,
-        parsedOptions.lineHeight.side
-      ) - paddingAreas.horizontalSide,
+      area: getAreaOfText(outerText, parsedOptions.fontFamily.outer, parsedOptions.fontSize.side, sideWidth, parsedOptions.lineHeight.side, dummy) 
+            - topArea(parsedOptions.lineHeight.side),
       length: null,
       height: null,
     };
@@ -125,17 +121,17 @@
       width: sideWidth,
       text: innerText,
       lineHeight: parsedOptions.lineHeight.side,
-      area: adjustCommentaryArea(
+      area:
         getAreaOfText(innerText, parsedOptions.fontFamily.inner, parsedOptions.fontSize.side, sideWidth, parsedOptions.lineHeight.side, dummy) 
-        * innerModifier,
-        parsedOptions.lineHeight.side
-      ) - paddingAreas.horizontalSide,
+        - topArea(parsedOptions.lineHeight.side),
       length: null,
       height: null,
     };
 
     const texts = [main, outer, inner];
-    texts.forEach (text => text.height = text.area / text.width);
+    texts.forEach(text => text.height = text.area / text.width);
+    texts.forEach(text => text.unadjustedArea = text.area + topArea(parsedOptions.lineHeight.side));
+    texts.forEach(text => text.unadjustedHeight = text.unadjustedArea / text.width);
 
     const perHeight = Array.from(texts).sort( (a,b) => a.height - b.height);
 
@@ -150,16 +146,41 @@
 
     //First we need to check we have enough commentary to fill the first four lines
     if (inner.height <= 0 && outer.height <= 0){
-      console.error("Not Enough Commentary");
-      return Error("Not enough commentary");
+      console.error("No Commentary");
+      return Error("No Commentary");
     }
     const spacerHeights = {
-      start: 4 * parsedOptions.lineHeight.side, // For Tzurat Hadaf this will always be the same
+      start: 4 * parsedOptions.lineHeight.side,
       inner: null,
       outer: null,
       end: 0,
     };
 
+    console.log(inner.height, inner.unadjustedHeight, outer.height, outer.unadjustedHeight, spacerHeights.start);
+    // This is a case that we have to decice what to do with, when there is not enough commentary on both sides to fill the lines. 
+    if (inner.height <= spacerHeights.start && outer.height <= spacerHeights.start) {
+      console.error("Not Enough Commentary to Fill Four Lines");
+      return Error("Not Enough Commentary");
+    }
+    // We are going to deal with our first edge case when there is either only one commentary
+    // Or where there is enough of one commentary, but not four lines of the other.
+    if (inner.unadjustedHeight  <= spacerHeights.start || outer.unadjustedHeight  <= spacerHeights.start) {
+      if (inner.unadjustedHeight  <= spacerHeights.start) {
+        spacerHeights.inner = inner.unadjustedHeight;
+
+        spacerHeights.outer = (outer.unadjustedArea - parsedOptions.width*4*parsedOptions.lineHeight.side) / sideWidth;
+        return spacerHeights;
+      }
+      if (outer.unadjustedHeight <= spacerHeights.start) {
+        spacerHeights.outer = outer.unadjustedHeight;
+
+        spacerHeights.inner = (inner.unadjustedArea - parsedOptions.width * 4 * parsedOptions.lineHeight.side) / sideWidth;
+        return spacerHeights;
+      }
+      else {
+        return Error("Inner Spacer Error");
+      }
+    }
     //If Double=Wrap
     if (perHeight[0].name === "main"){
       console.log("Double-Wrap"); 
@@ -225,7 +246,7 @@
     }
   }
 
-  var css_248z = "/*Keep this as the first rule in the file*/\n.styles_dafRoot__1QUlM {\n  --contentWidth: 0px;\n  --padding-horizontal: 0px;\n  --padding-vertical: 0px;\n  --halfway: 50%;\n\n  --fontFamily-inner: \"Rashi\";\n  --fontFamily-outer: \"Tosafot\";\n  --fontFamily-main: \"Vilna\";\n\n  --fontSize-main: 0px;\n  --fontSize-side: 0px;\n\n  --lineHeight-main: 0px;\n  --lineHeight-side: 0px;\n\n  --mainMargin-start: 50%;\n  --sidePercent: calc(calc(100% - var(--mainMargin-start))/2);\n  --remainderPercent: calc(100% - var(--sidePercent));\n\n  --innerFloat: left;\n  --outerFloat: right;\n\n  --spacerHeights-start: 0px;\n  --spacerHeights-outer: 0px;\n  --spacerHeights-inner: 0px;\n  --spacerHeights-end: 0px;\n\n}\n\n/*Containers*/\n.styles_dafRoot__1QUlM, .styles_outer__abXQX, .styles_inner__x-amJ, .styles_main__BHTRd {\n  position: absolute;\n  width: var(--contentWidth);\n  pointer-events: none;\n  box-sizing: content-box;\n}\n\n/*Float changes with amud*/\n.styles_inner__x-amJ .styles_spacer__2T7TS, .styles_main__BHTRd .styles_spacer__2T7TS.styles_outerMid__2WtcY{\n  float: var(--innerFloat);\n}\n\n.styles_outer__abXQX .styles_spacer__2T7TS, .styles_main__BHTRd .styles_spacer__2T7TS.styles_innerMid__27MCi{\n  float: var(--outerFloat);\n}\n\n\n/*Spacer widths determined by options*/\n.styles_inner__x-amJ .styles_spacer__2T7TS, .styles_outer__abXQX .styles_spacer__2T7TS {\n  width: var(--halfway);\n}\n.styles_spacer__2T7TS.styles_mid__dcgUr {\n  width: var(--remainderPercent);\n}\n\n.styles_main__BHTRd .styles_spacer__2T7TS.styles_start__AwkfY {\n  width: var(--contentWidth);\n}\n.styles_main__BHTRd .styles_spacer__2T7TS.styles_innerMid__27MCi, .styles_main__BHTRd .styles_spacer__2T7TS.styles_outerMid__2WtcY {\n  width: var(--sidePercent);\n}\n\n/*Spacer heights determined by algorithm*/\n.styles_spacer__2T7TS.styles_start__AwkfY {\n  height: var(--spacerHeights-start);\n}\n\n.styles_spacer__2T7TS.styles_end__2wr6A {\n  height: var(--spacerHeights-end);\n}\n\n.styles_inner__x-amJ .styles_spacer__2T7TS.styles_mid__dcgUr, .styles_main__BHTRd .styles_spacer__2T7TS.styles_innerMid__27MCi {\n  height: var(--spacerHeights-inner);\n}\n.styles_outer__abXQX .styles_spacer__2T7TS.styles_mid__dcgUr, .styles_main__BHTRd .styles_spacer__2T7TS.styles_outerMid__2WtcY {\n  height: var(--spacerHeights-outer);\n}\n\n/*Margins!*/\n.styles_spacer__2T7TS.styles_start__AwkfY, .styles_spacer__2T7TS.styles_end__2wr6A, .styles_main__BHTRd .styles_spacer__2T7TS.styles_innerMid__27MCi, .styles_main__BHTRd .styles_spacer__2T7TS.styles_outerMid__2WtcY {\n  margin-left: calc(0.5 * var(--padding-horizontal));\n  margin-right: calc(0.5 * var(--padding-horizontal));\n}\n\n.styles_spacer__2T7TS.styles_mid__dcgUr, .styles_main__BHTRd .styles_text__1_7-z {\n  margin-top: var(--padding-vertical);\n}\n\n.styles_spacer__2T7TS.styles_mid__dcgUr, .styles_main__BHTRd .styles_spacer__2T7TS.styles_innerMid__27MCi, .styles_main__BHTRd .styles_spacer__2T7TS.styles_outerMid__2WtcY {\n  margin-bottom: calc(2 * var(--padding-vertical));\n}\n\n\n/*Text*/\n.styles_text__1_7-z {\n  direction: rtl;\n  text-align: justify;\n}\n\n.styles_text__1_7-z span {\n  pointer-events: auto;\n}\n\n.styles_main__BHTRd .styles_text__1_7-z {\n  font-family: var(--fontFamily-main);\n  font-size: var(--fontSize-main);\n  line-height: var(--lineHeight-main);\n}\n\n.styles_inner__x-amJ .styles_text__1_7-z, .styles_outer__abXQX .styles_text__1_7-z {\n  font-size: var(--fontSize-side);\n  line-height: var(--lineHeight-side);\n}\n\n.styles_inner__x-amJ .styles_text__1_7-z {\n  font-family: var(--fontFamily-inner);\n}\n\n.styles_outer__abXQX .styles_text__1_7-z {\n  font-family: var(--fontFamily-outer);\n}\n";
+  var css_248z = "/*Keep this as the first rule in the file*/\n.styles_dafRoot__1QUlM {\n  --contentWidth: 0px;\n  --padding-horizontal: 0px;\n  --padding-vertical: 0px;\n  --halfway: 50%;\n\n  --fontFamily-inner: \"Rashi\";\n  --fontFamily-outer: \"Tosafot\";\n  --fontFamily-main: \"Vilna\";\n  --direction: \"rtl\"\n\n  --fontSize-main: 0px;\n  --fontSize-side: 0px;\n\n  --lineHeight-main: 0px;\n  --lineHeight-side: 0px;\n\n  --mainMargin-start: 50%;\n  --sidePercent: calc(calc(100% - var(--mainMargin-start)) / 2);\n  --remainderPercent: calc(100% - var(--sidePercent));\n\n  --innerFloat: left;\n  --outerFloat: right;\n\n  --exception1: 0;\n  --exception2: 0;\n  --innerStart: 50%;\n  --innerPadding: 0px;\n  --outerStart: 50%;\n  --outerPadding: 0px;\n\n  --spacerHeights-start: 0px;\n  --spacerHeights-outer: 0px;\n  --spacerHeights-inner: 0px;\n  --spacerHeights-end: 0px;\n}\n\n/*Containers*/\n.styles_dafRoot__1QUlM,\n.styles_outer__abXQX,\n.styles_inner__x-amJ,\n.styles_main__BHTRd {\n  position: absolute;\n  width: var(--contentWidth);\n  pointer-events: none;\n  box-sizing: content-box;\n}\n\n/*Float changes with amud*/\n.styles_inner__x-amJ .styles_spacer__2T7TS,\n.styles_main__BHTRd .styles_spacer__2T7TS.styles_outerMid__2WtcY {\n  float: var(--innerFloat);\n}\n\n.styles_outer__abXQX .styles_spacer__2T7TS,\n.styles_main__BHTRd .styles_spacer__2T7TS.styles_innerMid__27MCi {\n  float: var(--outerFloat);\n}\n\n/*Spacer widths determined by options*/\n.styles_inner__x-amJ .styles_spacer__2T7TS,\n.styles_outer__abXQX .styles_spacer__2T7TS {\n  width: var(--halfway);\n}\n.styles_spacer__2T7TS.styles_mid__dcgUr {\n  width: var(--remainderPercent);\n}\n\n.styles_main__BHTRd .styles_spacer__2T7TS.styles_start__AwkfY {\n  width: var(--contentWidth);\n}\n.styles_main__BHTRd .styles_spacer__2T7TS.styles_innerMid__27MCi,\n.styles_main__BHTRd .styles_spacer__2T7TS.styles_outerMid__2WtcY {\n  width: var(--sidePercent);\n}\n\n/*Spacer heights determined by algorithm*/\n.styles_spacer__2T7TS.styles_start__AwkfY {\n  height: var(--spacerHeights-start);\n}\n\n.styles_inner__x-amJ .styles_spacer__2T7TS.styles_start__AwkfY {\n  width: var(--innerStart);\n  margin-left: var(--innerPadding);\n  margin-right: var(--innerPadding);\n}\n\n.styles_outer__abXQX .styles_spacer__2T7TS.styles_start__AwkfY {\n  width: var(--outerStart);\n  margin-left: var(--outerPadding);\n  margin-right: var(--outerPadding);\n}\n\n.styles_spacer__2T7TS.styles_mid__dcgUr {\n  clear: both;\n}\n\n.styles_spacer__2T7TS.styles_end__2wr6A {\n  height: var(--spacerHeights-end);\n}\n\n.styles_inner__x-amJ .styles_spacer__2T7TS.styles_mid__dcgUr,\n.styles_main__BHTRd .styles_spacer__2T7TS.styles_innerMid__27MCi {\n  height: var(--spacerHeights-inner);\n}\n.styles_outer__abXQX .styles_spacer__2T7TS.styles_mid__dcgUr,\n.styles_main__BHTRd .styles_spacer__2T7TS.styles_outerMid__2WtcY {\n  height: var(--spacerHeights-outer);\n}\n\n/*Margins!*/\n.styles_spacer__2T7TS.styles_start__AwkfY,\n.styles_spacer__2T7TS.styles_end__2wr6A,\n.styles_main__BHTRd .styles_spacer__2T7TS.styles_innerMid__27MCi,\n.styles_main__BHTRd .styles_spacer__2T7TS.styles_outerMid__2WtcY {\n  margin-left: calc(0.5 * var(--padding-horizontal));\n  margin-right: calc(0.5 * var(--padding-horizontal));\n}\n\n.styles_spacer__2T7TS.styles_mid__dcgUr,\n.styles_main__BHTRd .styles_text__1_7-z {\n  margin-top: var(--padding-vertical);\n}\n\n.styles_inner__x-amJ .styles_spacer__2T7TS.styles_start__AwkfY{\n  margin-bottom: calc(var(--padding-vertical) * var(--exception1));\n}\n.styles_outer__abXQX .styles_spacer__2T7TS.styles_start__AwkfY {\n  margin-bottom: calc(var(--padding-vertical) * var(--exception2));\n}\n\n.styles_spacer__2T7TS.styles_mid__dcgUr,\n.styles_main__BHTRd .styles_spacer__2T7TS.styles_innerMid__27MCi,\n.styles_main__BHTRd .styles_spacer__2T7TS.styles_outerMid__2WtcY {\n  margin-bottom: var(--padding-vertical);\n}\n\n/*Text*/\n.styles_text__1_7-z {\n  direction: var(--direction);\n  text-align: justify;\n}\n\n.styles_text__1_7-z span {\n  pointer-events: auto;\n}\n\n.styles_main__BHTRd .styles_text__1_7-z {\n  font-family: var(--fontFamily-main);\n  font-size: var(--fontSize-main);\n  line-height: var(--lineHeight-main);\n}\n\n.styles_inner__x-amJ .styles_text__1_7-z,\n.styles_outer__abXQX .styles_text__1_7-z {\n  font-size: var(--fontSize-side);\n  line-height: var(--lineHeight-side);\n}\n\n.styles_inner__x-amJ .styles_text__1_7-z {\n  font-family: var(--fontFamily-inner);\n}\n\n.styles_outer__abXQX .styles_text__1_7-z {\n  font-family: var(--fontFamily-outer);\n}\n";
   var classes = {"dafRoot":"styles_dafRoot__1QUlM","outer":"styles_outer__abXQX","inner":"styles_inner__x-amJ","main":"styles_main__BHTRd","spacer":"styles_spacer__2T7TS","outerMid":"styles_outerMid__2WtcY","innerMid":"styles_innerMid__27MCi","mid":"styles_mid__dcgUr","start":"styles_start__AwkfY","end":"styles_end__2wr6A","text":"styles_text__1_7-z"};
   styleInject(css_248z);
 
@@ -311,6 +332,27 @@
         innerFloat: amudB ? "right" : "left",
         outerFloat: amudB ? "left" : "right"
       });
+    },
+    manageExceptions(spacerHeights) { 
+      if (spacerHeights.inner < spacerHeights.start) {
+        setVars({
+          exception1: "1",
+          innerStart: "100%",
+          outerStart: "0%",
+          innerPadding: "0px",
+          outerPadding: "0px",
+      });
+      }
+      if (spacerHeights.outer < spacerHeights.start) {
+        setVars({
+          exception2: "1",
+          outerStart: "0%",
+          innerStart: "100%",
+          innerPadding: "0px",
+          outerPadding: "0px"
+          
+      });
+      }
     }
   };
 
@@ -397,8 +439,9 @@
           styleManager.updateIsAmudB(amud == "b");
         }
         this.spacerHeights = calculateSpacers(main, inner, outer, clonedOptions, containers.dummy);
-        console.dir(this.spacerHeights);
         styleManager.updateSpacersVars(this.spacerHeights);
+        styleManager.manageExceptions(this.spacerHeights);
+        console.log(this.spacerHeights);
         textSpans.main.innerHTML = main;
         textSpans.inner.innerHTML = inner;
         textSpans.outer.innerHTML = outer;
