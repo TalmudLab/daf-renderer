@@ -5,12 +5,15 @@ const defaultOptions = {
     vertical: "10px",
     horizontal: "16px",
   },
+  innerPadding: "4px",
+  outerPadding: "4px",
   halfway: "50%",
   fontFamily: {
     inner: "Rashi",
     outer: "Rashi",
     main: "Vilna"
   },
+  direction: "rtl",
   fontSize: {
     main: "15px",
     side: "10.5px"
