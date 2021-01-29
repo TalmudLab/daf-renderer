@@ -85,7 +85,8 @@ If we use three layers stacked on top of each other, we can then recreate the pa
 
 ![A picture sketching the spacer over the daf](https://github.com/Jutanium/daf-render-lib/blob/master/doc-pictures/Spacers%20Together.PNG)
 
-We can see above that there are many spacers, but we only need to worry about three of them. We will define them as such:
+We can see above that there are many spacers, but we only need to worry about four of them. We will define them as such:
+- Start Spacer
 - Inner Spacer
 - Outer Spacer
 - Bottom Spacer
