@@ -69,10 +69,12 @@ There are seven options you can change:
 ### Data Sources
 
 #### Sefaria
+*Coming Soon*
 
 #### Talmud.dev API
+*Coming Soon*
 
-## How it Works
+## How it Works (Better Documenation On the Way)
 
 ### Spacers and the DOM
 The layout of the Talmud is not easily replicated with the box-model of the web. This is because there is no such thing as *middle* for the CSS [float](https://developer.mozilla.org/en-US/docs/Web/CSS/float) property, or any other kind of ability to allow multiple bodies of text to wrap around one another. This limitation was overcome with a new paradigm we call *spacers*. Spacers take advantage of the wrap-around principles of [flow](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Normal_Flow). When a *right-floated* body of text encounters a *left-floated* element, it will wrap around that element instead of overlapping. Thus, we can make complex shapes out of the text by using multiple spacers to force the text into the shape we want:
