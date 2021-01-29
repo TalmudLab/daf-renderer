@@ -88,7 +88,7 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
   };
 
 
-  const topArea = (lineHeight) => ((4 * lineHeight * topWidth) + - paddingAreas.horizontalSide); //remove area of the top 4 lines
+  const topArea = (lineHeight) => ((4 * lineHeight * topWidth) - paddingAreas.horizontalSide); //remove area of the top 4 lines
   
 
   const main = {
