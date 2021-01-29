@@ -97,7 +97,7 @@ Once we have this structure, where there are three layers each with their own sp
 ### Algorithm
 The algorithim has two stages. 
 
-In order to understand both stages, we must understand that there are three possible layouts that are possible:
+In order to understand both stages, we must understand that there are three possible layouts:
 
 - Double-Wrap
 - Stairs
