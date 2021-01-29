@@ -27,11 +27,11 @@
 
 
         // This is where we call our renderer with some options:
-        const renderer = dafRenderer("#daf", { padding: { vertical: "10px"}});
+        const renderer = dafRenderer("#daf");
         // When you have complex inputs such as above, you may have to put the render function in a timeout as Chromium struggles to provide the inputs fast enough. What this is doing is essentially giving Chrome an extra 10 millisenconds to process the inputs. 
         setTimeout(function(){ 
             renderer.render(maintext, innertext, outertext, 'b');
-        }, 10)
+        }, 20)
     </script>
     
 </body>

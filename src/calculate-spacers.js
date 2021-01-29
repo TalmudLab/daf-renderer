@@ -34,12 +34,6 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
   const topWidth = Number(parsedOptions.width * parsedOptions.halfway) - parsedOptions.padding.horizontal; //each commentary top
   const sideWidth = Number(parsedOptions.width * (1 - parsedOptions.mainWidth)/2) //each commentary widths, dont include padding, sokeep it constant
 
-  // These values are unique to the font you are using: 
-  // If you change fonts, you may have to modify these numbers, but the value should always be close to 1.
-  const innerModifier = 1 // Rashi font sometimes causes a percentage difference error 113% when it comes to browser rendering
-  const outerModifier = 1
-  const mainModifier = 1 // Vilna font sometimes causes a percentage difference error of 95% when it comes to browser rendering
-
   // We could probably put this somewhere else, it was meant to be a place for all the padding corrections,
   // but there turned out to only be one
   const paddingAreas = {
@@ -47,14 +41,16 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
     horizontalSide: sideWidth * parsedOptions.padding.vertical,
   }
 
-  const adjustCommentaryArea = (area, lineHeight) => area - (4 * lineHeight * topWidth); //remove area of the top 4 lines
+
+  const topArea = (lineHeight) => ((4 * lineHeight * topWidth) - paddingAreas.horizontalSide); //remove area of the top 4 lines
+  
+
   const main = {
     name: "main",
     width: midWidth,
     text: mainText,
     lineHeight: parsedOptions.lineHeight.main,
-    area: getAreaOfText(mainText, parsedOptions.fontFamily.main, parsedOptions.fontSize.main, midWidth, parsedOptions.lineHeight.main, dummy) 
-    * mainModifier,
+    area: getAreaOfText(mainText, parsedOptions.fontFamily.main, parsedOptions.fontSize.main, midWidth, parsedOptions.lineHeight.main, dummy),
     length: null,
     height: null,
   }
@@ -63,11 +59,8 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
     width: sideWidth,
     text: outerText,
     lineHeight: parsedOptions.lineHeight.side,
-    area: adjustCommentaryArea(
-      getAreaOfText(outerText, parsedOptions.fontFamily.outer, parsedOptions.fontSize.side, sideWidth, parsedOptions.lineHeight.side, dummy) 
-      * outerModifier,
-      parsedOptions.lineHeight.side
-    ) - paddingAreas.horizontalSide,
+    area: getAreaOfText(outerText, parsedOptions.fontFamily.outer, parsedOptions.fontSize.side, sideWidth, parsedOptions.lineHeight.side, dummy) 
+          - topArea(parsedOptions.lineHeight.side),
     length: null,
     height: null,
   }
@@ -76,17 +69,17 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
     width: sideWidth,
     text: innerText,
     lineHeight: parsedOptions.lineHeight.side,
-    area: adjustCommentaryArea(
+    area:
       getAreaOfText(innerText, parsedOptions.fontFamily.inner, parsedOptions.fontSize.side, sideWidth, parsedOptions.lineHeight.side, dummy) 
-      * innerModifier,
-      parsedOptions.lineHeight.side
-    ) - paddingAreas.horizontalSide,
+      - topArea(parsedOptions.lineHeight.side),
     length: null,
     height: null,
   }
 
   const texts = [main, outer, inner];
-  texts.forEach (text => text.height = text.area / text.width);
+  texts.forEach(text => text.height = text.area / text.width);
+  texts.forEach(text => text.unadjustedArea = text.area + topArea(parsedOptions.lineHeight.side));
+  texts.forEach(text => text.unadjustedHeight = text.unadjustedArea / text.width);
 
   const perHeight = Array.from(texts).sort( (a,b) => a.height - b.height);
 
@@ -101,15 +94,42 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
 
   //First we need to check we have enough commentary to fill the first four lines
   if (inner.height <= 0 && outer.height <= 0){
-    console.error("Not Enough Commentary");
-    return Error("Not enough commentary");
+    console.error("No Commentary");
+    return Error("No Commentary");
   };
 
   const spacerHeights = {
-    start: 4 * parsedOptions.lineHeight.side, // For Tzurat Hadaf this will always be the same
+    start: 4 * parsedOptions.lineHeight.side,
     inner: null,
     outer: null,
     end: 0,
+  };
+
+  console.log(inner.height, inner.unadjustedHeight, outer.height, outer.unadjustedHeight, spacerHeights.start);
+  // This is a case that we have to decice what to do with, when there is not enough commentary on both sides to fill the lines. 
+  if (inner.height <= spacerHeights.start && outer.height <= spacerHeights.start) {
+    console.error("Not Enough Commentary to Fill Four Lines");
+    return Error("Not Enough Commentary");
+  };
+
+  // We are going to deal with our first edge case when there is either only one commentary
+  // Or where there is enough of one commentary, but not four lines of the other.
+  if (inner.unadjustedHeight  <= spacerHeights.start || outer.unadjustedHeight  <= spacerHeights.start) {
+    if (inner.unadjustedHeight  <= spacerHeights.start) {
+      spacerHeights.inner = inner.unadjustedHeight;
+
+      spacerHeights.outer = (outer.unadjustedArea - parsedOptions.width*4*parsedOptions.lineHeight.side) / sideWidth;
+      return spacerHeights;
+    }
+    if (outer.unadjustedHeight <= spacerHeights.start) {
+      spacerHeights.outer = outer.unadjustedHeight;
+
+      spacerHeights.inner = (inner.unadjustedArea - parsedOptions.width * 4 * parsedOptions.lineHeight.side) / sideWidth;
+      return spacerHeights;
+    }
+    else {
+      return Error("Inner Spacer Error");
+    }
   };
 
   //If Double=Wrap

@@ -8,6 +8,7 @@
   --fontFamily-inner: "Rashi";
   --fontFamily-outer: "Tosafot";
   --fontFamily-main: "Vilna";
+  --direction: "rtl"
 
   --fontSize-main: 0px;
   --fontSize-side: 0px;
@@ -16,21 +17,30 @@
   --lineHeight-side: 0px;
 
   --mainMargin-start: 50%;
-  --sidePercent: calc(calc(100% - var(--mainMargin-start))/2);
+  --sidePercent: calc(calc(100% - var(--mainMargin-start)) / 2);
   --remainderPercent: calc(100% - var(--sidePercent));
 
   --innerFloat: left;
   --outerFloat: right;
 
+  --exception1: 0;
+  --exception2: 0;
+  --innerStart: 50%;
+  --innerPadding: 0px;
+  --outerStart: 50%;
+  --outerPadding: 0px;
+
   --spacerHeights-start: 0px;
   --spacerHeights-outer: 0px;
   --spacerHeights-inner: 0px;
   --spacerHeights-end: 0px;
-
 }
 
 /*Containers*/
-.dafRoot, .outer, .inner, .main {
+.dafRoot,
+.outer,
+.inner,
+.main {
   position: absolute;
   width: var(--contentWidth);
   pointer-events: none;
@@ -38,17 +48,19 @@
 }
 
 /*Float changes with amud*/
-.inner .spacer, .main .spacer.outerMid{
+.inner .spacer,
+.main .spacer.outerMid {
   float: var(--innerFloat);
 }
 
-.outer .spacer, .main .spacer.innerMid{
+.outer .spacer,
+.main .spacer.innerMid {
   float: var(--outerFloat);
 }
 
-
 /*Spacer widths determined by options*/
-.inner .spacer, .outer .spacer {
+.inner .spacer,
+.outer .spacer {
   width: var(--halfway);
 }
 .spacer.mid {
@@ -58,7 +70,8 @@
 .main .spacer.start {
   width: var(--contentWidth);
 }
-.main .spacer.innerMid, .main .spacer.outerMid {
+.main .spacer.innerMid,
+.main .spacer.outerMid {
   width: var(--sidePercent);
 }
 
@@ -71,31 +84,63 @@
   height: var(--spacerHeights-end);
 }
 
-.inner .spacer.mid, .main .spacer.innerMid {
+.inner .spacer.mid,
+.main .spacer.innerMid {
   height: var(--spacerHeights-inner);
 }
-.outer .spacer.mid, .main .spacer.outerMid {
+.outer .spacer.mid,
+.main .spacer.outerMid {
   height: var(--spacerHeights-outer);
 }
 
+/*Settings to handle edge Cases*/
+
+.inner .spacer.start {
+  width: var(--innerStart);
+  margin-left: var(--innerPadding);
+  margin-right: var(--innerPadding);
+}
+
+.outer .spacer.start {
+  width: var(--outerStart);
+  margin-left: var(--outerPadding);
+  margin-right: var(--outerPadding);
+}
+
+.inner .spacer.start{
+  margin-bottom: calc(var(--padding-vertical) * var(--exception1));
+}
+.outer .spacer.start {
+  margin-bottom: calc(var(--padding-vertical) * var(--exception2));
+}
+
+.spacer.mid {
+  clear: both;
+}
+
 /*Margins!*/
-.spacer.start, .spacer.end, .main .spacer.innerMid, .main .spacer.outerMid {
+.spacer.start,
+.spacer.end,
+.main .spacer.innerMid,
+.main .spacer.outerMid {
   margin-left: calc(0.5 * var(--padding-horizontal));
   margin-right: calc(0.5 * var(--padding-horizontal));
 }
 
-.spacer.mid, .main .text {
+.spacer.mid,
+.main .text {
   margin-top: var(--padding-vertical);
 }
 
-.spacer.mid, .main .spacer.innerMid, .main .spacer.outerMid {
-  margin-bottom: calc(2 * var(--padding-vertical));
+.spacer.mid,
+.main .spacer.innerMid,
+.main .spacer.outerMid {
+  margin-bottom: var(--padding-vertical);
 }
-
 
 /*Text*/
 .text {
-  direction: rtl;
+  direction: var(--direction);
   text-align: justify;
 }
 
@@ -109,7 +154,8 @@
   line-height: var(--lineHeight-main);
 }
 
-.inner .text, .outer .text {
+.inner .text,
+.outer .text {
   font-size: var(--fontSize-side);
   line-height: var(--lineHeight-side);
 }
