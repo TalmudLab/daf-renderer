@@ -91,7 +91,7 @@ We can see above that there are many spacers, but we only need to worry about fo
 - Outer Spacer
 - Bottom Spacer
 
-Once we have this structure, where there are three layers each with their own spacers, the only thing left is to calculate the dimensions of the spacers listed above. Specifically, it is important to know their heights (you can actually set thier widths to zero, and rely on floating them left or right). 
+Once we have this structure, where there are three layers each with their own spacers, the only thing left is to calculate the dimensions of the spacers listed above. Specifically, it is important to know their heights. 
 
 
 ### Algorithm
