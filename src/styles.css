@@ -80,22 +80,6 @@
   height: var(--spacerHeights-start);
 }
 
-.inner .spacer.start {
-  width: var(--innerStart);
-  margin-left: var(--innerPadding);
-  margin-right: var(--innerPadding);
-}
-
-.outer .spacer.start {
-  width: var(--outerStart);
-  margin-left: var(--outerPadding);
-  margin-right: var(--outerPadding);
-}
-
-.spacer.mid {
-  clear: both;
-}
-
 .spacer.end {
   height: var(--spacerHeights-end);
 }
@@ -109,6 +93,30 @@
   height: var(--spacerHeights-outer);
 }
 
+/*Settings to handle edge Cases*/
+
+.inner .spacer.start {
+  width: var(--innerStart);
+  margin-left: var(--innerPadding);
+  margin-right: var(--innerPadding);
+}
+
+.outer .spacer.start {
+  width: var(--outerStart);
+  margin-left: var(--outerPadding);
+  margin-right: var(--outerPadding);
+}
+
+.inner .spacer.start{
+  margin-bottom: calc(var(--padding-vertical) * var(--exception1));
+}
+.outer .spacer.start {
+  margin-bottom: calc(var(--padding-vertical) * var(--exception2));
+}
+
+.spacer.mid {
+  clear: both;
+}
 /*Margins!*/
 .spacer.start,
 .spacer.end,
@@ -121,13 +129,6 @@
 .spacer.mid,
 .main .text {
   margin-top: var(--padding-vertical);
-}
-
-.inner .spacer.start{
-  margin-bottom: calc(var(--padding-vertical) * var(--exception1));
-}
-.outer .spacer.start {
-  margin-bottom: calc(var(--padding-vertical) * var(--exception2));
 }
 
 .spacer.mid,
