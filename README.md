@@ -54,7 +54,7 @@ There are seven options you can change:
     outer: "Rashi",
     main: "Vilna"
   },
-  direction: rtl,
+  direction: "rtl",
   fontSize: {
     main: "15px",
     side: "10.5px"
