@@ -439,7 +439,6 @@
         this.spacerHeights = calculateSpacers(main, inner, outer, clonedOptions, containers.dummy);
         styleManager.updateSpacersVars(this.spacerHeights);
         styleManager.manageExceptions(this.spacerHeights);
-        console.log(this.spacerHeights);
         textSpans.main.innerHTML = main;
         textSpans.inner.innerHTML = inner;
         textSpans.outer.innerHTML = outer;
