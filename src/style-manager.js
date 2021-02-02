@@ -83,24 +83,23 @@ export default {
       outerFloat: amudB ? "left" : "right"
     })
   },
-  manageExceptions(spacerHeights) { 
+  manageExceptions(spacerHeights) {
     if (spacerHeights.inner < spacerHeights.start) {
       setVars({
-        exception1: "1",
-        innerStart: "100%",
-        outerStart: "0%",
+        hasInnerStartGap: "1",
+        innerStartWidth: "100%",
+        outerStartWidth: "0%",
         innerPadding: "0px",
         outerPadding: "0px",
     })
     }
     if (spacerHeights.outer < spacerHeights.start) {
       setVars({
-        exception2: "1",
-        outerStart: "0%",
-        innerStart: "100%",
+        hasOuterStartGap: "1",
+        innerStartWidth: "100%",
+        outerStartWidth: "0%",
         innerPadding: "0px",
         outerPadding: "0px"
-        
     })
     }
   }

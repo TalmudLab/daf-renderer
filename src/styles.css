@@ -23,17 +23,18 @@
   --innerFloat: left;
   --outerFloat: right;
 
-  --exception1: 0;
-  --exception2: 0;
-  --innerStart: 50%;
-  --innerPadding: 0px;
-  --outerStart: 50%;
-  --outerPadding: 0px;
-
   --spacerHeights-start: 0px;
   --spacerHeights-outer: 0px;
   --spacerHeights-inner: 0px;
   --spacerHeights-end: 0px;
+
+  /*Edge Cases*/
+  --hasInnerStartGap: 0;
+  --hasOuterStartGap: 0;
+  --innerStartWidth: 50%;
+  --innerPadding: 0px;
+  --outerStartWidth: 50%;
+  --outerPadding: 0px;
 }
 
 /*Containers*/
@@ -96,22 +97,22 @@
 /*Settings to handle edge Cases*/
 
 .inner .spacer.start {
-  width: var(--innerStart);
+  width: var(--innerStartWidth);
   margin-left: var(--innerPadding);
   margin-right: var(--innerPadding);
 }
 
 .outer .spacer.start {
-  width: var(--outerStart);
+  width: var(--outerStartWidth);
   margin-left: var(--outerPadding);
   margin-right: var(--outerPadding);
 }
 
 .inner .spacer.start{
-  margin-bottom: calc(var(--padding-vertical) * var(--exception1));
+  margin-bottom: calc(var(--padding-vertical) * var(--hasInnerStartGap));
 }
 .outer .spacer.start {
-  margin-bottom: calc(var(--padding-vertical) * var(--exception2));
+  margin-bottom: calc(var(--padding-vertical) * var(--hasOuterStartGap));
 }
 
 .spacer.mid {
