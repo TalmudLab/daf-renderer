@@ -91,8 +91,7 @@ export default {
         innerPadding: "0px",
         outerPadding: "0px",
       })
-    }
-    if (spacerHeights.outer < spacerHeights.start) {
+    } else if (spacerHeights.outer < spacerHeights.start) {
       setVars({
         hasOuterStartGap: "1",
         innerStartWidth: "100%",
