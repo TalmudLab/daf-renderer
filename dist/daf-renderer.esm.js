@@ -273,7 +273,7 @@ const containerClasses = {
   }
 };
 
-function addClasses (element, classNames) {
+function addClasses(element, classNames) {
   if (Array.isArray(classNames))
     element.classList.add(...classNames);
   else
@@ -293,7 +293,6 @@ function setVars(object, prefix = "") {
     }
   });
 }
-
 
 
 var styleManager = {
@@ -335,7 +334,7 @@ var styleManager = {
         outerStartWidth: "0%",
         innerPadding: "0px",
         outerPadding: "0px",
-    });
+      });
     }
     if (spacerHeights.outer < spacerHeights.start) {
       setVars({
@@ -344,22 +343,22 @@ var styleManager = {
         outerStartWidth: "0%",
         innerPadding: "0px",
         outerPadding: "0px"
-    });
+      });
     }
   }
 };
 
-function el (tag, parent) {
+function el(tag, parent) {
   const newEl = document.createElement(tag);
   if (parent) parent.append(newEl);
   return newEl;
 }
 
-function div (parent) {
+function div(parent) {
   return el("div", parent);
 }
 
-function span (parent) {
+function span(parent) {
   return el("span", parent);
 }
 
@@ -407,9 +406,9 @@ function renderer (el, options = defaultOptions) {
   };
 
   const textSpans = {
-    main:  span(containers.main.text),
-    inner:  span(containers.inner.text),
-    outer:  span(containers.outer.text)
+    main: span(containers.main.text),
+    inner: span(containers.inner.text),
+    outer: span(containers.outer.text)
   };
 
   const clonedOptions = mergeAndClone(options, defaultOptions);
@@ -426,7 +425,7 @@ function renderer (el, options = defaultOptions) {
       end: 0
     },
     amud: "a",
-    render (main, inner, outer, amud = "a") {
+    render(main, inner, outer, amud = "a") {
       if (this.amud != amud) {
         this.amud = amud;
         styleManager.updateIsAmudB(amud == "b");

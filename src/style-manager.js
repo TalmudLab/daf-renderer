@@ -29,7 +29,7 @@ const containerClasses = {
   }
 }
 
-function addClasses (element, classNames) {
+function addClasses(element, classNames) {
   if (Array.isArray(classNames))
     element.classList.add(...classNames)
   else
@@ -49,7 +49,6 @@ function setVars(object, prefix = "") {
     }
   })
 }
-
 
 
 export default {
@@ -91,7 +90,7 @@ export default {
         outerStartWidth: "0%",
         innerPadding: "0px",
         outerPadding: "0px",
-    })
+      })
     }
     if (spacerHeights.outer < spacerHeights.start) {
       setVars({
@@ -100,7 +99,7 @@ export default {
         outerStartWidth: "0%",
         innerPadding: "0px",
         outerPadding: "0px"
-    })
+      })
     }
   }
 }
