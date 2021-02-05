@@ -6,7 +6,8 @@
   "module": "dist/daf-renderer.esm.js",
   "browser": "dist/daf-renderer.umd.js",
   "scripts": {
-    "build": "rollup -c -w"
+    "build": "rollup -c -w",
+    "cypress:open": "cypress open"
   },
   "contributors": [
     {
@@ -25,7 +26,10 @@
     "rollup-plugin-postcss": "^4.0.0"
   },
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/GT-Jewish-DH/daf-renderer.git"
+    "type": "git",
+    "url": "https://github.com/GT-Jewish-DH/daf-renderer.git"
+  },
+  "dependencies": {
+    "cypress": "^6.3.0"
   }
 }
