@@ -2,7 +2,7 @@
 
 A DOM render library for creating Talmud pages on the web - *the library works, but documentation and testing are in progress!*
 
-The goal of this library is to quickly and easily create an HTML object that represents a natively rendered Talmud page, modeled after the classic [Vilna](https://en.wikipedia.org/wiki/Vilna_Edition_Shas#/media/File:First_page_of_the_first_tractate_of_the_Talmud_(Daf_Beis_of_Maseches_Brachos).jpg). It can also work for any other purposes that require a similar layout. Our library has no dependencies and can be used with two lines of code.
+The goal of this library is to quickly and easily create an HTML object that represents a natively rendered Talmud page, modeled after the classic [Vilna](https://en.wikipedia.org/wiki/Vilna_Edition_Shas#/media/File:First_page_of_the_first_tractate_of_the_Talmud_(Daf_Beis_of_Maseches_Brachos).jpg). It can also work for any other purposes that require a similar layout. Our library has **no dependencies** and can be used with **two lines of code**.
 
 ## Installation
 
