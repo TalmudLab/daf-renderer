@@ -12,7 +12,7 @@ Download our [release](https://github.com/GT-Jewish-DH/daf-renderer/releases/tag
 
 ### NPM
 
-If you're using a module bundler for your front-end project, you can install via npm:
+If you're using a [module bundler](https://medium.com/@gimenete/how-javascript-bundlers-work-1fc0d0caf2da) for your front-end project, you can install via npm:
 
 `npm install daf-renderer`
 
