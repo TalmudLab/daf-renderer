@@ -31,7 +31,7 @@ For examples on how to use this, refer to the example files provided.
 
 *Note: If you are providing particularily complex inputs (mainHTML, innerHTML, outerHTML) to the renderer straight from the HTML file, you may need to place the renderer in a 10 ms timeout to give the browser time to parse the HTML. Refer to example1.html for an example of this.*
 
-### Options
+### Options (optional)
 The renderer can take into account a number of customizable options. If these options are not included, then it will default to what you find below. If you want to change anything, you simply need to pass in an object to the dafRenderer as outlined below with your desired changes.
 There are seven options you can change:
 1. *contentWidth*: This option controls how wide the page should be. Everything else will be automatically adapted to fit the content within the designated width.
