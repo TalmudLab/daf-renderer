@@ -27,8 +27,7 @@ Then in your code
 const renderer = dafRenderer("#dafGoesHere", options);
 renderer.render(mainHTML, innerHTML, outerHTML, "b");
 ```
-For examples on how to use this, refer to the example files provided. You can use this package with a single HTML file.
-
+For examples on how to use this, refer to the example files provided.
 
 *Note: If you are providing particularily complex inputs (mainHTML, innerHTML, outerHTML) to the renderer straight from the HTML file, you may need to place the renderer in a 10 ms timeout to give the browser time to parse the HTML. Refer to example1.html for an example of this.*
 
