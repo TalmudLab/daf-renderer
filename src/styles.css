@@ -16,7 +16,8 @@
   --lineHeight-main: 0px;
   --lineHeight-side: 0px;
 
-  --mainMargin-start: 50%;
+  --mainWidth: 0%;
+  --mainMargin-start: var(--mainWidth);
   --sidePercent: calc(calc(100% - var(--mainMargin-start)) / 2);
   --remainderPercent: calc(100% - var(--sidePercent));
 
