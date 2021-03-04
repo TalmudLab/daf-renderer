@@ -131,7 +131,7 @@
         if (inner.unadjustedHeight <= 0 && outer.unadjustedHeight <= 0){
           console.error("No Commentary");
           return Error("No Commentary");
-      }      console.log(inner.unadjustedHeight, inner.unadjustedHeight,outer.unadjustedHeight, outer.unadjustedHeight, spacerHeights.start);
+      }      console.log(inner.unadjustedHeight, inner.unadjustedHeightAlt,outer.unadjustedHeight, outer.unadjustedHeightAlt, spacerHeights.start);
         if (inner.unadjustedHeightAlt/exConst < spacerHeights.start || outer.unadjustedHeightAlt/exConst < spacerHeights.start) {
         console.log("Exceptions");
           if (inner.unadjustedHeightAlt/exConst <= spacerHeights.start) {
@@ -168,8 +168,8 @@
 
         //If Double Extend
         console.log("Double-Extend");
-        spacerHeights.inner = inner.height * 1.009;
-        spacerHeights.outer = outer.height * 1.009;
+        spacerHeights.inner = inner.height + (inner.height/inner.height**2)*inner.lineHeight;
+        spacerHeights.outer = outer.height +  (inner.height/inner.height**2)*outer.lineHeight;
         return spacerHeights
     }
 
