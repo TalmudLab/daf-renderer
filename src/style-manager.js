@@ -84,8 +84,7 @@ export default {
   },
   manageExceptions(spacerHeights) {
     if (spacerHeights.inner/2.2 < spacerHeights.start) {
-      console.log("exceptions")
-      console.log(spacerHeights.outer, spacerHeights.start)
+      console.log("In Style Exception")
       setVars({
         hasInnerStartGap: "1",
         innerStartWidth: "100%",
@@ -94,8 +93,7 @@ export default {
         outerPadding: "0px",
       })
     } else if (spacerHeights.outer/2.2 < spacerHeights.start) {
-      console.log("exceptions")
-      console.log(spacerHeights.outer, spacerHeights.start)
+      console.log("In Style Exception")
       setVars({
         hasOuterStartGap: "1",
         outerStartWidth: "100%",
