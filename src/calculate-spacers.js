@@ -99,7 +99,7 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
   };
 
   const spacerHeights = {
-    start: 4 * parsedOptions.lineHeight.side,
+    start: 4.3 * parsedOptions.lineHeight.side,
     inner: null,
     outer: null,
     end: 0,
