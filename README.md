@@ -2,7 +2,7 @@
 
 A DOM render library for creating Talmud pages on the web - *the library works, but documentation and testing are in progress!*
 
-The goal of this library is to quickly and easily create an HTML object that represents a natively rendered Talmud page, modeled after the classic [Vilna](https://en.wikipedia.org/wiki/Vilna_Edition_Shas#/media/File:First_page_of_the_first_tractate_of_the_Talmud_(Daf_Beis_of_Maseches_Brachos).jpg). It can also work for any other purposes that require a similar layout. Our library has no dependencies and can be used with two lines of code.
+The goal of this library is to quickly and easily create an HTML object that represents a natively rendered Talmud page, modeled after the classic [Vilna](https://en.wikipedia.org/wiki/Vilna_Edition_Shas#/media/File:First_page_of_the_first_tractate_of_the_Talmud_(Daf_Beis_of_Maseches_Brachos).jpg). It can also work for any other purposes that require a similar layout. Our library has **no dependencies** and can be used with **two lines of code**.
 
 ## Installation
 
@@ -12,7 +12,7 @@ Download our [release](https://github.com/GT-Jewish-DH/daf-renderer/releases/tag
 
 ### NPM
 
-If you're using a module bundler for your front-end project, you can install via npm:
+If you're using a [module bundler](https://medium.com/@gimenete/how-javascript-bundlers-work-1fc0d0caf2da) for your front-end project, you can install via npm:
 
 `npm install daf-renderer`
 
@@ -27,18 +27,20 @@ Then in your code
 const renderer = dafRenderer("#dafGoesHere", options);
 renderer.render(mainHTML, innerHTML, outerHTML, "b");
 ```
+For examples on how to use this, refer to the example files provided.
 
-Note: If you are providing particularily complex inputs (mainHTML, innerHTML, outerHTML) to the renderer straight from the HTML file, you may need to place the renderer in a 10 ms timeout to give the browser time to parse the HTML. Refer to example1.html for an example of this.
+*Note: If you are providing particularily complex inputs (mainHTML, innerHTML, outerHTML) to the renderer straight from the HTML file, you may need to place the renderer in a 10 ms timeout to give the browser time to parse the HTML. Refer to example1.html for an example of this.*
 
-### Options
+### Options (optional)
 The renderer can take into account a number of customizable options. If these options are not included, then it will default to what you find below. If you want to change anything, you simply need to pass in an object to the dafRenderer as outlined below with your desired changes.
-There are six options you can change:
+There are seven options you can change:
 1. *contentWidth*: This option controls how wide the page should be. Everything else will be automatically adapted to fit the content within the designated width.
 2. *mainWidth*: This option controls the percentage of the *contentWidth* which the main body of text takes up. For example, if you set this to 50%, then the main body will take up .5 x *contentWidth*, leaving 25% of the width to each of the side bodies of text.
 3. *padding*: This determines the padding within the rendered object, not outside of it, specifically the padding between the three different bodies of text. Anywhere where two bodies of text are next to one another, this option will control how far apart the two texts are. If there is vertical space, the vertical padding will control how large that space is, and if there is horinzontal space, the horizontal padding will control how large that space is. 
 4. *fontFamily*: This option controls the fonts that the renderer uses. You can use any of the standard web fonts, or Rashi and Vilna (which are included). If you would like to use other fonts, simply make sure to include them in your file strucutre and refer to them here. 
-5. *fontSize*: This controls the font size of the different bodies of text. For now, you cannot set the inner and outer font sizes or line heights independently; both the inner and outer side texts use the size specified under `side`.
-6. *lineHeight*: This option controls the vertical spacing between lines within a single body of text. Be careful with making this value too small as it may introduce rendering problems.
+5. *direction*: This controls the direction of the text. For English use "ltr", otherwise it will default to "rtl".
+6. *fontSize*: This controls the font size of the different bodies of text. For now, you cannot set the inner and outer font sizes or line heights independently; both the inner and outer side texts use the size specified under `side`.
+7. *lineHeight*: This option controls the vertical spacing between lines within a single body of text. Be careful with making this value too small as it may introduce rendering problems.
 
 ```javascript
 {
@@ -53,6 +55,7 @@ There are six options you can change:
     outer: "Rashi",
     main: "Vilna"
   },
+  direction: "rtl",
   fontSize: {
     main: "15px",
     side: "10.5px"
@@ -67,10 +70,12 @@ There are six options you can change:
 ### Data Sources
 
 #### Sefaria
+*Coming Soon...*
 
 #### Talmud.dev API
+*Coming Soon...*
 
-## How it Works
+## How it Works (Better Documenation On the Way)
 
 ### Spacers and the DOM
 The layout of the Talmud is not easily replicated with the box-model of the web. This is because there is no such thing as *middle* for the CSS [float](https://developer.mozilla.org/en-US/docs/Web/CSS/float) property, or any other kind of ability to allow multiple bodies of text to wrap around one another. This limitation was overcome with a new paradigm we call *spacers*. Spacers take advantage of the wrap-around principles of [flow](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Normal_Flow). When a *right-floated* body of text encounters a *left-floated* element, it will wrap around that element instead of overlapping. Thus, we can make complex shapes out of the text by using multiple spacers to force the text into the shape we want:
@@ -81,18 +86,19 @@ If we use three layers stacked on top of each other, we can then recreate the pa
 
 ![A picture sketching the spacer over the daf](https://github.com/Jutanium/daf-render-lib/blob/master/doc-pictures/Spacers%20Together.PNG)
 
-We can see above that there are many spacers, but we only need to worry about three of them. We will define them as such:
+We can see above that there are many spacers, but we only need to worry about four of them. We will define them as such:
+- Start Spacer
 - Inner Spacer
 - Outer Spacer
 - Bottom Spacer
 
-Once we have this structure, where there are three layers each with their own spacers, the only thing left is to calculate the dimensions of the spacers listed above. Specifically, it is important to know their heights (you can actually set thier widths to zero, and rely on floating them left or right). 
+Once we have this structure, where there are three layers each with their own spacers, the only thing left is to calculate the dimensions of the spacers listed above. Specifically, it is important to know their heights. 
 
 
 ### Algorithm
 The algorithim has two stages. 
 
-In order to understand both stages, we must understand that there are three possible layouts that are possible:
+In order to understand both stages, we must understand that there are three possible layouts:
 
 - Double-Wrap
 - Stairs

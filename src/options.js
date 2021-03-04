@@ -22,6 +22,7 @@ const defaultOptions = {
     main: "17px",
     side: "14px",
   },
+  lineBreaks: 0
 }
 
 function mergeAndClone (modified, definitional = defaultOptions) {
