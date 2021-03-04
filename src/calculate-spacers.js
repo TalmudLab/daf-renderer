@@ -42,7 +42,7 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
   }
 
 
-  const topArea = (lineHeight) => ((4 * lineHeight * topWidth) - paddingAreas.horizontalSide); //remove area of the top 4 lines
+  const topArea = (lineHeight) => ((4 * lineHeight * topWidth)); //remove area of the top 4 lines
   
 
   const main = {
@@ -99,7 +99,7 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
   };
 
   const spacerHeights = {
-    start: 4 * parsedOptions.lineHeight.side,
+    start: 4.3 * parsedOptions.lineHeight.side,
     inner: null,
     outer: null,
     end: 0,
@@ -158,14 +158,14 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
     // This function accounts for extra space that is introduced by padding
     const lilArea = (height1, height2, horizPadding) => (horizPadding) * (height1 - height2);
     const smallest = perHeight[0];
-    spacerHeights[smallest.name] = smallest.height;
-    spacerHeights[stair.name] = (blockArea - lilArea(blockHeight, spacerHeights[smallest.name], parsedOptions.padding.horizontal)) / blockWidth;
+    spacerHeights[smallest.name] = smallest.height - 2*smallest.lineHeight;
+    spacerHeights[stair.name] = (blockArea - lilArea(blockHeight, spacerHeights[smallest.name], parsedOptions.padding.horizontal)) / blockWidth - 4*stair.lineHeight;
     return spacerHeights
   }
   //If Double Extend
   console.log("Double-Extend")
-  spacerHeights.inner = inner.height;
-  spacerHeights.outer = outer.height;
+  spacerHeights.inner = inner.height - 3*inner.lineHeight;
+  spacerHeights.outer = outer.height - 3*inner.lineHeight;
 
   return spacerHeights
 }
