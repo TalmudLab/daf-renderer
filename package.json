@@ -25,7 +25,7 @@
     "rollup-plugin-postcss": "^4.0.0"
   },
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/GT-Jewish-DH/daf-renderer.git"
+    "type": "git",
+    "url": "https://github.com/GT-Jewish-DH/daf-renderer.git"
   }
 }
