@@ -126,13 +126,11 @@
       
         const exConst = 2.2;
       
-        console.log(main.brCount, inner.brCount, outer.brCount);
         //Checking Exceptions:
         if (inner.unadjustedHeight <= 0 && outer.unadjustedHeight <= 0){
           console.error("No Commentary");
           return Error("No Commentary");
-      }      console.log(inner.unadjustedHeight, inner.unadjustedHeightAlt,outer.unadjustedHeight, outer.unadjustedHeightAlt, spacerHeights.start);
-        if (inner.unadjustedHeightAlt/exConst < spacerHeights.start || outer.unadjustedHeightAlt/exConst < spacerHeights.start) {
+      }      if (inner.unadjustedHeightAlt/exConst < spacerHeights.start || outer.unadjustedHeightAlt/exConst < spacerHeights.start) {
         console.log("Exceptions");
           if (inner.unadjustedHeightAlt/exConst <= spacerHeights.start) {
               spacerHeights.inner = inner.unadjustedHeight;
@@ -239,7 +237,6 @@
       return Error("No Commentary");
     }
    
-    console.log(inner.height, inner.unadjustedHeight, outer.height, outer.unadjustedHeight, spacerHeights.start);
     // This is a case that we have to decice what to do with, when there is not enough commentary on both sides to fill the lines. 
     if (inner.height <= spacerHeights.start && outer.height <= spacerHeights.start) {
       console.error("Not Enough Commentary to Fill Four Lines");
@@ -417,8 +414,7 @@
     },
     manageExceptions(spacerHeights) {
       if (spacerHeights.inner/2.2 < spacerHeights.start) {
-        console.log("exceptions");
-        console.log(spacerHeights.outer, spacerHeights.start);
+        console.log("In Style Exception");
         setVars({
           hasInnerStartGap: "1",
           innerStartWidth: "100%",
@@ -427,8 +423,7 @@
           outerPadding: "0px",
         });
       } else if (spacerHeights.outer/2.2 < spacerHeights.start) {
-        console.log("exceptions");
-        console.log(spacerHeights.outer, spacerHeights.start);
+        console.log("In Style Exception");
         setVars({
           hasOuterStartGap: "1",
           outerStartWidth: "100%",
