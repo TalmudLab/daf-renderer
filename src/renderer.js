@@ -1,19 +1,19 @@
-import { defaultOptions, mergeAndClone } from "./options";
+import {defaultOptions, mergeAndClone} from "./options";
 import calculateSpacers from "./calculate-spacers";
 import styleManager from "./style-manager";
 
 
-function el (tag, parent) {
+function el(tag, parent) {
   const newEl = document.createElement(tag);
   if (parent) parent.append(newEl);
   return newEl;
 }
 
-function div (parent) {
+function div(parent) {
   return el("div", parent);
 }
 
-function span (parent) {
+function span(parent) {
   return el("span", parent);
 }
 
@@ -61,9 +61,9 @@ export default function (el, options = defaultOptions) {
   }
 
   const textSpans = {
-    main:  span(containers.main.text),
-    inner:  span(containers.inner.text),
-    outer:  span(containers.outer.text)
+    main: span(containers.main.text),
+    inner: span(containers.inner.text),
+    outer: span(containers.outer.text)
   }
 
   const clonedOptions = mergeAndClone(options, defaultOptions);
@@ -80,7 +80,7 @@ export default function (el, options = defaultOptions) {
       end: 0
     },
     amud: "a",
-    render (main, inner, outer, amud = "a") {
+    render(main, inner, outer, amud = "a") {
       if (this.amud != amud) {
         this.amud = amud;
         styleManager.updateIsAmudB(amud == "b");
@@ -88,7 +88,6 @@ export default function (el, options = defaultOptions) {
       this.spacerHeights = calculateSpacers(main, inner, outer, clonedOptions, containers.dummy);
       styleManager.updateSpacersVars(this.spacerHeights);
       styleManager.manageExceptions(this.spacerHeights);
-      console.log(this.spacerHeights)
       textSpans.main.innerHTML = main;
       textSpans.inner.innerHTML = inner;
       textSpans.outer.innerHTML = outer;

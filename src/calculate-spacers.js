@@ -11,6 +11,7 @@ function getAreaOfText(text, font, fs, width, lh, dummy) {
 }
 
 function calculateSpacers(mainText, innerText, outerText, options, dummy) {
+
   const parsedOptions = {
     width: parseFloat(options.contentWidth),
     padding: {
@@ -30,6 +31,65 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
     mainWidth: 0.01 * parseFloat(options.mainWidth)
   }
 
+   const spacerHeights = {
+    start: 4.3 * parsedOptions.lineHeight.side,
+    inner: null,
+    outer: null,
+    end: 0,
+  };
+
+  // We are accounting for the special case, where you have line breaks:
+  if (options.lineBreaks) {
+    console.log("Special Case for Line Breaks")
+    const main = {
+        name: "main",
+        text: mainText,
+        lineHeight: parsedOptions.lineHeight.main,
+        top: 0,
+      }
+      const outer = {
+        name: "outer",
+        text: outerText,
+        lineHeight: parsedOptions.lineHeight.side,
+        top: 3,
+      }
+      const inner = {
+        name: "inner",
+        text: innerText,
+        lineHeight: parsedOptions.lineHeight.side,
+        top: 3,
+      }
+      const texts = [main, outer, inner];
+      texts.forEach(body => body.brCount = (body.text.match(/<br>/g) || []).length - body.top);
+      texts.forEach(body => body.height = (body.brCount * body.lineHeight));
+      const perHeight = Array.from(texts).sort((a, b) => a.height - b.height);
+
+      //If Double=Wrap
+      if (perHeight[0].name === "main"){
+        console.log("Double-Wrap"); 
+        spacerHeights.inner = main.height;
+        spacerHeights.outer = main.height;
+      
+        const brDifference = perHeight[1].brCount - perHeight[0].brCount;
+        spacerHeights.end = brDifference*perHeight[1].lineHeight;
+        return spacerHeights;
+      }
+      
+      //If Stairs
+      if (perHeight[1].name === "main") {
+        console.log("Stairs"); 
+        spacerHeights[perHeight[0].name] = perHeight[0].height;
+        spacerHeights[perHeight[2].name] = main.height;
+        return spacerHeights;
+      }
+
+      //If Double Extend
+      console.log("Double-Extend")
+      spacerHeights.inner = inner.height;
+      spacerHeights.outer = outer.height;
+      return spacerHeights
+  }
+
   const midWidth = Number(parsedOptions.width * parsedOptions.mainWidth) - 2*parsedOptions.padding.horizontal; //main middle strip
   const topWidth = Number(parsedOptions.width * parsedOptions.halfway) - parsedOptions.padding.horizontal; //each commentary top
   const sideWidth = Number(parsedOptions.width * (1 - parsedOptions.mainWidth)/2) //each commentary widths, dont include padding, sokeep it constant
@@ -42,7 +102,7 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
   }
 
 
-  const topArea = (lineHeight) => ((4 * lineHeight * topWidth) - paddingAreas.horizontalSide); //remove area of the top 4 lines
+  const topArea = (lineHeight) => ((4 * lineHeight * topWidth)); //remove area of the top 4 lines
   
 
   const main = {
@@ -81,8 +141,8 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
   texts.forEach(text => text.unadjustedArea = text.area + topArea(parsedOptions.lineHeight.side));
   texts.forEach(text => text.unadjustedHeight = text.unadjustedArea / text.width);
 
-  const perHeight = Array.from(texts).sort( (a,b) => a.height - b.height);
-
+  const perHeight = Array.from(texts).sort((a, b) => a.height - b.height);
+ 
   //There are Three Main Types of Case:
   //Double-Wrap: The main text being the smallest and commentaries wrapping around it
   //Stairs: The main text wrapping around one, but the other wrapping around it
@@ -98,13 +158,7 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
     return Error("No Commentary");
   };
 
-  const spacerHeights = {
-    start: 4.3 * parsedOptions.lineHeight.side,
-    inner: null,
-    outer: null,
-    end: 0,
-  };
-
+ 
   console.log(inner.height, inner.unadjustedHeight, outer.height, outer.unadjustedHeight, spacerHeights.start);
   // This is a case that we have to decice what to do with, when there is not enough commentary on both sides to fill the lines. 
   if (inner.height <= spacerHeights.start && outer.height <= spacerHeights.start) {
@@ -164,10 +218,11 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
   }
   //If Double Extend
   console.log("Double-Extend")
-  spacerHeights.inner = inner.height;
+  spacerHeights.inner = inner.heightt;
   spacerHeights.outer = outer.height;
 
   return spacerHeights
 }
 
-export default calculateSpacers;
+
+export default (calculateSpacers);
