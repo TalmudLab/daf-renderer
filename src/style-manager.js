@@ -83,7 +83,9 @@ export default {
     })
   },
   manageExceptions(spacerHeights) {
-    if (spacerHeights.inner < spacerHeights.start) {
+    if (spacerHeights.inner/2.2 < spacerHeights.start) {
+      console.log("exceptions")
+      console.log(spacerHeights.outer, spacerHeights.start)
       setVars({
         hasInnerStartGap: "1",
         innerStartWidth: "100%",
@@ -91,11 +93,13 @@ export default {
         innerPadding: "0px",
         outerPadding: "0px",
       })
-    } else if (spacerHeights.outer < spacerHeights.start) {
+    } else if (spacerHeights.outer/2.2 < spacerHeights.start) {
+      console.log("exceptions")
+      console.log(spacerHeights.outer, spacerHeights.start)
       setVars({
         hasOuterStartGap: "1",
-        innerStartWidth: "100%",
-        outerStartWidth: "0%",
+        outerStartWidth: "100%",
+        innerStartWidth: "0%",
         innerPadding: "0px",
         outerPadding: "0px"
       })

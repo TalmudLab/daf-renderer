@@ -78,6 +78,10 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
     mainWidth: 0.01 * parseFloat(options.mainWidth)
   };
 
+  const midWidth = Number(parsedOptions.width * parsedOptions.mainWidth) - 2*parsedOptions.padding.horizontal; //main middle strip
+  const topWidth = Number(parsedOptions.width * parsedOptions.halfway) - parsedOptions.padding.horizontal; //each commentary top
+  const sideWidth = Number(parsedOptions.width * (1 - parsedOptions.mainWidth)/2); //each commentary widths, dont include padding, sokeep it constant
+
    const spacerHeights = {
     start: 4.3 * parsedOptions.lineHeight.side,
     inner: null,
@@ -98,20 +102,46 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
         name: "outer",
         text: outerText,
         lineHeight: parsedOptions.lineHeight.side,
-        top: 3,
+        top: 4,
       };
       const inner = {
         name: "inner",
         text: innerText,
         lineHeight: parsedOptions.lineHeight.side,
-        top: 3,
-      };
+        top: 4,
+    };
+    
       const texts = [main, outer, inner];
       texts.forEach(body => body.brCount = (body.text.match(/<br>/g) || []).length - body.top);
       texts.forEach(body => body.height = (body.brCount * body.lineHeight));
+      texts.forEach(body => body.unadjustedHeight = ((body.brCount + body.top + 1) * body.lineHeight));
+      texts.forEach(body => body.unadjustedHeightAlt = ((body.brCount + body.top) * body.lineHeight)*sideWidth/topWidth);
       const perHeight = Array.from(texts).sort((a, b) => a.height - b.height);
-
-      //If Double=Wrap
+    
+      const exConst = 2.2;
+    
+      console.log(main.brCount, inner.brCount, outer.brCount);
+      //Checking Exceptions:
+      if (inner.unadjustedHeight <= 0 && outer.unadjustedHeight <= 0){
+        console.error("No Commentary");
+        return Error("No Commentary");
+    }      console.log(inner.unadjustedHeight, inner.unadjustedHeight,outer.unadjustedHeight, outer.unadjustedHeight, spacerHeights.start);
+      if (inner.unadjustedHeightAlt/exConst < spacerHeights.start || outer.unadjustedHeightAlt/exConst < spacerHeights.start) {
+      console.log("Exceptions");
+        if (inner.unadjustedHeightAlt/exConst <= spacerHeights.start) {
+            spacerHeights.inner = inner.unadjustedHeight;
+            spacerHeights.outer = outer.height;
+            return spacerHeights;
+          }
+        if (outer.unadjustedHeightAlt/exConst <= spacerHeights.start) {
+            spacerHeights.outer = outer.unadjustedHeight;
+            spacerHeights.inner = inner.height;
+            return spacerHeights;
+          }
+        else {
+          return Error("Inner Spacer Error");
+        }
+      }      //If Double=Wrap
       if (perHeight[0].name === "main"){
         console.log("Double-Wrap"); 
         spacerHeights.inner = main.height;
@@ -132,14 +162,12 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
 
       //If Double Extend
       console.log("Double-Extend");
-      spacerHeights.inner = inner.height;
-      spacerHeights.outer = outer.height;
+      spacerHeights.inner = inner.height * 1.009;
+      spacerHeights.outer = outer.height * 1.009;
       return spacerHeights
   }
 
-  const midWidth = Number(parsedOptions.width * parsedOptions.mainWidth) - 2*parsedOptions.padding.horizontal; //main middle strip
-  const topWidth = Number(parsedOptions.width * parsedOptions.halfway) - parsedOptions.padding.horizontal; //each commentary top
-  const sideWidth = Number(parsedOptions.width * (1 - parsedOptions.mainWidth)/2); //each commentary widths, dont include padding, sokeep it constant
+  
 
   // We could probably put this somewhere else, it was meant to be a place for all the padding corrections,
   // but there turned out to only be one
@@ -382,7 +410,9 @@ var styleManager = {
     });
   },
   manageExceptions(spacerHeights) {
-    if (spacerHeights.inner < spacerHeights.start) {
+    if (spacerHeights.inner/2.2 < spacerHeights.start) {
+      console.log("exceptions");
+      console.log(spacerHeights.outer, spacerHeights.start);
       setVars({
         hasInnerStartGap: "1",
         innerStartWidth: "100%",
@@ -390,11 +420,13 @@ var styleManager = {
         innerPadding: "0px",
         outerPadding: "0px",
       });
-    } else if (spacerHeights.outer < spacerHeights.start) {
+    } else if (spacerHeights.outer/2.2 < spacerHeights.start) {
+      console.log("exceptions");
+      console.log(spacerHeights.outer, spacerHeights.start);
       setVars({
         hasOuterStartGap: "1",
-        innerStartWidth: "100%",
-        outerStartWidth: "0%",
+        outerStartWidth: "100%",
+        innerStartWidth: "0%",
         innerPadding: "0px",
         outerPadding: "0px"
       });
