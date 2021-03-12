@@ -245,7 +245,7 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
   }
   //If Double Extend
   console.log("Double-Extend")
-  spacerHeights.inner = inner.heightt;
+  spacerHeights.inner = inner.height;
   spacerHeights.outer = outer.height;
 
   return spacerHeights
