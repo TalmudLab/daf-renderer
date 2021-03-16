@@ -43,84 +43,83 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
   };
 
   // We are accounting for the special case, where you have line breaks:
-  if (options.lineBreaks) {
-    console.log("Special Case for Line Breaks")
-    const main = {
-        name: "main",
-        text: mainText,
-        lineHeight: parsedOptions.lineHeight.main,
-        top: 0,
-      }
-      const outer = {
-        name: "outer",
-        text: outerText,
-        lineHeight: parsedOptions.lineHeight.side,
-        top: 4,
-      }
-      const inner = {
-        name: "inner",
-        text: innerText,
-        lineHeight: parsedOptions.lineHeight.side,
-        top: 4,
-    }
-    
-      const texts = [main, outer, inner];
-      texts.forEach(body => body.brCount = (body.text.match(/<br>/g) || []).length - body.top);
-      texts.forEach(body => body.height = (body.brCount * body.lineHeight));
-      texts.forEach(body => body.unadjustedHeight = ((body.brCount + body.top + 1) * body.lineHeight));
-      texts.forEach(body => body.unadjustedHeightAlt = ((body.brCount + body.top) * body.lineHeight)*sideWidth/topWidth);
-      const perHeight = Array.from(texts).sort((a, b) => a.height - b.height);
-    
-      const exConst = 2.2
-    
-      //Checking Exceptions:
-      if (inner.unadjustedHeight <= 0 && outer.unadjustedHeight <= 0){
-        console.error("No Commentary");
-        return Error("No Commentary");
-    };
-      if (inner.unadjustedHeightAlt/exConst < spacerHeights.start || outer.unadjustedHeightAlt/exConst < spacerHeights.start) {
-      console.log("Exceptions")
-        if (inner.unadjustedHeightAlt/exConst <= spacerHeights.start) {
-            spacerHeights.inner = inner.unadjustedHeight;
-            spacerHeights.outer = outer.height
-            return spacerHeights;
-          }
-        if (outer.unadjustedHeightAlt/exConst <= spacerHeights.start) {
-            spacerHeights.outer = outer.unadjustedHeight;
-            spacerHeights.inner = inner.height;
-            return spacerHeights;
-          }
-        else {
-          return Error("Inner Spacer Error");
-        }
-      };
-      //If Double=Wrap
-      if (perHeight[0].name === "main"){
-        console.log("Double-Wrap"); 
-        spacerHeights.inner = main.height;
-        spacerHeights.outer = main.height;
-      
-        const brDifference = perHeight[1].brCount - perHeight[0].brCount;
-        spacerHeights.end = brDifference*perHeight[1].lineHeight;
-        return spacerHeights;
-      }
-      
-      //If Stairs
-      if (perHeight[1].name === "main") {
-        console.log("Stairs"); 
-        spacerHeights[perHeight[0].name] = perHeight[0].height;
-        spacerHeights[perHeight[2].name] = main.height;
-        return spacerHeights;
-      }
+  // if (options.lineBreaks) {
+  //   console.log("Special Case for Line Breaks")
+  //   const main = {
+  //       name: "main",
+  //       text: mainText,
+  //       lineHeight: parsedOptions.lineHeight.main,
+  //       top: 0,
+  //     }
+  //     const outer = {
+  //       name: "outer",
+  //       text: outerText,
+  //       lineHeight: parsedOptions.lineHeight.side,
+  //       top: 4,
+  //     }
+  //     const inner = {
+  //       name: "inner",
+  //       text: innerText,
+  //       lineHeight: parsedOptions.lineHeight.side,
+  //       top: 4,
+  //   }
+  //
+  //     const texts = [main, outer, inner];
+  //     texts.forEach(body => body.brCount = (body.text.match(/<br>/g) || []).length - body.top);
+  //     texts.forEach(body => body.height = (body.brCount * body.lineHeight));
+  //     texts.forEach(body => body.unadjustedHeight = ((body.brCount + body.top + 1) * body.lineHeight));
+  //     texts.forEach(body => body.unadjustedHeightAlt = ((body.brCount + body.top) * body.lineHeight)*sideWidth/topWidth);
+  //     const perHeight = Array.from(texts).sort((a, b) => a.height - b.height);
+  //
+  //     const exConst = 2.2
+  //
+  //     //Checking Exceptions:
+  //     if (inner.unadjustedHeight <= 0 && outer.unadjustedHeight <= 0){
+  //       console.error("No Commentary");
+  //       return Error("No Commentary");
+  //   };
+  //     if (inner.unadjustedHeightAlt/exConst < spacerHeights.start || outer.unadjustedHeightAlt/exConst < spacerHeights.start) {
+  //     console.log("Exceptions")
+  //       if (inner.unadjustedHeightAlt/exConst <= spacerHeights.start) {
+  //           spacerHeights.inner = inner.unadjustedHeight;
+  //           spacerHeights.outer = outer.height
+  //           return spacerHeights;
+  //         }
+  //       if (outer.unadjustedHeightAlt/exConst <= spacerHeights.start) {
+  //           spacerHeights.outer = outer.unadjustedHeight;
+  //           spacerHeights.inner = inner.height;
+  //           return spacerHeights;
+  //         }
+  //       else {
+  //         return Error("Inner Spacer Error");
+  //       }
+  //     };
+  //     //If Double=Wrap
+  //     if (perHeight[0].name === "main"){
+  //       console.log("Double-Wrap");
+  //       spacerHeights.inner = main.height;
+  //       spacerHeights.outer = main.height;
+  //
+  //       const brDifference = perHeight[1].brCount - perHeight[0].brCount;
+  //       spacerHeights.end = brDifference*perHeight[1].lineHeight;
+  //       return spacerHeights;
+  //     }
+  //
+  //     //If Stairs
+  //     if (perHeight[1].name === "main") {
+  //       console.log("Stairs");
+  //       spacerHeights[perHeight[0].name] = perHeight[0].height;
+  //       spacerHeights[perHeight[2].name] = main.height;
+  //       return spacerHeights;
+  //     }
+  //
+  //     //If Double Extend
+  //     console.log("Double-Extend")
+  //     spacerHeights.inner = inner.height + (inner.height/inner.height**2)*inner.lineHeight;
+  //     spacerHeights.outer = outer.height +  (inner.height/inner.height**2)*outer.lineHeight;
+  //     return spacerHeights
+  // }
 
-      //If Double Extend
-      console.log("Double-Extend")
-      spacerHeights.inner = inner.height + (inner.height/inner.height**2)*inner.lineHeight;
-      spacerHeights.outer = outer.height +  (inner.height/inner.height**2)*outer.lineHeight;
-      return spacerHeights
-  }
-
-  
 
   // We could probably put this somewhere else, it was meant to be a place for all the padding corrections,
   // but there turned out to only be one

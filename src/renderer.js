@@ -1,6 +1,7 @@
 import {defaultOptions, mergeAndClone} from "./options";
 import calculateSpacers from "./calculate-spacers";
 import styleManager from "./style-manager";
+import calculateSpacersBreaks from "./calculate-spacers-breaks";
 
 
 function el(tag, parent) {
@@ -80,12 +81,21 @@ export default function (el, options = defaultOptions) {
       end: 0
     },
     amud: "a",
-    render(main, inner, outer, amud = "a") {
+    render(main, inner, outer, amud = "a", linebreak) {
       if (this.amud != amud) {
         this.amud = amud;
         styleManager.updateIsAmudB(amud == "b");
       }
-      this.spacerHeights = calculateSpacers(main, inner, outer, clonedOptions, containers.dummy);
+      if (!linebreak) {
+        this.spacerHeights = calculateSpacers(main, inner, outer, clonedOptions, containers.dummy);
+      }
+      else {
+        const [mainSplit, innerSplit, outerSplit] = [main, inner, outer].map( text => text.split(linebreak)).map(array => {
+          array.pop();
+          return array;
+        });
+        this.spacerHeights = calculateSpacersBreaks(mainSplit, innerSplit, outerSplit, clonedOptions, containers.dummy);
+      }
       styleManager.updateSpacersVars(this.spacerHeights);
       styleManager.manageExceptions(this.spacerHeights);
       textSpans.main.innerHTML = main;

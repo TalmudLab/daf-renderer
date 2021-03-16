@@ -21,8 +21,7 @@ const defaultOptions = {
   lineHeight: {
     main: "17px",
     side: "14px",
-  },
-  lineBreaks: 0
+  }
 };
 
 function mergeAndClone (modified, definitional = defaultOptions) {
@@ -90,82 +89,83 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
   };
 
   // We are accounting for the special case, where you have line breaks:
-  if (options.lineBreaks) {
-    console.log("Special Case for Line Breaks");
-    const main = {
-        name: "main",
-        text: mainText,
-        lineHeight: parsedOptions.lineHeight.main,
-        top: 0,
-      };
-      const outer = {
-        name: "outer",
-        text: outerText,
-        lineHeight: parsedOptions.lineHeight.side,
-        top: 4,
-      };
-      const inner = {
-        name: "inner",
-        text: innerText,
-        lineHeight: parsedOptions.lineHeight.side,
-        top: 4,
-    };
-    
-      const texts = [main, outer, inner];
-      texts.forEach(body => body.brCount = (body.text.match(/<br>/g) || []).length - body.top);
-      texts.forEach(body => body.height = (body.brCount * body.lineHeight));
-      texts.forEach(body => body.unadjustedHeight = ((body.brCount + body.top + 1) * body.lineHeight));
-      texts.forEach(body => body.unadjustedHeightAlt = ((body.brCount + body.top) * body.lineHeight)*sideWidth/topWidth);
-      const perHeight = Array.from(texts).sort((a, b) => a.height - b.height);
-    
-      const exConst = 2.2;
-    
-      //Checking Exceptions:
-      if (inner.unadjustedHeight <= 0 && outer.unadjustedHeight <= 0){
-        console.error("No Commentary");
-        return Error("No Commentary");
-    }      if (inner.unadjustedHeightAlt/exConst < spacerHeights.start || outer.unadjustedHeightAlt/exConst < spacerHeights.start) {
-      console.log("Exceptions");
-        if (inner.unadjustedHeightAlt/exConst <= spacerHeights.start) {
-            spacerHeights.inner = inner.unadjustedHeight;
-            spacerHeights.outer = outer.height;
-            return spacerHeights;
-          }
-        if (outer.unadjustedHeightAlt/exConst <= spacerHeights.start) {
-            spacerHeights.outer = outer.unadjustedHeight;
-            spacerHeights.inner = inner.height;
-            return spacerHeights;
-          }
-        else {
-          return Error("Inner Spacer Error");
-        }
-      }      //If Double=Wrap
-      if (perHeight[0].name === "main"){
-        console.log("Double-Wrap"); 
-        spacerHeights.inner = main.height;
-        spacerHeights.outer = main.height;
-      
-        const brDifference = perHeight[1].brCount - perHeight[0].brCount;
-        spacerHeights.end = brDifference*perHeight[1].lineHeight;
-        return spacerHeights;
-      }
-      
-      //If Stairs
-      if (perHeight[1].name === "main") {
-        console.log("Stairs"); 
-        spacerHeights[perHeight[0].name] = perHeight[0].height;
-        spacerHeights[perHeight[2].name] = main.height;
-        return spacerHeights;
-      }
+  // if (options.lineBreaks) {
+  //   console.log("Special Case for Line Breaks")
+  //   const main = {
+  //       name: "main",
+  //       text: mainText,
+  //       lineHeight: parsedOptions.lineHeight.main,
+  //       top: 0,
+  //     }
+  //     const outer = {
+  //       name: "outer",
+  //       text: outerText,
+  //       lineHeight: parsedOptions.lineHeight.side,
+  //       top: 4,
+  //     }
+  //     const inner = {
+  //       name: "inner",
+  //       text: innerText,
+  //       lineHeight: parsedOptions.lineHeight.side,
+  //       top: 4,
+  //   }
+  //
+  //     const texts = [main, outer, inner];
+  //     texts.forEach(body => body.brCount = (body.text.match(/<br>/g) || []).length - body.top);
+  //     texts.forEach(body => body.height = (body.brCount * body.lineHeight));
+  //     texts.forEach(body => body.unadjustedHeight = ((body.brCount + body.top + 1) * body.lineHeight));
+  //     texts.forEach(body => body.unadjustedHeightAlt = ((body.brCount + body.top) * body.lineHeight)*sideWidth/topWidth);
+  //     const perHeight = Array.from(texts).sort((a, b) => a.height - b.height);
+  //
+  //     const exConst = 2.2
+  //
+  //     //Checking Exceptions:
+  //     if (inner.unadjustedHeight <= 0 && outer.unadjustedHeight <= 0){
+  //       console.error("No Commentary");
+  //       return Error("No Commentary");
+  //   };
+  //     if (inner.unadjustedHeightAlt/exConst < spacerHeights.start || outer.unadjustedHeightAlt/exConst < spacerHeights.start) {
+  //     console.log("Exceptions")
+  //       if (inner.unadjustedHeightAlt/exConst <= spacerHeights.start) {
+  //           spacerHeights.inner = inner.unadjustedHeight;
+  //           spacerHeights.outer = outer.height
+  //           return spacerHeights;
+  //         }
+  //       if (outer.unadjustedHeightAlt/exConst <= spacerHeights.start) {
+  //           spacerHeights.outer = outer.unadjustedHeight;
+  //           spacerHeights.inner = inner.height;
+  //           return spacerHeights;
+  //         }
+  //       else {
+  //         return Error("Inner Spacer Error");
+  //       }
+  //     };
+  //     //If Double=Wrap
+  //     if (perHeight[0].name === "main"){
+  //       console.log("Double-Wrap");
+  //       spacerHeights.inner = main.height;
+  //       spacerHeights.outer = main.height;
+  //
+  //       const brDifference = perHeight[1].brCount - perHeight[0].brCount;
+  //       spacerHeights.end = brDifference*perHeight[1].lineHeight;
+  //       return spacerHeights;
+  //     }
+  //
+  //     //If Stairs
+  //     if (perHeight[1].name === "main") {
+  //       console.log("Stairs");
+  //       spacerHeights[perHeight[0].name] = perHeight[0].height;
+  //       spacerHeights[perHeight[2].name] = main.height;
+  //       return spacerHeights;
+  //     }
+  //
+  //     //If Double Extend
+  //     console.log("Double-Extend")
+  //     spacerHeights.inner = inner.height + (inner.height/inner.height**2)*inner.lineHeight;
+  //     spacerHeights.outer = outer.height +  (inner.height/inner.height**2)*outer.lineHeight;
+  //     return spacerHeights
+  // }
 
-      //If Double Extend
-      console.log("Double-Extend");
-      spacerHeights.inner = inner.height + (inner.height/inner.height**2)*inner.lineHeight;
-      spacerHeights.outer = outer.height +  (inner.height/inner.height**2)*outer.lineHeight;
-      return spacerHeights
-  }
-
-  
 
   // We could probably put this somewhere else, it was meant to be a place for all the padding corrections,
   // but there turned out to only be one
@@ -429,6 +429,133 @@ var styleManager = {
   }
 };
 
+function getLineInfo(text, font, fontSize, lineHeight, dummy) {
+  let testDiv = document.createElement("span");
+  testDiv.style.font = String(fontSize) + "px " + String(font);
+  testDiv.style.lineHeight = String(lineHeight) + "px";
+  testDiv.innerHTML = text;
+  testDiv.style.position = "absolute";
+  dummy.append(testDiv);
+  const rect = testDiv.getBoundingClientRect();
+  const height = rect.height;
+  const width = rect.width;
+  // console.log("lineInfo", width, text);
+  testDiv.remove();
+  return { height, width };
+}
+
+function calculateSpacersBreaks (mainArray, rashiArray, tosafotArray, options, dummy) {
+  const parsedOptions = {
+    padding: {
+      vertical: parseFloat(options.padding.vertical),
+      horizontal: parseFloat(options.padding.horizontal)
+    },
+    halfway: 0.01 * parseFloat(options.halfway),
+    fontFamily: options.fontFamily, // Object of strings
+    fontSize: {
+      main: parseFloat(options.fontSize.main),
+      side: parseFloat(options.fontSize.side),
+    },
+    lineHeight: {
+      main: parseFloat(options.lineHeight.main),
+      side: parseFloat(options.lineHeight.side),
+    },
+  };
+
+  const mainSizes = mainArray.map(text => getLineInfo(text, parsedOptions.fontFamily.main, parsedOptions.fontSize.main, parsedOptions.lineHeight.main, dummy));
+  const [rashiSizes, tosafotSizes] = [rashiArray, tosafotArray].map(
+    array => array.map(text => getLineInfo(text, parsedOptions.fontFamily.side, parsedOptions.fontSize.side, parsedOptions.lineHeight.side, dummy))
+  );
+
+  const [mainDiffs, rashiDiffs, tosafotDiffs] = [mainSizes, rashiSizes, tosafotSizes].map(sizeArray =>
+    sizeArray.map(size => size.width).map( (width, index, widths) => index == 0 ? 0 : Math.abs(width - widths[index - 1]))
+  );
+
+  const diffs = {
+    main: mainDiffs,
+    rashi: rashiDiffs,
+    tosafot: tosafotDiffs
+  };
+
+  const sorted = [mainDiffs, rashiDiffs, tosafotDiffs].map( array => array.map((num, index)=> ({num, index}))).map(diffs => diffs.sort( (a, b) => (b.num - a.num)));
+  console.log(sorted);
+  const secondDiffs = sorted.map(sizeArray =>
+    sizeArray.map( (diffObj, index, diffs) => ({
+        num: index == 0 ? 0 : Math.abs(diffObj.num - diffs[index - 1].num),
+        index: diffObj.index
+      }
+    )
+  ));
+  console.log(secondDiffs);
+
+  function norm(value, array) {
+    const min = Math.min(...array);
+    const max = Math.max(...array);
+    return (value - min) / (max - min);
+  }
+
+  const threshold = 100;
+  const [mainBreaks, rashiBreaks, tosafotBreaks] = ["main", "rashi", "tosafot"].map(text => diffs[text].reduce( (indices, curr, currIndex) => {
+    const normed = norm(curr, diffs[text]);
+    // console.log(text, normed, currIndex);
+    if (normed > threshold) {
+      indices.push(currIndex);
+    }
+    return indices;
+  }, []));
+  // console.log("main", mainBreaks, "rashi", rashiBreaks, "tosafot", tosafotBreaks);
+
+  const spacerHeights = {
+    start: 4.5 * parsedOptions.lineHeight.side,
+    inner: null,
+    outer: null,
+    end: 0,
+  };
+
+  const accumulateHeight = sizes => sizes.map(size => size.height).reduce( (accumulatedHeight, currHeight) => accumulatedHeight + currHeight, 0);
+  const mainHeight = accumulateHeight(mainSizes);
+  const afterBreak = {
+    inner: accumulateHeight(rashiSizes.slice(3)) + parsedOptions.lineHeight.side,
+    outer: accumulateHeight(tosafotSizes.slice(3)) + parsedOptions.lineHeight.side
+  };
+  switch (mainBreaks.length) {
+    case 0:
+      spacerHeights.inner = mainHeight;
+      spacerHeights.outer = mainHeight;
+      if (rashiBreaks.length == 2) {
+        spacerHeights.end = accumulateHeight(rashiSizes.slice(rashiBreaks[1]));
+      } else {
+        spacerHeights.end = accumulateHeight(tosafotSizes.slice(tosafotBreaks[1]));
+      }
+      console.log("Double wrap");
+      break;
+    case 1:
+      if (rashiBreaks.length != tosafotBreaks.length) {
+        let stair;
+        let nonstair;
+        if (rashiBreaks.length == 1) {
+          stair = "outer";
+          nonstair = "inner";
+        } else {
+          stair = "inner";
+          nonstair = "outer";
+        }
+        spacerHeights[nonstair] = afterBreak[nonstair];
+        spacerHeights[stair] = mainHeight;
+        console.log("Stairs");
+        break;
+      }
+    case 2:
+      spacerHeights.inner = afterBreak.inner;
+      spacerHeights.outer = afterBreak.outer;
+      console.log("Double Extend");
+      break;
+  }
+  console.log(spacerHeights);
+  return spacerHeights;
+
+}
+
 function el(tag, parent) {
   const newEl = document.createElement(tag);
   if (parent) parent.append(newEl);
@@ -506,12 +633,21 @@ function renderer (el, options = defaultOptions) {
       end: 0
     },
     amud: "a",
-    render(main, inner, outer, amud = "a") {
+    render(main, inner, outer, amud = "a", linebreak) {
       if (this.amud != amud) {
         this.amud = amud;
         styleManager.updateIsAmudB(amud == "b");
       }
-      this.spacerHeights = calculateSpacers(main, inner, outer, clonedOptions, containers.dummy);
+      if (!linebreak) {
+        this.spacerHeights = calculateSpacers(main, inner, outer, clonedOptions, containers.dummy);
+      }
+      else {
+        const [mainSplit, innerSplit, outerSplit] = [main, inner, outer].map( text => text.split(linebreak)).map(array => {
+          array.pop();
+          return array;
+        });
+        this.spacerHeights = calculateSpacersBreaks(mainSplit, innerSplit, outerSplit, clonedOptions, containers.dummy);
+      }
       styleManager.updateSpacersVars(this.spacerHeights);
       styleManager.manageExceptions(this.spacerHeights);
       textSpans.main.innerHTML = main;
