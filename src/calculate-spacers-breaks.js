@@ -1,6 +1,6 @@
 function getLineInfo(text, font, fontSize, lineHeight, dummy) {
   let testDiv = document.createElement("span");
-  testDiv.style.font = String(fontSize) + "px " + String(font);
+  testDiv.style.font = fontSize + " " + String(font);
   testDiv.style.lineHeight = String(lineHeight) + "px";
   testDiv.innerHTML = text;
   testDiv.style.position = "absolute";
@@ -22,8 +22,8 @@ function calculateSpacersBreaks (mainArray, rashiArray, tosafotArray, options, d
     halfway: 0.01 * parseFloat(options.halfway),
     fontFamily: options.fontFamily, // Object of strings
     fontSize: {
-      main: parseFloat(options.fontSize.main),
-      side: parseFloat(options.fontSize.side),
+      main: options.fontSize.main,
+      side: options.fontSize.side,
     },
     lineHeight: {
       main: parseFloat(options.lineHeight.main),
