@@ -430,8 +430,9 @@ var styleManager = {
 };
 
 function getLineInfo(text, font, fontSize, lineHeight, dummy) {
+  dummy.innerHTML = "";
   let testDiv = document.createElement("span");
-  testDiv.style.font = String(fontSize) + "px " + String(font);
+  testDiv.style.font = fontSize + " " + String(font);
   testDiv.style.lineHeight = String(lineHeight) + "px";
   testDiv.innerHTML = text;
   testDiv.style.position = "absolute";
@@ -453,14 +454,15 @@ function calculateSpacersBreaks (mainArray, rashiArray, tosafotArray, options, d
     halfway: 0.01 * parseFloat(options.halfway),
     fontFamily: options.fontFamily, // Object of strings
     fontSize: {
-      main: parseFloat(options.fontSize.main),
-      side: parseFloat(options.fontSize.side),
+      main: options.fontSize.main,
+      side: options.fontSize.side,
     },
     lineHeight: {
       main: parseFloat(options.lineHeight.main),
       side: parseFloat(options.lineHeight.side),
     },
   };
+
 
   const mainSizes = mainArray.map(text => getLineInfo(text, parsedOptions.fontFamily.main, parsedOptions.fontSize.main, parsedOptions.lineHeight.main, dummy));
   const [rashiSizes, tosafotSizes] = [rashiArray, tosafotArray].map(
@@ -641,10 +643,28 @@ function renderer (el, options = defaultOptions) {
         this.spacerHeights = calculateSpacers(main, inner, outer, clonedOptions, containers.dummy);
       }
       else {
-        const [mainSplit, innerSplit, outerSplit] = [main, inner, outer].map( text => text.split(linebreak)).map(array => {
-          array.pop();
-          return array;
+        const [mainSplit, innerSplit, outerSplit] = [main, inner, outer].map( text => {
+          containers.dummy.innerHTML = text;
+          const brs = containers.dummy.querySelectorAll(linebreak);
+          const splitFragments = [];
+          brs.forEach((node, index) => {
+            const range = document.createRange();
+            range.setEndBefore(node);
+            if (index == 0) {
+              range.setStart(containers.dummy, 0);
+            } else {
+              const prev = brs[index - 1];
+              range.setStartAfter(prev);
+            }
+            splitFragments.push(range.extractContents());
+          });
+          return splitFragments.map(fragment => {
+            const el = document.createElement("div");
+            el.append(fragment);
+            return el.innerHTML;
+          })
         });
+        console.log(mainSplit, innerSplit, outerSplit);
         this.spacerHeights = calculateSpacersBreaks(mainSplit, innerSplit, outerSplit, clonedOptions, containers.dummy);
       }
       styleManager.updateSpacersVars(this.spacerHeights);
