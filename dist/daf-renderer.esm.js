@@ -439,9 +439,9 @@ function getLineInfo(text, font, fontSize, lineHeight, dummy) {
   const rect = testDiv.getBoundingClientRect();
   const height = rect.height;
   const width = rect.width;
-  // console.log("lineInfo", width, text);
+  const widthProportional = width / dummy.getBoundingClientRect().width;
   testDiv.remove();
-  return { height, width };
+  return { height, width, widthProportional };
 }
 
 function calculateSpacersBreaks (mainArray, rashiArray, tosafotArray, options, dummy) {
@@ -468,7 +468,7 @@ function calculateSpacersBreaks (mainArray, rashiArray, tosafotArray, options, d
   );
 
   const [mainDiffs, rashiDiffs, tosafotDiffs] = [mainSizes, rashiSizes, tosafotSizes].map(sizeArray =>
-    sizeArray.map(size => size.width).map( (width, index, widths) => index == 0 ? 0 : Math.abs(width - widths[index - 1]))
+    sizeArray.map(size => size.widthProportional).map( (width, index, widths) => index == 0 ? 0 : Math.abs(width - widths[index - 1]))
   );
 
   const diffs = {
@@ -477,36 +477,37 @@ function calculateSpacersBreaks (mainArray, rashiArray, tosafotArray, options, d
     tosafot: tosafotDiffs
   };
 
+  console.log(mainDiffs, rashiDiffs,tosafotDiffs);
   const sorted = [mainDiffs, rashiDiffs, tosafotDiffs].map( array => array.map((num, index)=> ({num, index}))).map(diffs => diffs.sort( (a, b) => (b.num - a.num)));
   console.log(sorted);
-  const secondDiffs = sorted.map(sizeArray =>
-    sizeArray.map( (diffObj, index, diffs) => ({
-        num: index == 0 ? 0 : Math.abs(diffObj.num - diffs[index - 1].num),
-        index: diffObj.index
-      }
-    )
-  ));
-  console.log(secondDiffs);
+  // const secondDiffs = sorted.map(sizeArray =>
+  //   sizeArray.map( (diffObj, index, diffs) => ({
+  //       num: index == 0 ? 0 : Math.abs(diffObj.num - diffs[index - 1].num),
+  //       index: diffObj.index
+  //     }
+  //   )
+  // ));
+  // console.log(secondDiffs);
+  //
+  // function norm(value, array) {
+  //   const min = Math.min(...array);
+  //   const max = Math.max(...array);
+  //   return (value - min) / (max - min);
+  // }
 
-  function norm(value, array) {
-    const min = Math.min(...array);
-    const max = Math.max(...array);
-    return (value - min) / (max - min);
-  }
-
-  const threshold = 100;
+  const threshold = 0.19;
   const [mainBreaks, rashiBreaks, tosafotBreaks] = ["main", "rashi", "tosafot"].map(text => diffs[text].reduce( (indices, curr, currIndex) => {
-    const normed = norm(curr, diffs[text]);
+    // const normed = norm(curr, diffs[text]);
     // console.log(text, normed, currIndex);
-    if (normed > threshold) {
+    if (curr > threshold) {
       indices.push(currIndex);
     }
     return indices;
   }, []));
-  // console.log("main", mainBreaks, "rashi", rashiBreaks, "tosafot", tosafotBreaks);
+  console.log("main", mainBreaks, "rashi", rashiBreaks, "tosafot", tosafotBreaks);
 
   const spacerHeights = {
-    start: 4.5 * parsedOptions.lineHeight.side,
+    start: 4.3 * parsedOptions.lineHeight.side,
     inner: null,
     outer: null,
     end: 0,
