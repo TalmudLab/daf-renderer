@@ -501,7 +501,7 @@
     //   return (value - min) / (max - min);
     // }
 
-    const threshold = 0.19;
+    const threshold = 0.15;
     const [mainBreaks, rashiBreaks, tosafotBreaks] = ["main", "rashi", "tosafot"].map(text => diffs[text].reduce( (indices, curr, currIndex) => {
       // const normed = norm(curr, diffs[text]);
       // console.log(text, normed, currIndex);
@@ -518,21 +518,19 @@
       outer: null,
       end: 0,
     };
-
-    const accumulateHeight = sizes => sizes.map(size => size.height).reduce( (accumulatedHeight, currHeight) => accumulatedHeight + currHeight, 0);
-    const mainHeight = accumulateHeight(mainSizes);
+    const mainHeight = mainSizes.length * parsedOptions.lineHeight.main; //accumulateHeight(mainSizes);
     const afterBreak = {
-      inner: accumulateHeight(rashiSizes.slice(3)) + parsedOptions.lineHeight.side,
-      outer: accumulateHeight(tosafotSizes.slice(3)) + parsedOptions.lineHeight.side
+      inner: parsedOptions.lineHeight.side * (rashiSizes.length - 4), //accumulateHeight(rashiSizes.slice(3)) + parsedOptions.lineHeight.side,
+      outer: parsedOptions.lineHeight.side * (rashiSizes.length - 4)//accumulateHeight(tosafotSizes.slice(3)) + parsedOptions.lineHeight.side
     };
     switch (mainBreaks.length) {
       case 0:
         spacerHeights.inner = mainHeight;
         spacerHeights.outer = mainHeight;
         if (rashiBreaks.length == 2) {
-          spacerHeights.end = accumulateHeight(rashiSizes.slice(rashiBreaks[1]));
+          spacerHeights.end = parsedOptions.lineHeight.side * (rashiSizes.length - rashiBreaks[1]); //accumulateHeight(rashiSizes.slice(rashiBreaks[1]));
         } else {
-          spacerHeights.end = accumulateHeight(tosafotSizes.slice(tosafotBreaks[1]));
+          spacerHeights.end = parsedOptions.lineHeight.side * (tosafotSizes.length - tosafotBreaks[1]); //accumulateHeight(tosafotSizes.slice(tosafotBreaks[1]));
         }
         console.log("Double wrap");
         break;
