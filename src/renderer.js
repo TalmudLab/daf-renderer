@@ -90,10 +90,28 @@ export default function (el, options = defaultOptions) {
         this.spacerHeights = calculateSpacers(main, inner, outer, clonedOptions, containers.dummy);
       }
       else {
-        const [mainSplit, innerSplit, outerSplit] = [main, inner, outer].map( text => text.split(linebreak)).map(array => {
-          array.pop();
-          return array;
+        const [mainSplit, innerSplit, outerSplit] = [main, inner, outer].map( text => {
+          containers.dummy.innerHTML = text;
+          const brs = containers.dummy.querySelectorAll(linebreak);
+          const splitFragments = []
+          brs.forEach((node, index) => {
+            const range = document.createRange();
+            range.setEndBefore(node);
+            if (index == 0) {
+              range.setStart(containers.dummy, 0);
+            } else {
+              const prev = brs[index - 1];
+              range.setStartAfter(prev);
+            }
+            splitFragments.push(range.extractContents());
+          })
+          return splitFragments.map(fragment => {
+            const el = document.createElement("div");
+            el.append(fragment);
+            return el.innerHTML;
+          })
         });
+        console.log(mainSplit, innerSplit, outerSplit);
         this.spacerHeights = calculateSpacersBreaks(mainSplit, innerSplit, outerSplit, clonedOptions, containers.dummy);
       }
       styleManager.updateSpacersVars(this.spacerHeights);

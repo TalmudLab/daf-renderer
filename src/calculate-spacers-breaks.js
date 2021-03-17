@@ -1,4 +1,5 @@
 function getLineInfo(text, font, fontSize, lineHeight, dummy) {
+  dummy.innerHTML = "";
   let testDiv = document.createElement("span");
   testDiv.style.font = fontSize + " " + String(font);
   testDiv.style.lineHeight = String(lineHeight) + "px";
@@ -30,6 +31,7 @@ function calculateSpacersBreaks (mainArray, rashiArray, tosafotArray, options, d
       side: parseFloat(options.lineHeight.side),
     },
   }
+
 
   const mainSizes = mainArray.map(text => getLineInfo(text, parsedOptions.fontFamily.main, parsedOptions.fontSize.main, parsedOptions.lineHeight.main, dummy));
   const [rashiSizes, tosafotSizes] = [rashiArray, tosafotArray].map(
@@ -95,7 +97,7 @@ function calculateSpacersBreaks (mainArray, rashiArray, tosafotArray, options, d
       if (rashiBreaks.length == 2) {
         spacerHeights.end = parsedOptions.lineHeight.side * (rashiSizes.length - rashiBreaks[1]) //accumulateHeight(rashiSizes.slice(rashiBreaks[1]));
       } else {
-        spacerHeights.end = parsedOptions.lineHeight.side * (tosafotSizes.length - tosafotBreaks[1]) t a//accumulateHeight(tosafotSizes.slice(tosafotBreaks[1]));
+        spacerHeights.end = parsedOptions.lineHeight.side * (tosafotSizes.length - tosafotBreaks[1]) //accumulateHeight(tosafotSizes.slice(tosafotBreaks[1]));
       }
       console.log("Double wrap")
       break;
