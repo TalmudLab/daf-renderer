@@ -48,9 +48,9 @@ function calculateSpacersBreaks (mainArray, rashiArray, tosafotArray, options, d
     tosafot: tosafotDiffs
   }
 
-  console.log(mainDiffs, rashiDiffs,tosafotDiffs);
+  // console.log(mainDiffs, rashiDiffs,tosafotDiffs);
   const sorted = [mainDiffs, rashiDiffs, tosafotDiffs].map( array => array.map((num, index)=> ({num, index}))).map(diffs => diffs.sort( (a, b) => (b.num - a.num)));
-  console.log(sorted);
+  // console.log(sorted);
   // const secondDiffs = sorted.map(sizeArray =>
   //   sizeArray.map( (diffObj, index, diffs) => ({
   //       num: index == 0 ? 0 : Math.abs(diffObj.num - diffs[index - 1].num),
@@ -75,20 +75,20 @@ function calculateSpacersBreaks (mainArray, rashiArray, tosafotArray, options, d
     }
     return indices;
   }, []));
-  console.log("main", mainBreaks, "rashi", rashiBreaks, "tosafot", tosafotBreaks);
+  // console.log("main", mainBreaks, "rashi", rashiBreaks, "tosafot", tosafotBreaks);
 
   const spacerHeights = {
-    start: 4.3 * parsedOptions.lineHeight.side,
+    start: 4.4 * parsedOptions.lineHeight.side,
     inner: null,
     outer: null,
     end: 0,
   };
 
   const accumulateHeight = sizes => sizes.map(size => size.height).reduce( (accumulatedHeight, currHeight) => accumulatedHeight + currHeight, 0);
-  const mainHeight = mainSizes.length * parsedOptions.lineHeight.main; //accumulateHeight(mainSizes);
+  const mainHeight = (mainSizes.length) * parsedOptions.lineHeight.main; //accumulateHeight(mainSizes);
   const afterBreak = {
     inner: parsedOptions.lineHeight.side * (rashiSizes.length - 4), //accumulateHeight(rashiSizes.slice(3)) + parsedOptions.lineHeight.side,
-    outer: parsedOptions.lineHeight.side * (rashiSizes.length - 4)//accumulateHeight(tosafotSizes.slice(3)) + parsedOptions.lineHeight.side
+    outer: parsedOptions.lineHeight.side * (tosafotSizes.length - 4)//accumulateHeight(tosafotSizes.slice(3)) + parsedOptions.lineHeight.side
   }
   switch (mainBreaks.length) {
     case 0:
@@ -120,6 +120,7 @@ function calculateSpacersBreaks (mainArray, rashiArray, tosafotArray, options, d
     case 2:
       spacerHeights.inner = afterBreak.inner;
       spacerHeights.outer = afterBreak.outer;
+      console.log(afterBreak.inner, afterBreak.outer)
       console.log("Double Extend")
       break;
   }
