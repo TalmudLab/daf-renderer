@@ -14,7 +14,7 @@ function getLineInfo(text, font, fontSize, lineHeight, dummy) {
   return { height, width, widthProportional };
 }
 
-function calculateSpacersBreaks (mainArray, rashiArray, tosafotArray, options, dummy) {
+function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, options, dummy) {
   const parsedOptions = {
     padding: {
       vertical: parseFloat(options.padding.vertical),
@@ -39,7 +39,7 @@ function calculateSpacersBreaks (mainArray, rashiArray, tosafotArray, options, d
   );
 
   const [mainDiffs, rashiDiffs, tosafotDiffs] = [mainSizes, rashiSizes, tosafotSizes].map(sizeArray =>
-    sizeArray.map(size => size.widthProportional).map( (width, index, widths) => index == 0 ? 0 : Math.abs(width - widths[index - 1]))
+    sizeArray.map(size => size.widthProportional).map((width, index, widths) => index == 0 ? 0 : Math.abs(width - widths[index - 1]))
   );
 
   const diffs = {
@@ -49,7 +49,7 @@ function calculateSpacersBreaks (mainArray, rashiArray, tosafotArray, options, d
   }
 
   // console.log(mainDiffs, rashiDiffs,tosafotDiffs);
-  const sorted = [mainDiffs, rashiDiffs, tosafotDiffs].map( array => array.map((num, index)=> ({num, index}))).map(diffs => diffs.sort( (a, b) => (b.num - a.num)));
+  const sorted = [mainDiffs, rashiDiffs, tosafotDiffs].map(array => array.map((num, index) => ({ num, index }))).map(diffs => diffs.sort((a, b) => (b.num - a.num)));
   // console.log(sorted);
   // const secondDiffs = sorted.map(sizeArray =>
   //   sizeArray.map( (diffObj, index, diffs) => ({
@@ -67,7 +67,7 @@ function calculateSpacersBreaks (mainArray, rashiArray, tosafotArray, options, d
   // }
 
   const threshold = 0.15;
-  const [mainBreaks, rashiBreaks, tosafotBreaks] = ["main", "rashi", "tosafot"].map(text => diffs[text].reduce( (indices, curr, currIndex) => {
+  const [mainBreaks, rashiBreaks, tosafotBreaks] = ["main", "rashi", "tosafot"].map(text => diffs[text].reduce((indices, curr, currIndex) => {
     // const normed = norm(curr, diffs[text]);
     // console.log(text, normed, currIndex);
     if (curr > threshold) {
@@ -75,6 +75,7 @@ function calculateSpacersBreaks (mainArray, rashiArray, tosafotArray, options, d
     }
     return indices;
   }, []));
+    console.log("main", mainSizes, "rashi", rashiSizes, "tosafot", tosafotSizes);
   console.log("main", mainBreaks, "rashi", rashiBreaks, "tosafot", tosafotBreaks);
 
   const spacerHeights = {
@@ -84,11 +85,21 @@ function calculateSpacersBreaks (mainArray, rashiArray, tosafotArray, options, d
     end: 0,
   };
 
-  const accumulateHeight = sizes => sizes.map(size => size.height).reduce( (accumulatedHeight, currHeight) => accumulatedHeight + currHeight, 0);
+
+  
+  const accumulateHeight = sizes => sizes.map(size => size.height).reduce((accumulatedHeight, currHeight) => accumulatedHeight + currHeight, 0);
   const mainHeight = (mainSizes.length) * parsedOptions.lineHeight.main; //accumulateHeight(mainSizes);
-  const afterBreak = {
+  let afterBreak = {
     inner: parsedOptions.lineHeight.side * (rashiSizes.length - 4), //accumulateHeight(rashiSizes.slice(3)) + parsedOptions.lineHeight.side,
     outer: parsedOptions.lineHeight.side * (tosafotSizes.length - 4)//accumulateHeight(tosafotSizes.slice(3)) + parsedOptions.lineHeight.side
+  }
+  if (rashiSizes.length <= 4 || tosafotSizes.length <= 4) {
+    if (rashiSizes.length <= 4) {
+      afterBreak.inner = parsedOptions.lineHeight.side * (rashiSizes.length + 1)
+    }
+    if (tosafotSizes.length <= 4) {
+      afterBreak.outer = parsedOptions.lineHeight.side * (tosafotSizes.length + 1)
+    }
   }
   switch (mainBreaks.length) {
     case 0:
@@ -127,7 +138,7 @@ function calculateSpacersBreaks (mainArray, rashiArray, tosafotArray, options, d
       spacerHeights.inner = afterBreak.inner;
       spacerHeights.outer = afterBreak.outer;
       console.log(afterBreak.inner, afterBreak.outer)
-      console.log("Double Extend")
+      console.log("No Case Exception")
       break;
   }
   console.log(spacerHeights);
