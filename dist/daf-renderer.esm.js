@@ -409,22 +409,22 @@ var styleManager = {
   manageExceptions(spacerHeights) {
     if (spacerHeights.inner/2.2 < spacerHeights.start) {
       console.log("In Style Exception");
-      setVars({
-        hasInnerStartGap: "1",
-        innerStartWidth: "100%",
-        outerStartWidth: "0%",
-        innerPadding: "0px",
-        outerPadding: "0px",
-      });
+      // setVars({
+      //   hasInnerStartGap: "1",
+      //   innerStartWidth: "100%",
+      //   outerStartWidth: "0%",
+      //   innerPadding: "0px",
+      //   outerPadding: "0px",
+      // })
     } else if (spacerHeights.outer/2.2 < spacerHeights.start) {
       console.log("In Style Exception");
-      setVars({
-        hasOuterStartGap: "1",
-        outerStartWidth: "100%",
-        innerStartWidth: "0%",
-        innerPadding: "0px",
-        outerPadding: "0px"
-      });
+      // setVars({
+      //   hasOuterStartGap: "1",
+      //   outerStartWidth: "100%",
+      //   innerStartWidth: "0%",
+      //   innerPadding: "0px",
+      //   outerPadding: "0px"
+      // })
     }
   }
 };
@@ -506,7 +506,7 @@ function calculateSpacersBreaks (mainArray, rashiArray, tosafotArray, options, d
     }
     return indices;
   }, []));
-  // console.log("main", mainBreaks, "rashi", rashiBreaks, "tosafot", tosafotBreaks);
+  console.log("main", mainBreaks, "rashi", rashiBreaks, "tosafot", tosafotBreaks);
 
   const spacerHeights = {
     start: 4.4 * parsedOptions.lineHeight.side,
@@ -547,6 +547,12 @@ function calculateSpacersBreaks (mainArray, rashiArray, tosafotArray, options, d
         break;
       }
     case 2:
+      spacerHeights.inner = afterBreak.inner;
+      spacerHeights.outer = afterBreak.outer;
+      console.log(afterBreak.inner, afterBreak.outer);
+      console.log("Double Extend");
+      break;
+    default:
       spacerHeights.inner = afterBreak.inner;
       spacerHeights.outer = afterBreak.outer;
       console.log(afterBreak.inner, afterBreak.outer);
