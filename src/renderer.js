@@ -111,7 +111,7 @@ export default function (el, options = defaultOptions) {
             return el.innerHTML;
           })
         });
-        console.log(mainSplit, innerSplit, outerSplit);
+        // console.log(mainSplit, innerSplit, outerSplit);
         this.spacerHeights = calculateSpacersBreaks(mainSplit, innerSplit, outerSplit, clonedOptions, containers.dummy);
       }
       styleManager.updateSpacersVars(this.spacerHeights);
