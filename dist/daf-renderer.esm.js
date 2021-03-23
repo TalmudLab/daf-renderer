@@ -407,7 +407,7 @@ var styleManager = {
     });
   },
   manageExceptions(spacerHeights) {
-    if (spacerHeights.inner/2.2 < spacerHeights.start) {
+    if (spacerHeights.inner/2 - 40 < spacerHeights.start) {
       console.log("In Style Exception");
       setVars({
         hasInnerStartGap: "1",
@@ -416,7 +416,7 @@ var styleManager = {
         innerPadding: "0px",
         outerPadding: "0px",
       });
-    } else if (spacerHeights.outer/2.2 < spacerHeights.start) {
+    } else if (spacerHeights.outer/2 - 40 < spacerHeights.start) {
       console.log("In Style Exception");
       setVars({
         hasOuterStartGap: "1",
@@ -520,11 +520,11 @@ function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, options, du
     inner: parsedOptions.lineHeight.side * (rashiSizes.length - 4), //accumulateHeight(rashiSizes.slice(3)) + parsedOptions.lineHeight.side,
     outer: parsedOptions.lineHeight.side * (tosafotSizes.length - 4)//accumulateHeight(tosafotSizes.slice(3)) + parsedOptions.lineHeight.side
   };
-  if (rashiSizes.length <= 4 || tosafotSizes.length <= 4) {
-    if (rashiSizes.length <= 4) {
+  if (rashiBreaks.length < 1 || tosafotBreaks.length < 1) {
+    if (rashiBreaks.length < 1) {
       afterBreak.inner = parsedOptions.lineHeight.side * (rashiSizes.length + 1);
     }
-    if (tosafotSizes.length <= 4) {
+    if (tosafotBreaks.length < 1) {
       afterBreak.outer = parsedOptions.lineHeight.side * (tosafotSizes.length + 1);
     }
   }

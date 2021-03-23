@@ -93,11 +93,11 @@ function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, options, du
     inner: parsedOptions.lineHeight.side * (rashiSizes.length - 4), //accumulateHeight(rashiSizes.slice(3)) + parsedOptions.lineHeight.side,
     outer: parsedOptions.lineHeight.side * (tosafotSizes.length - 4)//accumulateHeight(tosafotSizes.slice(3)) + parsedOptions.lineHeight.side
   }
-  if (rashiSizes.length <= 4 || tosafotSizes.length <= 4) {
-    if (rashiSizes.length <= 4) {
+  if (rashiBreaks.length < 1 || tosafotBreaks.length < 1) {
+    if (rashiBreaks.length < 1) {
       afterBreak.inner = parsedOptions.lineHeight.side * (rashiSizes.length + 1)
     }
-    if (tosafotSizes.length <= 4) {
+    if (tosafotBreaks.length < 1) {
       afterBreak.outer = parsedOptions.lineHeight.side * (tosafotSizes.length + 1)
     }
   }
