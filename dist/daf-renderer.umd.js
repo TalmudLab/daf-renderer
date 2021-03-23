@@ -415,22 +415,22 @@
     manageExceptions(spacerHeights) {
       if (spacerHeights.inner/2.2 < spacerHeights.start) {
         console.log("In Style Exception");
-        // setVars({
-        //   hasInnerStartGap: "1",
-        //   innerStartWidth: "100%",
-        //   outerStartWidth: "0%",
-        //   innerPadding: "0px",
-        //   outerPadding: "0px",
-        // })
+        setVars({
+          hasInnerStartGap: "1",
+          innerStartWidth: "100%",
+          outerStartWidth: "0%",
+          innerPadding: "0px",
+          outerPadding: "0px",
+        });
       } else if (spacerHeights.outer/2.2 < spacerHeights.start) {
         console.log("In Style Exception");
-        // setVars({
-        //   hasOuterStartGap: "1",
-        //   outerStartWidth: "100%",
-        //   innerStartWidth: "0%",
-        //   innerPadding: "0px",
-        //   outerPadding: "0px"
-        // })
+        setVars({
+          hasOuterStartGap: "1",
+          outerStartWidth: "100%",
+          innerStartWidth: "0%",
+          innerPadding: "0px",
+          outerPadding: "0px"
+        });
       }
     }
   };
@@ -451,7 +451,7 @@
     return { height, width, widthProportional };
   }
 
-  function calculateSpacersBreaks (mainArray, rashiArray, tosafotArray, options, dummy) {
+  function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, options, dummy) {
     const parsedOptions = {
       padding: {
         vertical: parseFloat(options.padding.vertical),
@@ -476,7 +476,7 @@
     );
 
     const [mainDiffs, rashiDiffs, tosafotDiffs] = [mainSizes, rashiSizes, tosafotSizes].map(sizeArray =>
-      sizeArray.map(size => size.widthProportional).map( (width, index, widths) => index == 0 ? 0 : Math.abs(width - widths[index - 1]))
+      sizeArray.map(size => size.widthProportional).map((width, index, widths) => index == 0 ? 0 : Math.abs(width - widths[index - 1]))
     );
 
     const diffs = {
@@ -486,7 +486,7 @@
     };
 
     // console.log(mainDiffs, rashiDiffs,tosafotDiffs);
-    const sorted = [mainDiffs, rashiDiffs, tosafotDiffs].map( array => array.map((num, index)=> ({num, index}))).map(diffs => diffs.sort( (a, b) => (b.num - a.num)));
+    const sorted = [mainDiffs, rashiDiffs, tosafotDiffs].map(array => array.map((num, index) => ({ num, index }))).map(diffs => diffs.sort((a, b) => (b.num - a.num)));
     // console.log(sorted);
     // const secondDiffs = sorted.map(sizeArray =>
     //   sizeArray.map( (diffObj, index, diffs) => ({
@@ -504,7 +504,7 @@
     // }
 
     const threshold = 0.15;
-    const [mainBreaks, rashiBreaks, tosafotBreaks] = ["main", "rashi", "tosafot"].map(text => diffs[text].reduce( (indices, curr, currIndex) => {
+    const [mainBreaks, rashiBreaks, tosafotBreaks] = ["main", "rashi", "tosafot"].map(text => diffs[text].reduce((indices, curr, currIndex) => {
       // const normed = norm(curr, diffs[text]);
       // console.log(text, normed, currIndex);
       if (curr > threshold) {
@@ -512,6 +512,7 @@
       }
       return indices;
     }, []));
+      console.log("main", mainSizes, "rashi", rashiSizes, "tosafot", tosafotSizes);
     console.log("main", mainBreaks, "rashi", rashiBreaks, "tosafot", tosafotBreaks);
 
     const spacerHeights = {
@@ -521,10 +522,18 @@
       end: 0,
     };
     const mainHeight = (mainSizes.length) * parsedOptions.lineHeight.main; //accumulateHeight(mainSizes);
-    const afterBreak = {
+    let afterBreak = {
       inner: parsedOptions.lineHeight.side * (rashiSizes.length - 4), //accumulateHeight(rashiSizes.slice(3)) + parsedOptions.lineHeight.side,
       outer: parsedOptions.lineHeight.side * (tosafotSizes.length - 4)//accumulateHeight(tosafotSizes.slice(3)) + parsedOptions.lineHeight.side
     };
+    if (rashiSizes.length <= 4 || tosafotSizes.length <= 4) {
+      if (rashiSizes.length <= 4) {
+        afterBreak.inner = parsedOptions.lineHeight.side * (rashiSizes.length + 1);
+      }
+      if (tosafotSizes.length <= 4) {
+        afterBreak.outer = parsedOptions.lineHeight.side * (tosafotSizes.length + 1);
+      }
+    }
     switch (mainBreaks.length) {
       case 0:
         spacerHeights.inner = mainHeight;
@@ -562,7 +571,7 @@
         spacerHeights.inner = afterBreak.inner;
         spacerHeights.outer = afterBreak.outer;
         console.log(afterBreak.inner, afterBreak.outer);
-        console.log("Double Extend");
+        console.log("No Case Exception");
         break;
     }
     console.log(spacerHeights);
