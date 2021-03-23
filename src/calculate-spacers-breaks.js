@@ -75,7 +75,7 @@ function calculateSpacersBreaks (mainArray, rashiArray, tosafotArray, options, d
     }
     return indices;
   }, []));
-  // console.log("main", mainBreaks, "rashi", rashiBreaks, "tosafot", tosafotBreaks);
+  console.log("main", mainBreaks, "rashi", rashiBreaks, "tosafot", tosafotBreaks);
 
   const spacerHeights = {
     start: 4.4 * parsedOptions.lineHeight.side,
@@ -118,6 +118,12 @@ function calculateSpacersBreaks (mainArray, rashiArray, tosafotArray, options, d
         break;
       }
     case 2:
+      spacerHeights.inner = afterBreak.inner;
+      spacerHeights.outer = afterBreak.outer;
+      console.log(afterBreak.inner, afterBreak.outer)
+      console.log("Double Extend")
+      break;
+    default:
       spacerHeights.inner = afterBreak.inner;
       spacerHeights.outer = afterBreak.outer;
       console.log(afterBreak.inner, afterBreak.outer)
