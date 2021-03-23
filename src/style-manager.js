@@ -83,7 +83,7 @@ export default {
     })
   },
   manageExceptions(spacerHeights) {
-    if (spacerHeights.inner/2.2 < spacerHeights.start) {
+    if (spacerHeights.inner/2 - 40 < spacerHeights.start) {
       console.log("In Style Exception")
       setVars({
         hasInnerStartGap: "1",
@@ -92,7 +92,7 @@ export default {
         innerPadding: "0px",
         outerPadding: "0px",
       })
-    } else if (spacerHeights.outer/2.2 < spacerHeights.start) {
+    } else if (spacerHeights.outer/2 - 40 < spacerHeights.start) {
       console.log("In Style Exception")
       setVars({
         hasOuterStartGap: "1",
