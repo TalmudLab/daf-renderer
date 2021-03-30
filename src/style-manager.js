@@ -101,6 +101,15 @@ export default {
         innerPadding: "0px",
         outerPadding: "0px"
       })
+    } else {
+      setVars({
+        hasOuterStartGap: "0",
+        hasInnerStartGap: "0",
+        outerStartWidth: "50%",
+        innerStartWidth: "50%",
+        innerPadding: "0px",
+        outerPadding: "0px",
+      })
     }
   }
 }

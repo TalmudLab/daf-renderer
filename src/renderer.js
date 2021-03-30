@@ -18,8 +18,8 @@ function span(parent) {
   return el("span", parent);
 }
 
-
 export default function (el, options = defaultOptions) {
+
   const root = (typeof el === "string") ? document.querySelector(el) : el;
   if (!(root && root instanceof Element && root.tagName.toUpperCase() === "DIV")) {
     throw "Argument must be a div element or its selector"
