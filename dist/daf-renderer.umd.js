@@ -695,7 +695,7 @@
               return el.innerHTML;
             })
           });
-          // console.log(mainSplit, innerSplit, outerSplit);
+          containers.dummy.innerHTML = "";
           this.spacerHeights = calculateSpacersBreaks(mainSplit, innerSplit, outerSplit, clonedOptions, containers.dummy);
         }
         styleManager.updateSpacersVars(this.spacerHeights);
