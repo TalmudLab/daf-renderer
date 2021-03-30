@@ -674,6 +674,68 @@
           this.spacerHeights = calculateSpacers(main, inner, outer, clonedOptions, containers.dummy);
         }
         else {
+
+          if (inner == "" || outer == "") {
+            const toHalve = inner == "" ? outer : inner;
+            const testDiv = document.createElement("div");
+
+            const calculateWidth = node => {
+              if (node.offsetWidth) {
+                return node.offsetWidth;
+              }
+              if (node.nodeType == 3) {
+                const span = document.createElement("span");
+                span.append(node.nodeValue);
+                node.parentElement.append(span);
+                const width = span.offsetWidth;
+                span.remove();
+                return width;
+              }
+              return 0;
+            };
+            testDiv.innerHTML = toHalve;
+            containers.dummy.append(testDiv);
+            testDiv.style.setProperty("white-space", "nowrap");
+            let nodes = Array.from(testDiv.childNodes);
+            let widths = nodes.map( (node, i) => calculateWidth(node));
+            console.log(widths);
+            const totalWidth = widths.reduce( (acc, curr) => acc + curr);
+            const midpoint = totalWidth / 2;
+            let i = 0, passed = 0;
+            while (passed < midpoint) {
+              passed += widths[i++];
+            }
+            let middleEl = testDiv.childNodes[i - 1];
+            let widthRemaining = midpoint - (passed - widths[i - 1]);
+            passed = 0;
+            while (middleEl.nodeType != 3) {
+              i = 0;
+              const childWidths = Array.from(middleEl.childNodes).map( node => calculateWidth(node));
+              while (passed + childWidths[i] < widthRemaining) {
+                passed += childWidths[i];
+                i++;
+              }
+              middleEl = middleEl.childNodes[i];
+            }
+            const proportionalOffset = (widthRemaining - passed) / calculateWidth(middleEl);
+            const offsetRemaining = Math.round(proportionalOffset * middleEl.nodeValue.length);
+            const range1 = document.createRange();
+            range1.setStart(testDiv, 0);
+            range1.setEnd(middleEl, offsetRemaining);
+            const range2 = document.createRange();
+            range2.setStart(middleEl, offsetRemaining + 1);
+            range2.setEndAfter(testDiv.childNodes[testDiv.childNodes.length - 1]);
+            const halves = [range1, range2]
+              .map(range => range.extractContents())
+              .map(fragment => {
+                const el = document.createElement("div");
+                el.append(fragment);
+                return el.innerHTML;
+              });
+            console.dir(halves);
+            debugger;
+          }
+
           const [mainSplit, innerSplit, outerSplit] = [main, inner, outer].map( text => {
             containers.dummy.innerHTML = text;
             const brs = containers.dummy.querySelectorAll(linebreak);
