@@ -467,6 +467,18 @@ function getBreaks(sizeArray) {
   }, []);
 }
 
+function onlyOneCommentary(lines, options, dummy) {
+  const fontFamily = options.fontFamily.inner;
+  const fontSize = options.fontSize.side;
+  const lineHeight = parseFloat(options.lineHeight.side);
+  const sizes = lines.map(text => getLineInfo(text, fontFamily, fontSize, lineHeight, dummy));
+  const breaks = getBreaks(sizes);
+  if (breaks.length == 3) {
+    const first = lines.slice(0, breaks[1]);
+    const second = lines.slice(breaks[1]);
+    return [first, second];
+  }
+}
 function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, options, dummy) {
   const parsedOptions = {
     padding: {
@@ -571,9 +583,6 @@ function span(parent) {
 }
 
 function renderer (el, options = defaultOptions) {
-
-  console.log("are we connected?");
-
   const root = (typeof el === "string") ? document.querySelector(el) : el;
   if (!(root && root instanceof Element && root.tagName.toUpperCase() === "DIV")) {
     throw "Argument must be a div element or its selector"
@@ -636,6 +645,7 @@ function renderer (el, options = defaultOptions) {
     },
     amud: "a",
     render(main, inner, outer, amud = "a", linebreak) {
+
       if (this.amud != amud) {
         this.amud = amud;
         styleManager.updateIsAmudB(amud == "b");
@@ -644,7 +654,7 @@ function renderer (el, options = defaultOptions) {
         this.spacerHeights = calculateSpacers(main, inner, outer, clonedOptions, containers.dummy);
       }
       else {
-        const [mainSplit, innerSplit, outerSplit] = [main, inner, outer].map( text => {
+        let [mainSplit, innerSplit, outerSplit] = [main, inner, outer].map( text => {
           containers.dummy.innerHTML = text;
           const brs = containers.dummy.querySelectorAll(linebreak);
           const splitFragments = [];
@@ -666,6 +676,25 @@ function renderer (el, options = defaultOptions) {
           })
         });
         containers.dummy.innerHTML = "";
+
+        const hasInner = innerSplit.length;
+        const hasOuter = outerSplit.length;
+
+        if (hasInner != hasOuter) {
+          const withText = hasInner ? innerSplit : outerSplit;
+          const fixed = onlyOneCommentary(withText, clonedOptions, dummy);
+          if (fixed) {
+            debugger;
+            if (amud == "a") {
+              innerSplit = fixed[0];
+              outerSplit = fixed[1];
+            } else {
+              innerSplit = fixed[1];
+              outerSplit = fixed[0];
+            }
+          }
+        }
+
         this.spacerHeights = calculateSpacersBreaks(mainSplit, innerSplit, outerSplit, clonedOptions, containers.dummy);
       }
       styleManager.updateSpacersVars(this.spacerHeights);
