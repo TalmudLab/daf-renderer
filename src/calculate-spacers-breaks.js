@@ -99,6 +99,16 @@ export function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, opti
       break;
     case 1:
       if (rashiBreaks.length != tosafotBreaks.length) {
+        if (tosafotBreaks.length == 0) {
+          spacerHeights.outer = 0;
+          spacerHeights.inner = afterBreak.inner;
+          break;
+        }
+        if (rashiBreaks.length == 0) {
+          spacerHeights.inner = 0;
+          spacerHeights.outer = afterBreak.outer;
+          break;
+        }
         let stair;
         let nonstair;
         if (rashiBreaks.length == 1) {
