@@ -123,7 +123,6 @@ export default function (el, options = defaultOptions) {
           const withText = hasInner ? innerSplit : outerSplit;
           const fixed = onlyOneCommentary(withText, clonedOptions, dummy);
           if (fixed) {
-            debugger;
             if (amud == "a") {
               innerSplit = fixed[0];
               outerSplit = fixed[1];
@@ -131,6 +130,8 @@ export default function (el, options = defaultOptions) {
               innerSplit = fixed[1];
               outerSplit = fixed[0];
             }
+            inner = innerSplit.join('<br>');
+            outer = outerSplit.join('<br>');
           }
         }
 
