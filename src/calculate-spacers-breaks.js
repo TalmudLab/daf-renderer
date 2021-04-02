@@ -27,6 +27,18 @@ function getBreaks(sizeArray) {
   }, []);
 }
 
+export function onlyOneCommentary(lines, options, dummy) {
+  const fontFamily = options.fontFamily.inner;
+  const fontSize = options.fontSize.side;
+  const lineHeight = parseFloat(options.lineHeight.side);
+  const sizes = lines.map(text => getLineInfo(text, fontFamily, fontSize, lineHeight, dummy));
+  const breaks = getBreaks(sizes);
+  if (breaks.length == 3) {
+    const first = lines.slice(0, breaks[1]);
+    const second = lines.slice(breaks[1]);
+    return [first, second];
+  }
+}
 export function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, options, dummy) {
   const parsedOptions = {
     padding: {
