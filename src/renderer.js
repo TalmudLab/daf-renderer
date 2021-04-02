@@ -1,7 +1,7 @@
 import {defaultOptions, mergeAndClone} from "./options";
 import calculateSpacers from "./calculate-spacers";
 import styleManager from "./style-manager";
-import calculateSpacersBreaks from "./calculate-spacers-breaks";
+import { calculateSpacersBreaks } from "./calculate-spacers-breaks";
 
 
 function el(tag, parent) {
@@ -19,6 +19,8 @@ function span(parent) {
 }
 
 export default function (el, options = defaultOptions) {
+
+  console.log("are we connected?");
 
   const root = (typeof el === "string") ? document.querySelector(el) : el;
   if (!(root && root instanceof Element && root.tagName.toUpperCase() === "DIV")) {
