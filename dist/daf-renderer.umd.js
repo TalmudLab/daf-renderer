@@ -460,6 +460,31 @@
     return { height, width, widthProportional };
   }
 
+  function getBreaks(sizeArray) {
+    const diffs = sizeArray.map(size => size.widthProportional).map((width, index, widths) => index == 0 ? 0 : Math.abs(width - widths[index - 1]));
+    const threshold = 0.15;
+    return diffs.reduce((indices, curr, currIndex) => {
+      // const normed = norm(curr, diffs[text]);
+      // console.log(text, normed, currIndex);
+      if (curr > threshold) {
+        indices.push(currIndex);
+      }
+      return indices;
+    }, []);
+  }
+
+  function onlyOneCommentary(lines, options, dummy) {
+    const fontFamily = options.fontFamily.inner;
+    const fontSize = options.fontSize.side;
+    const lineHeight = parseFloat(options.lineHeight.side);
+    const sizes = lines.map(text => getLineInfo(text, fontFamily, fontSize, lineHeight, dummy));
+    const breaks = getBreaks(sizes);
+    if (breaks.length == 3) {
+      const first = lines.slice(0, breaks[1]);
+      const second = lines.slice(breaks[1]);
+      return [first, second];
+    }
+  }
   function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, options, dummy) {
     const parsedOptions = {
       padding: {
@@ -484,45 +509,7 @@
       array => array.map(text => getLineInfo(text, parsedOptions.fontFamily.side, parsedOptions.fontSize.side, parsedOptions.lineHeight.side, dummy))
     );
 
-    const [mainDiffs, rashiDiffs, tosafotDiffs] = [mainSizes, rashiSizes, tosafotSizes].map(sizeArray =>
-      sizeArray.map(size => size.widthProportional).map((width, index, widths) => index == 0 ? 0 : Math.abs(width - widths[index - 1]))
-    );
-
-    const diffs = {
-      main: mainDiffs,
-      rashi: rashiDiffs,
-      tosafot: tosafotDiffs
-    };
-
-    // console.log(mainDiffs, rashiDiffs,tosafotDiffs);
-    const sorted = [mainDiffs, rashiDiffs, tosafotDiffs].map(array => array.map((num, index) => ({ num, index }))).map(diffs => diffs.sort((a, b) => (b.num - a.num)));
-    // console.log(sorted);
-    // const secondDiffs = sorted.map(sizeArray =>
-    //   sizeArray.map( (diffObj, index, diffs) => ({
-    //       num: index == 0 ? 0 : Math.abs(diffObj.num - diffs[index - 1].num),
-    //       index: diffObj.index
-    //     }
-    //   )
-    // ));
-    // console.log(secondDiffs);
-    //
-    // function norm(value, array) {
-    //   const min = Math.min(...array);
-    //   const max = Math.max(...array);
-    //   return (value - min) / (max - min);
-    // }
-
-    const threshold = 0.15;
-    const [mainBreaks, rashiBreaks, tosafotBreaks] = ["main", "rashi", "tosafot"].map(text => diffs[text].reduce((indices, curr, currIndex) => {
-      // const normed = norm(curr, diffs[text]);
-      // console.log(text, normed, currIndex);
-      if (curr > threshold) {
-        indices.push(currIndex);
-      }
-      return indices;
-    }, []));
-      console.log("main", mainSizes, "rashi", rashiSizes, "tosafot", tosafotSizes);
-    console.log("main", mainBreaks, "rashi", rashiBreaks, "tosafot", tosafotBreaks);
+    const [mainBreaks, rashiBreaks, tosafotBreaks] = [mainSizes, rashiSizes, tosafotSizes].map(getBreaks);
 
     const spacerHeights = {
       start: 4.4 * parsedOptions.lineHeight.side,
@@ -585,7 +572,6 @@
     }
     console.log(spacerHeights);
     return spacerHeights;
-
   }
 
   function el(tag, parent) {
@@ -603,7 +589,6 @@
   }
 
   function renderer (el, options = defaultOptions) {
-
     const root = (typeof el === "string") ? document.querySelector(el) : el;
     if (!(root && root instanceof Element && root.tagName.toUpperCase() === "DIV")) {
       throw "Argument must be a div element or its selector"
@@ -666,6 +651,7 @@
       },
       amud: "a",
       render(main, inner, outer, amud = "a", linebreak) {
+
         if (this.amud != amud) {
           this.amud = amud;
           styleManager.updateIsAmudB(amud == "b");
@@ -674,7 +660,7 @@
           this.spacerHeights = calculateSpacers(main, inner, outer, clonedOptions, containers.dummy);
         }
         else {
-          const [mainSplit, innerSplit, outerSplit] = [main, inner, outer].map( text => {
+          let [mainSplit, innerSplit, outerSplit] = [main, inner, outer].map( text => {
             containers.dummy.innerHTML = text;
             const brs = containers.dummy.querySelectorAll(linebreak);
             const splitFragments = [];
@@ -696,6 +682,26 @@
             })
           });
           containers.dummy.innerHTML = "";
+
+          const hasInner = innerSplit.length;
+          const hasOuter = outerSplit.length;
+
+          if (hasInner != hasOuter) {
+            const withText = hasInner ? innerSplit : outerSplit;
+            const fixed = onlyOneCommentary(withText, clonedOptions, dummy);
+            if (fixed) {
+              if (amud == "a") {
+                innerSplit = fixed[0];
+                outerSplit = fixed[1];
+              } else {
+                innerSplit = fixed[1];
+                outerSplit = fixed[0];
+              }
+              inner = innerSplit.join('<br>');
+              outer = outerSplit.join('<br>');
+            }
+          }
+
           this.spacerHeights = calculateSpacersBreaks(mainSplit, innerSplit, outerSplit, clonedOptions, containers.dummy);
         }
         styleManager.updateSpacersVars(this.spacerHeights);

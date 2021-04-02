@@ -1,7 +1,10 @@
 import {defaultOptions, mergeAndClone} from "./options";
 import calculateSpacers from "./calculate-spacers";
 import styleManager from "./style-manager";
-import calculateSpacersBreaks from "./calculate-spacers-breaks";
+import {
+  calculateSpacersBreaks,
+  onlyOneCommentary
+} from "./calculate-spacers-breaks";
 
 
 function el(tag, parent) {
@@ -19,7 +22,6 @@ function span(parent) {
 }
 
 export default function (el, options = defaultOptions) {
-
   const root = (typeof el === "string") ? document.querySelector(el) : el;
   if (!(root && root instanceof Element && root.tagName.toUpperCase() === "DIV")) {
     throw "Argument must be a div element or its selector"
@@ -82,6 +84,7 @@ export default function (el, options = defaultOptions) {
     },
     amud: "a",
     render(main, inner, outer, amud = "a", linebreak) {
+
       if (this.amud != amud) {
         this.amud = amud;
         styleManager.updateIsAmudB(amud == "b");
@@ -90,7 +93,7 @@ export default function (el, options = defaultOptions) {
         this.spacerHeights = calculateSpacers(main, inner, outer, clonedOptions, containers.dummy);
       }
       else {
-        const [mainSplit, innerSplit, outerSplit] = [main, inner, outer].map( text => {
+        let [mainSplit, innerSplit, outerSplit] = [main, inner, outer].map( text => {
           containers.dummy.innerHTML = text;
           const brs = containers.dummy.querySelectorAll(linebreak);
           const splitFragments = []
@@ -112,6 +115,26 @@ export default function (el, options = defaultOptions) {
           })
         });
         containers.dummy.innerHTML = "";
+
+        const hasInner = innerSplit.length;
+        const hasOuter = outerSplit.length;
+
+        if (hasInner != hasOuter) {
+          const withText = hasInner ? innerSplit : outerSplit;
+          const fixed = onlyOneCommentary(withText, clonedOptions, dummy);
+          if (fixed) {
+            if (amud == "a") {
+              innerSplit = fixed[0];
+              outerSplit = fixed[1];
+            } else {
+              innerSplit = fixed[1];
+              outerSplit = fixed[0];
+            }
+            inner = innerSplit.join('<br>');
+            outer = outerSplit.join('<br>');
+          }
+        }
+
         this.spacerHeights = calculateSpacersBreaks(mainSplit, innerSplit, outerSplit, clonedOptions, containers.dummy);
       }
       styleManager.updateSpacersVars(this.spacerHeights);
