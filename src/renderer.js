@@ -116,8 +116,8 @@ export default function (el, options = defaultOptions) {
         });
         containers.dummy.innerHTML = "";
 
-        const hasInner = innerSplit.length == 0;
-        const hasOuter = outerSplit.length == 0;
+        const hasInner = innerSplit.length != 0;
+        const hasOuter = outerSplit.length != 0;
 
         if (hasInner != hasOuter) {
           const withText = hasInner ? innerSplit : outerSplit;
