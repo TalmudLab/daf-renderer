@@ -451,20 +451,63 @@ function getLineInfo(text, font, fontSize, lineHeight, dummy) {
   const width = rect.width;
   const widthProportional = width / dummy.getBoundingClientRect().width;
   testDiv.remove();
-  return { height, width, widthProportional };
+  return {height, width, widthProportional};
 }
 
 function getBreaks(sizeArray) {
-  const diffs = sizeArray.map(size => size.widthProportional).map((width, index, widths) => index == 0 ? 0 : Math.abs(width - widths[index - 1]));
-  const threshold = 0.15;
-  return diffs.reduce((indices, curr, currIndex) => {
-    // const normed = norm(curr, diffs[text]);
-    // console.log(text, normed, currIndex);
+  const widths = sizeArray.map(size => size.widthProportional);
+  const diffs = widths.map((width, index, widths) => index == 0 ? 0 : Math.abs(width - widths[index - 1]));
+  const threshold = 0.12;
+  let criticalPoints = diffs.reduce((indices, curr, currIndex) => {
+    //Breaks before line 4 are flukes
+    if (currIndex < 4) return indices;
     if (curr > threshold) {
+      //There should never be two breakpoints in a row
+      const prevIndex = indices[indices.length - 1];
+      if (prevIndex && (currIndex - prevIndex) == 1) {
+        return indices;
+      }
       indices.push(currIndex);
     }
     return indices;
   }, []);
+  const averageAround = points => points.map((point, i) => {
+    let nextPoint;
+    if (!nextPoint) {
+      nextPoint = Math.min(point + 3, widths.length - 1);
+    }
+    let prevPoint;
+    if (!prevPoint) {
+      prevPoint = Math.max(point - 3, 0);
+    }
+    /*
+      Note that these are divided by the width of the critical point line such that
+      we get the average width of the preceeding and proceeding chunks *relative*
+      to the critical line.
+     */
+    const before = (widths.slice(prevPoint, point).reduce((acc, curr) => acc + curr) /
+      (point - prevPoint)) / widths[point];
+    let after;
+    if ( point + 1 >= nextPoint) {
+      after = widths[nextPoint] / widths[point];
+    } else {
+        after =(widths.slice(point + 1, nextPoint).reduce((acc, curr) => acc + curr) /
+          (nextPoint - point - 1)) / widths[point];
+    }
+    return {
+      point,
+      before,
+      after,
+      diff: Math.abs(after - before)
+    }
+   });
+  const aroundDiffs = averageAround(criticalPoints)
+    .sort( (a,b) => b.diff - a.diff);
+  console.log(aroundDiffs);
+  criticalPoints = aroundDiffs
+    .filter( ({diff}) => diff > 0.22)
+    .map( ({point}) => point);
+  return criticalPoints.sort( (a, b) => a - b);
 }
 
 function onlyOneCommentary(lines, options, dummy) {
@@ -479,6 +522,7 @@ function onlyOneCommentary(lines, options, dummy) {
     return [first, second];
   }
 }
+
 function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, options, dummy) {
   const parsedOptions = {
     padding: {
@@ -500,11 +544,12 @@ function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, options, du
 
   const mainSizes = mainArray.map(text => getLineInfo(text, parsedOptions.fontFamily.main, parsedOptions.fontSize.main, parsedOptions.lineHeight.main, dummy));
   const [rashiSizes, tosafotSizes] = [rashiArray, tosafotArray].map(
-    array => array.map(text => getLineInfo(text, parsedOptions.fontFamily.side, parsedOptions.fontSize.side, parsedOptions.lineHeight.side, dummy))
+    array => array.map(text => getLineInfo(text, parsedOptions.fontFamily.inner, parsedOptions.fontSize.side, parsedOptions.lineHeight.side, dummy))
   );
 
   const [mainBreaks, rashiBreaks, tosafotBreaks] = [mainSizes, rashiSizes, tosafotSizes].map(getBreaks);
 
+  console.log(mainBreaks, rashiBreaks, tosafotBreaks);
   const spacerHeights = {
     start: 4.4 * parsedOptions.lineHeight.side,
     inner: null,
@@ -537,6 +582,16 @@ function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, options, du
       break;
     case 1:
       if (rashiBreaks.length != tosafotBreaks.length) {
+        if (tosafotBreaks.length == 0) {
+          spacerHeights.outer = 0;
+          spacerHeights.inner = afterBreak.inner;
+          break;
+        }
+        if (rashiBreaks.length == 0) {
+          spacerHeights.inner = 0;
+          spacerHeights.outer = afterBreak.outer;
+          break;
+        }
         let stair;
         let nonstair;
         if (rashiBreaks.length == 1) {
@@ -677,8 +732,8 @@ function renderer (el, options = defaultOptions) {
         });
         containers.dummy.innerHTML = "";
 
-        const hasInner = innerSplit.length;
-        const hasOuter = outerSplit.length;
+        const hasInner = innerSplit.length != 0;
+        const hasOuter = outerSplit.length != 0;
 
         if (hasInner != hasOuter) {
           const withText = hasInner ? innerSplit : outerSplit;
