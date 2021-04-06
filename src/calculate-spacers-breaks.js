@@ -63,7 +63,6 @@ function getBreaks(sizeArray) {
    })
   const aroundDiffs = averageAround(criticalPoints)
     .sort( (a,b) => b.diff - a.diff);
-  console.log(aroundDiffs)
   criticalPoints = aroundDiffs
     .filter( ({diff}) => diff > 0.22)
     .map( ({point}) => point)
@@ -109,12 +108,13 @@ export function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, opti
 
   const [mainBreaks, rashiBreaks, tosafotBreaks] = [mainSizes, rashiSizes, tosafotSizes].map(getBreaks);
 
-  console.log(mainBreaks, rashiBreaks, tosafotBreaks);
+  console.log("Breaks: ", mainBreaks.length, rashiBreaks.length, tosafotBreaks.length);
   const spacerHeights = {
     start: 4.4 * parsedOptions.lineHeight.side,
     inner: null,
     outer: null,
     end: 0,
+    exception: 0
   };
 
   const accumulateHeight = sizes => sizes.map(size => size.height).reduce((accumulatedHeight, currHeight) => accumulatedHeight + currHeight, 0);
@@ -123,14 +123,18 @@ export function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, opti
     inner: parsedOptions.lineHeight.side * (rashiSizes.length - 4), //accumulateHeight(rashiSizes.slice(3)) + parsedOptions.lineHeight.side,
     outer: parsedOptions.lineHeight.side * (tosafotSizes.length - 4)//accumulateHeight(tosafotSizes.slice(3)) + parsedOptions.lineHeight.side
   }
+
   if (rashiBreaks.length < 1 || tosafotBreaks.length < 1) {
+    console.log("Dealing with Exceptions")
     if (rashiBreaks.length < 1) {
-      afterBreak.inner = parsedOptions.lineHeight.side * (rashiSizes.length + 1)
+      afterBreak.inner = parsedOptions.lineHeight.side * (rashiSizes.length)
+      spacerHeights.exception = 2
     }
     if (tosafotBreaks.length < 1) {
-      afterBreak.outer = parsedOptions.lineHeight.side * (tosafotSizes.length + 1)
+      afterBreak.outer = parsedOptions.lineHeight.side * (tosafotSizes.length)
+      spacerHeights.exception = 2
     }
-  }
+}
   switch (mainBreaks.length) {
     case 0:
       spacerHeights.inner = mainHeight;

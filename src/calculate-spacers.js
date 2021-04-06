@@ -40,6 +40,7 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
     inner: null,
     outer: null,
     end: 0,
+    exception: 0
   };
 
   // We are accounting for the special case, where you have line breaks:
@@ -197,14 +198,15 @@ function calculateSpacers(mainText, innerText, outerText, options, dummy) {
   if (inner.unadjustedHeight  <= spacerHeights.start || outer.unadjustedHeight  <= spacerHeights.start) {
     if (inner.unadjustedHeight  <= spacerHeights.start) {
       spacerHeights.inner = inner.unadjustedHeight;
-
-      spacerHeights.outer = (outer.unadjustedArea - parsedOptions.width*4*parsedOptions.lineHeight.side) / sideWidth;
+      spacerHeights.outer = (outer.unadjustedArea - parsedOptions.width * 4 * parsedOptions.lineHeight.side) / sideWidth;
+      spacerHeights.exception = 1;
       return spacerHeights;
     }
     if (outer.unadjustedHeight <= spacerHeights.start) {
       spacerHeights.outer = outer.unadjustedHeight;
 
       spacerHeights.inner = (inner.unadjustedArea - parsedOptions.width * 4 * parsedOptions.lineHeight.side) / sideWidth;
+      spacerHeights.exception = 2;
       return spacerHeights;
     }
     else {
