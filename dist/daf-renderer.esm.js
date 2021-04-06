@@ -560,11 +560,11 @@ function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, options, du
   if (rashiBreaks.length < 1 || tosafotBreaks.length < 1) {
     console.log("Dealing with Exceptions");
     if (rashiBreaks.length < 1) {
-      afterBreak.inner = parsedOptions.lineHeight.side * (rashiSizes.length);
+      afterBreak.inner = parsedOptions.lineHeight.side * (rashiSizes.length + 1);
       spacerHeights.exception = 2;
     }
     if (tosafotBreaks.length < 1) {
-      afterBreak.outer = parsedOptions.lineHeight.side * (tosafotSizes.length);
+      afterBreak.outer = parsedOptions.lineHeight.side * (tosafotSizes.length + 1);
       spacerHeights.exception = 2;
     }
 }
