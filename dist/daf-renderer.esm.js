@@ -409,35 +409,35 @@ var styleManager = {
     });
   },
   manageExceptions(spacerHeights) {
-    if (spacerHeights.exception) {
-      if (spacerHeights.exception === 1) {
-        console.log("In Style Exception, Case 1");
-        setVars({
-          hasInnerStartGap: "1",
-          innerStartWidth: "100%",
-          outerStartWidth: "0%",
-          innerPadding: "0px",
-          outerPadding: "0px",
-        });
-      } else if (spacerHeights.exception === 2) {
-        console.log("In Style Exception, Case 2");
-        setVars({
-          hasOuterStartGap: "1",
-          outerStartWidth: "100%",
-          innerStartWidth: "0%",
-          innerPadding: "0px",
-          outerPadding: "0px"
-        });
-      } else {
-        setVars({
-          hasOuterStartGap: "0",
-          hasInnerStartGap: "0",
-          outerStartWidth: "50%",
-          innerStartWidth: "50%",
-          innerPadding: "0px",
-          outerPadding: "0px",
-        });
-      }
+    if (!spacerHeights.exception) {
+      setVars({
+        hasOuterStartGap: "0",
+        hasInnerStartGap: "0",
+        outerStartWidth: "50%",
+        innerStartWidth: "50%",
+        innerPadding: "0px",
+        outerPadding: "0px",
+      });
+      return;
+    }
+    if (spacerHeights.exception === 1) {
+      console.log("In Style Exception, Case 1");
+      setVars({
+        hasInnerStartGap: "1",
+        innerStartWidth: "100%",
+        outerStartWidth: "0%",
+        innerPadding: "0px",
+        outerPadding: "0px",
+      });
+    } else if (spacerHeights.exception === 2) {
+      console.log("In Style Exception, Case 2");
+      setVars({
+        hasOuterStartGap: "1",
+        outerStartWidth: "100%",
+        innerStartWidth: "0%",
+        innerPadding: "0px",
+        outerPadding: "0px"
+      });
     }
   }
 };
