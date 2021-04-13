@@ -377,6 +377,7 @@ function setVars(object, prefix = "") {
 }
 
 
+let appliedOptions;
 var styleManager = {
   applyClasses(containers, classesMap = containerClasses) {
     for (const key in containers) {
@@ -391,6 +392,7 @@ var styleManager = {
     }
   },
   updateOptionsVars(options) {
+    appliedOptions = options;
     setVars(options);
   },
   updateSpacersVars(spacerHeights) {
@@ -415,8 +417,8 @@ var styleManager = {
         hasInnerStartGap: "0",
         outerStartWidth: "50%",
         innerStartWidth: "50%",
-        innerPadding: "0px",
-        outerPadding: "0px",
+        innerPadding: appliedOptions.innerPadding,
+        outerPadding: appliedOptions.outerPadding,
       });
       return;
     }

@@ -51,6 +51,7 @@ function setVars(object, prefix = "") {
 }
 
 
+let appliedOptions;
 export default {
   applyClasses(containers, classesMap = containerClasses) {
     for (const key in containers) {
@@ -65,6 +66,7 @@ export default {
     }
   },
   updateOptionsVars(options) {
+    appliedOptions = options;
     setVars(options)
   },
   updateSpacersVars(spacerHeights) {
@@ -89,8 +91,8 @@ export default {
         hasInnerStartGap: "0",
         outerStartWidth: "50%",
         innerStartWidth: "50%",
-        innerPadding: "0px",
-        outerPadding: "0px",
+        innerPadding: appliedOptions.innerPadding,
+        outerPadding: appliedOptions.outerPadding,
       });
       return;
     }
