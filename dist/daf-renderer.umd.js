@@ -606,9 +606,9 @@
         spacerHeights.inner = mainHeight;
         spacerHeights.outer = mainHeight;
         if (rashiBreaks.length == 2) {
-          spacerHeights.end = parsedOptions.lineHeight.side * accumulateCommentary(rashiArray.slice(rashiBreaks[1]));
+          spacerHeights.end = accumulateCommentary(rashiArray.slice(rashiBreaks[1]));
         } else {
-          spacerHeights.end = parsedOptions.lineHeight.side * accumulateCommentary(tosafotArray.slice(tosafotBreaks[1]));
+          spacerHeights.end = accumulateCommentary(tosafotArray.slice(tosafotBreaks[1]));
         }
         console.log("Double wrap");
         break;
