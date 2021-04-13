@@ -14,6 +14,12 @@ function getLineInfo(text, font, fontSize, lineHeight, dummy) {
   return {height, width, widthProportional};
 }
 
+function heightAccumulator(font, fontSize, lineHeight, dummy) {
+  return (lines) => {
+    return getLineInfo(lines.join("<br>"), font, fontSize, lineHeight, dummy).height;
+  }
+}
+
 function getBreaks(sizeArray) {
   const widths = sizeArray.map(size => size.widthProportional);
   const diffs = widths.map((width, index, widths) => index == 0 ? 0 : Math.abs(width - widths[index - 1]));
@@ -101,10 +107,15 @@ export function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, opti
   }
 
 
-  const mainSizes = mainArray.map(text => getLineInfo(text, parsedOptions.fontFamily.main, parsedOptions.fontSize.main, parsedOptions.lineHeight.main, dummy));
+  const mainOptions = [parsedOptions.fontFamily.main, parsedOptions.fontSize.main, parsedOptions.lineHeight.main];
+  const commentaryOptions = [parsedOptions.fontFamily.inner, parsedOptions.fontSize.side, parsedOptions.lineHeight.side];
+  const mainSizes = mainArray.map(text => getLineInfo(text, ...mainOptions, dummy));
   const [rashiSizes, tosafotSizes] = [rashiArray, tosafotArray].map(
-    array => array.map(text => getLineInfo(text, parsedOptions.fontFamily.inner, parsedOptions.fontSize.side, parsedOptions.lineHeight.side, dummy))
+    array => array.map(text => getLineInfo(text, ...commentaryOptions, dummy))
   );
+
+  const accumulateMain = heightAccumulator(...mainOptions, dummy);
+  const accumulateCommentary = heightAccumulator(...commentaryOptions, dummy);
 
   const [mainBreaks, rashiBreaks, tosafotBreaks] = [mainSizes, rashiSizes, tosafotSizes].map(getBreaks);
 
@@ -117,11 +128,16 @@ export function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, opti
     exception: 0
   };
 
-  const accumulateHeight = sizes => sizes.map(size => size.height).reduce((accumulatedHeight, currHeight) => accumulatedHeight + currHeight, 0);
-  const mainHeight = (mainSizes.length) * parsedOptions.lineHeight.main; //accumulateHeight(mainSizes);
+  const mainHeight = accumulateMain(mainArray);
+  const mainHeightOld = (mainSizes.length) * parsedOptions.lineHeight.main;
   let afterBreak = {
-    inner: parsedOptions.lineHeight.side * (rashiSizes.length - 4), //accumulateHeight(rashiSizes.slice(3)) + parsedOptions.lineHeight.side,
-    outer: parsedOptions.lineHeight.side * (tosafotSizes.length - 4)//accumulateHeight(tosafotSizes.slice(3)) + parsedOptions.lineHeight.side
+    inner: accumulateCommentary(rashiArray.slice(4)),
+    outer: accumulateCommentary(tosafotArray.slice(4))
+  }
+
+  let afterBreakOld = {
+    inner: parsedOptions.lineHeight.side * (rashiSizes.length - 4),
+    outer: parsedOptions.lineHeight.side * (tosafotSizes.length - 4)
   }
 
   if (rashiBreaks.length < 1 || tosafotBreaks.length < 1) {
@@ -140,9 +156,9 @@ export function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, opti
       spacerHeights.inner = mainHeight;
       spacerHeights.outer = mainHeight;
       if (rashiBreaks.length == 2) {
-        spacerHeights.end = parsedOptions.lineHeight.side * (rashiSizes.length - rashiBreaks[1]) //accumulateHeight(rashiSizes.slice(rashiBreaks[1]));
+        spacerHeights.end = accumulateCommentary(rashiArray.slice(rashiBreaks[1]))
       } else {
-        spacerHeights.end = parsedOptions.lineHeight.side * (tosafotSizes.length - tosafotBreaks[1]) //accumulateHeight(tosafotSizes.slice(tosafotBreaks[1]));
+        spacerHeights.end = accumulateCommentary(tosafotArray.slice(tosafotBreaks[1]))
       }
       console.log("Double wrap")
       break;
