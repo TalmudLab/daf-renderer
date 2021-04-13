@@ -560,10 +560,11 @@ function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, options, du
     end: 0,
     exception: 0
   };
-  const mainHeight = (mainSizes.length) * parsedOptions.lineHeight.main; //accumulateHeight(mainSizes);
+
+  const mainHeight = (mainSizes.length) * parsedOptions.lineHeight.main;
   let afterBreak = {
-    inner: parsedOptions.lineHeight.side * (rashiSizes.length - 4), //accumulateHeight(rashiSizes.slice(3)) + parsedOptions.lineHeight.side,
-    outer: parsedOptions.lineHeight.side * (tosafotSizes.length - 4)//accumulateHeight(tosafotSizes.slice(3)) + parsedOptions.lineHeight.side
+    inner: parsedOptions.lineHeight.side * (rashiSizes.length - 4),
+    outer: parsedOptions.lineHeight.side * (tosafotSizes.length - 4)
   };
 
   if (rashiBreaks.length < 1 || tosafotBreaks.length < 1) {
@@ -582,9 +583,9 @@ function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, options, du
       spacerHeights.inner = mainHeight;
       spacerHeights.outer = mainHeight;
       if (rashiBreaks.length == 2) {
-        spacerHeights.end = parsedOptions.lineHeight.side * (rashiSizes.length - rashiBreaks[1]); //accumulateHeight(rashiSizes.slice(rashiBreaks[1]));
+        spacerHeights.end = parsedOptions.lineHeight.side * (rashiSizes.length - rashiBreaks[1]);
       } else {
-        spacerHeights.end = parsedOptions.lineHeight.side * (tosafotSizes.length - tosafotBreaks[1]); //accumulateHeight(tosafotSizes.slice(tosafotBreaks[1]));
+        spacerHeights.end = parsedOptions.lineHeight.side * (tosafotSizes.length - tosafotBreaks[1]);
       }
       console.log("Double wrap");
       break;
