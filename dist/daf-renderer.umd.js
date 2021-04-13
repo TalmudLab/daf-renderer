@@ -732,7 +732,7 @@
         end: 0
       },
       amud: "a",
-      render(main, inner, outer, amud = "a", linebreak) {
+      render(main, inner, outer, amud = "a", linebreak, renderCallback, resizeCallback) {
         if (resizeEvent) {
           window.removeEventListener("resize", resizeEvent);
         }
@@ -790,6 +790,8 @@
           resizeEvent = () => {
             this.spacerHeights = calculateSpacersBreaks(mainSplit, innerSplit, outerSplit, clonedOptions, containers.dummy);
             styleManager.updateSpacersVars(this.spacerHeights);
+            if (resizeCallback)
+              resizeCallback();
             console.log("resizing");
           };
           window.addEventListener('resize', resizeEvent);
@@ -799,7 +801,8 @@
         textSpans.main.innerHTML = main;
         textSpans.inner.innerHTML = inner;
         textSpans.outer.innerHTML = outer;
-
+        if (renderCallback)
+          renderCallback();
       },
     }
   }
