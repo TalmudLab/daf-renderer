@@ -74,6 +74,7 @@ export default function (el, options = defaultOptions) {
   styleManager.applyClasses(containers);
   styleManager.updateOptionsVars(clonedOptions);
 
+  let resizeEvent;
   return {
     containers,
     spacerHeights: {
@@ -84,7 +85,9 @@ export default function (el, options = defaultOptions) {
     },
     amud: "a",
     render(main, inner, outer, amud = "a", linebreak) {
-
+      if (resizeEvent) {
+        window.removeEventListener("resize", resizeEvent);
+      }
       if (this.amud != amud) {
         this.amud = amud;
         styleManager.updateIsAmudB(amud == "b");
@@ -136,12 +139,19 @@ export default function (el, options = defaultOptions) {
         }
 
         this.spacerHeights = calculateSpacersBreaks(mainSplit, innerSplit, outerSplit, clonedOptions, containers.dummy);
+        resizeEvent = () => {
+          this.spacerHeights = calculateSpacersBreaks(mainSplit, innerSplit, outerSplit, clonedOptions, containers.dummy);
+          styleManager.updateSpacersVars(this.spacerHeights);
+          console.log("resizing")
+        }
+        window.addEventListener('resize', resizeEvent)
       }
       styleManager.updateSpacersVars(this.spacerHeights);
       styleManager.manageExceptions(this.spacerHeights);
       textSpans.main.innerHTML = main;
       textSpans.inner.innerHTML = inner;
       textSpans.outer.innerHTML = outer;
+
     },
   }
 }

@@ -140,7 +140,6 @@ export function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, opti
     outer: parsedOptions.lineHeight.side * (tosafotSizes.length - 4)
   }
 
-  debugger;
   if (rashiBreaks.length < 1 || tosafotBreaks.length < 1) {
     console.log("Dealing with Exceptions")
     if (rashiBreaks.length < 1) {

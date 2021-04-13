@@ -590,7 +590,6 @@
       outer: parsedOptions.lineHeight.side * (tosafotSizes.length - 4)
     };
 
-    debugger;
     if (rashiBreaks.length < 1 || tosafotBreaks.length < 1) {
       console.log("Dealing with Exceptions");
       if (rashiBreaks.length < 1) {
@@ -723,6 +722,7 @@
     styleManager.applyClasses(containers);
     styleManager.updateOptionsVars(clonedOptions);
 
+    let resizeEvent;
     return {
       containers,
       spacerHeights: {
@@ -733,7 +733,9 @@
       },
       amud: "a",
       render(main, inner, outer, amud = "a", linebreak) {
-
+        if (resizeEvent) {
+          window.removeEventListener("resize", resizeEvent);
+        }
         if (this.amud != amud) {
           this.amud = amud;
           styleManager.updateIsAmudB(amud == "b");
@@ -785,12 +787,19 @@
           }
 
           this.spacerHeights = calculateSpacersBreaks(mainSplit, innerSplit, outerSplit, clonedOptions, containers.dummy);
+          resizeEvent = () => {
+            this.spacerHeights = calculateSpacersBreaks(mainSplit, innerSplit, outerSplit, clonedOptions, containers.dummy);
+            styleManager.updateSpacersVars(this.spacerHeights);
+            console.log("resizing");
+          };
+          window.addEventListener('resize', resizeEvent);
         }
         styleManager.updateSpacersVars(this.spacerHeights);
         styleManager.manageExceptions(this.spacerHeights);
         textSpans.main.innerHTML = main;
         textSpans.inner.innerHTML = inner;
         textSpans.outer.innerHTML = outer;
+
       },
     }
   }
