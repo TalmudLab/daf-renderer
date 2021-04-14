@@ -43,10 +43,13 @@
 .outer,
 .inner,
 .main {
-  position: absolute;
   width: var(--contentWidth);
   pointer-events: none;
   box-sizing: content-box;
+}
+
+.outer, .inner, .main {
+  position: absolute;
 }
 
 /*Float changes with amud*/
