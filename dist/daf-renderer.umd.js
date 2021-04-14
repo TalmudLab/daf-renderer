@@ -803,6 +803,9 @@
         textSpans.main.innerHTML = main;
         textSpans.inner.innerHTML = inner;
         textSpans.outer.innerHTML = outer;
+
+        const containerHeight = Math.max(...["main", "inner", "outer"].map(t => containers[t].el.offsetHeight));
+        containers.el.style.height = `${containerHeight}px`;
         if (renderCallback)
           renderCallback();
       },
