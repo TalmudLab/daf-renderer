@@ -577,15 +577,20 @@
     const accumulateMain = heightAccumulator(...mainOptions, dummy);
     const accumulateCommentary = heightAccumulator(...commentaryOptions, dummy);
 
-    let [mainBreaks, rashiBreaks, tosafotBreaks] = [sizes.main, sizes.rashi, sizes.tosafot]
-      .map(arr => getBreaks(arr));
+    const breaks = {};
 
-    mainBreaks = mainBreaks.filter(lineNum =>
-      //TODO: Extract this behavior, give it an option/parameter
-      !(lines.main[lineNum].includes("hadran"))
-    );
+    ["rashi", "tosafot", "main"].forEach(text => {
+      breaks[text] = getBreaks(sizes[text])
+        /*
+        Hadran lines aren't real candidates for line breaks.
+          TODO: Extract this behavior , give it an option/parameter
+         */
+          .filter(lineNum => !(lines[text][lineNum].includes("hadran"))
+      );
+    });
+    
 
-    console.log("Breaks: ", mainBreaks.length, rashiBreaks.length, tosafotBreaks.length);
+    console.log("Breaks: ", breaks.main.length, breaks.rashi.length, breaks.tosafot.length);
     const spacerHeights = {
       start: 4.4 * parsedOptions.lineHeight.side,
       inner: null,
@@ -606,43 +611,43 @@
       outer: parsedOptions.lineHeight.side * (sizes.tosafot.length - 4)
     };
 
-    if (rashiBreaks.length < 1 || tosafotBreaks.length < 1) {
+    if (breaks.rashi.length < 1 || breaks.tosafot.length < 1) {
       console.log("Dealing with Exceptions");
-      if (rashiBreaks.length < 1) {
+      if (breaks.rashi.length < 1) {
         afterBreak.inner = parsedOptions.lineHeight.side * (sizes.rashi.length + 1);
         spacerHeights.exception = 2;
       }
-      if (tosafotBreaks.length < 1) {
+      if (breaks.tosafot.length < 1) {
         afterBreak.outer = parsedOptions.lineHeight.side * (sizes.tosafot.length + 1);
         spacerHeights.exception = 2;
       }
   }
-    switch (mainBreaks.length) {
+    switch (breaks.main.length) {
       case 0:
         spacerHeights.inner = mainHeight;
         spacerHeights.outer = mainHeight;
-        if (rashiBreaks.length == 2) {
-          spacerHeights.end = accumulateCommentary(lines.rashi.slice(rashiBreaks[1]));
+        if (breaks.rashi.length == 2) {
+          spacerHeights.end = accumulateCommentary(lines.rashi.slice(breaks.rashi[1]));
         } else {
-          spacerHeights.end = accumulateCommentary(lines.tosafot.slice(tosafotBreaks[1]));
+          spacerHeights.end = accumulateCommentary(lines.tosafot.slice(breaks.tosafot[1]));
         }
         console.log("Double wrap");
         break;
       case 1:
-        if (rashiBreaks.length != tosafotBreaks.length) {
-          if (tosafotBreaks.length == 0) {
+        if (breaks.rashi.length != breaks.tosafot.length) {
+          if (breaks.tosafot.length == 0) {
             spacerHeights.outer = 0;
             spacerHeights.inner = afterBreak.inner;
             break;
           }
-          if (rashiBreaks.length == 0) {
+          if (breaks.rashi.length == 0) {
             spacerHeights.inner = 0;
             spacerHeights.outer = afterBreak.outer;
             break;
           }
           let stair;
           let nonstair;
-          if (rashiBreaks.length == 1) {
+          if (breaks.rashi.length == 1) {
             stair = "outer";
             nonstair = "inner";
           } else {
