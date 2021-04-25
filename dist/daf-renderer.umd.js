@@ -569,7 +569,13 @@
     const accumulateMain = heightAccumulator(...mainOptions, dummy);
     const accumulateCommentary = heightAccumulator(...commentaryOptions, dummy);
 
-    const [mainBreaks, rashiBreaks, tosafotBreaks] = [mainSizes, rashiSizes, tosafotSizes].map(getBreaks);
+    let [mainBreaks, rashiBreaks, tosafotBreaks] = [mainSizes, rashiSizes, tosafotSizes]
+      .map(arr => getBreaks(arr));
+
+    mainBreaks = mainBreaks.filter(lineNum =>
+      //TODO: Extract this behavior, give it an option/parameter
+      !(mainArray[lineNum].includes("hadran"))
+    );
 
     console.log("Breaks: ", mainBreaks.length, rashiBreaks.length, tosafotBreaks.length);
     const spacerHeights = {
