@@ -772,6 +772,7 @@ function renderer (el, options = defaultOptions) {
             range.selectNode(div);
             return range;
           });
+
           const brs = containers.dummy.querySelectorAll(linebreak);
           const splitFragments = [];
           brs.forEach((node, index) => {
@@ -793,6 +794,7 @@ function renderer (el, options = defaultOptions) {
 
             splitFragments.push(range.extractContents());
           });
+
           return splitFragments.map(fragment => {
             const el = document.createElement("div");
             el.append(fragment);
