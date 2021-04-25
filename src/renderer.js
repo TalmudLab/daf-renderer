@@ -117,7 +117,6 @@ export default function (el, options = defaultOptions) {
             divRanges.forEach( (divRange, i) => {
               const inBetween = range.compareBoundaryPoints(Range.START_TO_START, divRange) < 0 && range.compareBoundaryPoints(Range.END_TO_END, divRange) > 0;
               if (inBetween) {
-                console.log("fouind it");
                 splitFragments.push(divRange.extractContents());
               }
             })

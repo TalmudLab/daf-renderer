@@ -138,7 +138,6 @@ export function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, opti
   })
   
 
-  console.log("Breaks: ", breaks.main.length, breaks.rashi.length, breaks.tosafot.length);
   const spacerHeights = {
     start: 4.4 * parsedOptions.lineHeight.side,
     inner: null,
@@ -210,16 +209,13 @@ export function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, opti
     case 2:
       spacerHeights.inner = afterBreak.inner;
       spacerHeights.outer = afterBreak.outer;
-      console.log(afterBreak.inner, afterBreak.outer)
       console.log("Double Extend")
       break;
     default:
       spacerHeights.inner = afterBreak.inner;
       spacerHeights.outer = afterBreak.outer;
-      console.log(afterBreak.inner, afterBreak.outer)
       console.log("No Case Exception")
       break;
   }
-  console.log(spacerHeights);
   return spacerHeights;
 }

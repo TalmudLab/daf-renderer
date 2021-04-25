@@ -590,7 +590,6 @@
     });
     
 
-    console.log("Breaks: ", breaks.main.length, breaks.rashi.length, breaks.tosafot.length);
     const spacerHeights = {
       start: 4.4 * parsedOptions.lineHeight.side,
       inner: null,
@@ -662,17 +661,14 @@
       case 2:
         spacerHeights.inner = afterBreak.inner;
         spacerHeights.outer = afterBreak.outer;
-        console.log(afterBreak.inner, afterBreak.outer);
         console.log("Double Extend");
         break;
       default:
         spacerHeights.inner = afterBreak.inner;
         spacerHeights.outer = afterBreak.outer;
-        console.log(afterBreak.inner, afterBreak.outer);
         console.log("No Case Exception");
         break;
     }
-    console.log(spacerHeights);
     return spacerHeights;
   }
 
@@ -786,7 +782,6 @@
               divRanges.forEach( (divRange, i) => {
                 const inBetween = range.compareBoundaryPoints(Range.START_TO_START, divRange) < 0 && range.compareBoundaryPoints(Range.END_TO_END, divRange) > 0;
                 if (inBetween) {
-                  console.log("fouind it");
                   splitFragments.push(divRange.extractContents());
                 }
               });
