@@ -761,6 +761,14 @@
         }
         if (!linebreak) {
           this.spacerHeights = calculateSpacers(main, inner, outer, clonedOptions, containers.dummy);
+          resizeEvent = () => {
+            this.spacerHeights = calculateSpacers(main, inner, outer, clonedOptions, containers.dummy);
+            styleManager.updateSpacersVars(this.spacerHeights);
+            console.log("resizing");
+            if (resizeCallback)
+              resizeCallback();
+          };
+          window.addEventListener("resize", resizeEvent);
         }
         else {
           let [mainSplit, innerSplit, outerSplit] = [main, inner, outer].map( text => {
