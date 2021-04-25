@@ -793,8 +793,10 @@
                 const inBetween = range.compareBoundaryPoints(Range.START_TO_START, divRange) < 0 && range.compareBoundaryPoints(Range.END_TO_END, divRange) > 0;
                 if (inBetween) {
                   splitFragments.push(divRange.extractContents());
+                  divRanges.splice(i, 1);
                 }
               });
+
               splitFragments.push(range.extractContents());
             });
             return splitFragments.map(fragment => {
