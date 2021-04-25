@@ -680,6 +680,7 @@ function span(parent) {
   return el("span", parent);
 }
 
+
 function renderer (el, options = defaultOptions) {
   const root = (typeof el === "string") ? document.querySelector(el) : el;
   if (!(root && root instanceof Element && root.tagName.toUpperCase() === "DIV")) {
@@ -735,6 +736,7 @@ function renderer (el, options = defaultOptions) {
 
   let resizeEvent;
   return {
+    classes,
     containers,
     spacerHeights: {
       start: 0,

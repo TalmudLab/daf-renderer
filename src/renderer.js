@@ -5,7 +5,7 @@ import {
   calculateSpacersBreaks,
   onlyOneCommentary
 } from "./calculate-spacers-breaks";
-
+import classes from './styles.css';
 
 function el(tag, parent) {
   const newEl = document.createElement(tag);
@@ -20,6 +20,7 @@ function div(parent) {
 function span(parent) {
   return el("span", parent);
 }
+
 
 export default function (el, options = defaultOptions) {
   const root = (typeof el === "string") ? document.querySelector(el) : el;
@@ -76,6 +77,7 @@ export default function (el, options = defaultOptions) {
 
   let resizeEvent;
   return {
+    classes,
     containers,
     spacerHeights: {
       start: 0,
@@ -173,3 +175,4 @@ export default function (el, options = defaultOptions) {
     },
   }
 }
+
