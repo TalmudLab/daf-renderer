@@ -742,6 +742,11 @@ function renderer (el, options = defaultOptions) {
       else {
         let [mainSplit, innerSplit, outerSplit] = [main, inner, outer].map( text => {
           containers.dummy.innerHTML = text;
+          const divRanges = Array.from(containers.dummy.querySelectorAll("div")).map(div => {
+            const range = document.createRange();
+            range.selectNode(div);
+            return range;
+          });
           const brs = containers.dummy.querySelectorAll(linebreak);
           const splitFragments = [];
           brs.forEach((node, index) => {
@@ -753,6 +758,13 @@ function renderer (el, options = defaultOptions) {
               const prev = brs[index - 1];
               range.setStartAfter(prev);
             }
+            divRanges.forEach( (divRange, i) => {
+              const inBetween = range.compareBoundaryPoints(Range.START_TO_START, divRange) < 0 && range.compareBoundaryPoints(Range.END_TO_END, divRange) > 0;
+              if (inBetween) {
+                console.log("fouind it");
+                splitFragments.push(divRange.extractContents());
+              }
+            });
             splitFragments.push(range.extractContents());
           });
           return splitFragments.map(fragment => {
@@ -761,6 +773,7 @@ function renderer (el, options = defaultOptions) {
             return el.innerHTML;
           })
         });
+
         containers.dummy.innerHTML = "";
 
         const hasInner = innerSplit.length != 0;
