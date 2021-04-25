@@ -115,15 +115,17 @@ export function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, opti
 
   const mainOptions = [parsedOptions.fontFamily.main, parsedOptions.fontSize.main, parsedOptions.lineHeight.main];
   const commentaryOptions = [parsedOptions.fontFamily.inner, parsedOptions.fontSize.side, parsedOptions.lineHeight.side];
-  const mainSizes = lines.main.map(text => getLineInfo(text, ...mainOptions, dummy));
-  const [rashiSizes, tosafotSizes] = [lines.rashi, lines.tosafot].map(
-    array => array.map(text => getLineInfo(text, ...commentaryOptions, dummy))
-  );
+  
+  const sizes = {};
+  sizes.main = lines.main.map(text => getLineInfo(text, ...mainOptions, dummy));
+  ["rashi", "tosafot"].forEach(text => {
+    sizes[text] = lines[text].map(line => getLineInfo(line, ...commentaryOptions, dummy))
+  })
 
   const accumulateMain = heightAccumulator(...mainOptions, dummy);
   const accumulateCommentary = heightAccumulator(...commentaryOptions, dummy);
 
-  let [mainBreaks, rashiBreaks, tosafotBreaks] = [mainSizes, rashiSizes, tosafotSizes]
+  let [mainBreaks, rashiBreaks, tosafotBreaks] = [sizes.main, sizes.rashi, sizes.tosafot]
     .map(arr => getBreaks(arr));
 
   mainBreaks = mainBreaks.filter(lineNum =>
@@ -141,25 +143,25 @@ export function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, opti
   };
 
   const mainHeight = accumulateMain(lines.main);
-  const mainHeightOld = (mainSizes.length) * parsedOptions.lineHeight.main;
+  const mainHeightOld = (sizes.main.length) * parsedOptions.lineHeight.main;
   let afterBreak = {
     inner: accumulateCommentary(lines.rashi.slice(4)),
     outer: accumulateCommentary(lines.tosafot.slice(4))
   }
 
   let afterBreakOld = {
-    inner: parsedOptions.lineHeight.side * (rashiSizes.length - 4),
-    outer: parsedOptions.lineHeight.side * (tosafotSizes.length - 4)
+    inner: parsedOptions.lineHeight.side * (sizes.rashi.length - 4),
+    outer: parsedOptions.lineHeight.side * (sizes.tosafot.length - 4)
   }
 
   if (rashiBreaks.length < 1 || tosafotBreaks.length < 1) {
     console.log("Dealing with Exceptions")
     if (rashiBreaks.length < 1) {
-      afterBreak.inner = parsedOptions.lineHeight.side * (rashiSizes.length + 1)
+      afterBreak.inner = parsedOptions.lineHeight.side * (sizes.rashi.length + 1)
       spacerHeights.exception = 2
     }
     if (tosafotBreaks.length < 1) {
-      afterBreak.outer = parsedOptions.lineHeight.side * (tosafotSizes.length + 1)
+      afterBreak.outer = parsedOptions.lineHeight.side * (sizes.tosafot.length + 1)
       spacerHeights.exception = 2
     }
 }
