@@ -89,6 +89,12 @@ export function onlyOneCommentary(lines, options, dummy) {
 }
 
 export function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, options, dummy) {
+  const lines = {
+    main: mainArray,
+    rashi: rashiArray,
+    tosafot: tosafotArray
+  }
+
   const parsedOptions = {
     padding: {
       vertical: parseFloat(options.padding.vertical),
@@ -109,8 +115,8 @@ export function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, opti
 
   const mainOptions = [parsedOptions.fontFamily.main, parsedOptions.fontSize.main, parsedOptions.lineHeight.main];
   const commentaryOptions = [parsedOptions.fontFamily.inner, parsedOptions.fontSize.side, parsedOptions.lineHeight.side];
-  const mainSizes = mainArray.map(text => getLineInfo(text, ...mainOptions, dummy));
-  const [rashiSizes, tosafotSizes] = [rashiArray, tosafotArray].map(
+  const mainSizes = lines.main.map(text => getLineInfo(text, ...mainOptions, dummy));
+  const [rashiSizes, tosafotSizes] = [lines.rashi, lines.tosafot].map(
     array => array.map(text => getLineInfo(text, ...commentaryOptions, dummy))
   );
 
@@ -122,7 +128,7 @@ export function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, opti
 
   mainBreaks = mainBreaks.filter(lineNum =>
     //TODO: Extract this behavior, give it an option/parameter
-    !(mainArray[lineNum].includes("hadran"))
+    !(lines.main[lineNum].includes("hadran"))
   )
 
   console.log("Breaks: ", mainBreaks.length, rashiBreaks.length, tosafotBreaks.length);
@@ -134,11 +140,11 @@ export function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, opti
     exception: 0
   };
 
-  const mainHeight = accumulateMain(mainArray);
+  const mainHeight = accumulateMain(lines.main);
   const mainHeightOld = (mainSizes.length) * parsedOptions.lineHeight.main;
   let afterBreak = {
-    inner: accumulateCommentary(rashiArray.slice(4)),
-    outer: accumulateCommentary(tosafotArray.slice(4))
+    inner: accumulateCommentary(lines.rashi.slice(4)),
+    outer: accumulateCommentary(lines.tosafot.slice(4))
   }
 
   let afterBreakOld = {
@@ -162,9 +168,9 @@ export function calculateSpacersBreaks(mainArray, rashiArray, tosafotArray, opti
       spacerHeights.inner = mainHeight;
       spacerHeights.outer = mainHeight;
       if (rashiBreaks.length == 2) {
-        spacerHeights.end = accumulateCommentary(rashiArray.slice(rashiBreaks[1]))
+        spacerHeights.end = accumulateCommentary(lines.rashi.slice(rashiBreaks[1]))
       } else {
-        spacerHeights.end = accumulateCommentary(tosafotArray.slice(tosafotBreaks[1]))
+        spacerHeights.end = accumulateCommentary(lines.tosafot.slice(tosafotBreaks[1]))
       }
       console.log("Double wrap")
       break;
