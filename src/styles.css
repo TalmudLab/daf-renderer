@@ -147,6 +147,7 @@
 .text {
   direction: var(--direction);
   text-align: justify;
+  text-align-last: center;
 }
 
 .text span {
