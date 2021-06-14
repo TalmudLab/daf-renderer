@@ -69,10 +69,10 @@ There are seven options you can change:
 ### Data Sources
 
 #### Sefaria
-*Coming Soon...*
+*Coming Soonish...*
 
 #### Talmud.dev API
-*Coming Soon...*
+*Coming Soonish...*
 
 ## How it Works (Better Documenation On the Way)
 
